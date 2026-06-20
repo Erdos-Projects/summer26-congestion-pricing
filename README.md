@@ -141,6 +141,10 @@ See [`docs/data_structure_and_schema.md`](docs/data_structure_and_schema.md) for
 | `data/processed/00_standardized_trips/` | Produced locally by standardization script |
 | `data/processed/samples/trip_level_sample.csv` | Produced by sample script |
 | `data/processed/qc/` | Standardization + validation QC reports |
-| EDA, maps, modeling, disruption scores | **Not started** — next phase |
+| EDA, maps, modeling, disruption scores | **Started** — see [`docs/report_adithya_eda`](docs/report_adithya_eda.md) for some preliminary work|
 
 Green Taxi integration and January 2025 transition analysis are planned for later robustness work.
+
+## Future Work
+
+See [`docs/future directions.md`](docs/future directions.md)
