@@ -68,8 +68,8 @@ Three other denominators were tested/considered during development and explicitl
 **Root cause:** For a small number of trips, every cost component except `cbd_congestion_fee` is exactly zero (e.g. a fully comped/free ride that was still charged the regulatory CBD fee). The true `base_cost` for these trips is `0`. But because `passenger_cost_pretip` is computed upstream as a sum of 6 double-precision floats, the result is not exactly `1.5` but `1.5000000000000009` — so `base_cost = passenger_cost_pretip - cbd_congestion_fee` evaluates to `8.88e-16` instead of `0`. Dividing `1.5 / 8.88e-16` produces a ratio around `1.69e15`, and a single such row is enough to dominate a zone's average across hundreds of thousands of legitimate trips.
 
 **Diagnosis process:**
-1. Compared `DS_z` (mean) vs `DS_z_median` per zone — large divergence flagged the issue.
-2. Pulled the top 20 trips by `fee_burden DESC` directly — all had `base_cost ≈ 8.88e-16`, immediately visible as floating-point noise rather than a real small fare.
+1. Compared `DS_z` (mean) vs `DS_z_median` per zone, saw large divergence and flagged the issue.
+2. Pulled the top 20 trips by `fee_burden DESC` directly, all had `base_cost ≈ 8.88e-16`, immediately visible as floating-point noise rather than a real small fare.
 3. Quantified scope: of 34,717,550 fee-charged trips, only **19** had a true zero/negative base cost (after rounding) and **89** had a genuinely small-but-real base cost under $1. Combined, 108 rows out of 34.7M (0.0003%).
 
 **Fix:**
