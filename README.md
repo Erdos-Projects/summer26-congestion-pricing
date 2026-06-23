@@ -110,6 +110,8 @@ conda activate congestion-pricing
 ```bash
 python scripts/standardize_trips.py
 python scripts/make_trip_level_sample.py
+python scripts/make_representative_sample_20k.py
+python scripts/create_diagnostic_sample.py
 python scripts/validate_standardized_trips.py
 ```
 
@@ -119,7 +121,42 @@ python scripts/validate_standardized_trips.py
 |--------|-------------|-------------------|
 | `data/processed/00_standardized_trips/` | Monthly cleaned parquet files by service (`yellow/`, `hvfhv/`) | No (too large; regenerate locally) |
 | `data/processed/samples/trip_level_sample.csv` | 100-row balanced CSV for manual inspection | Yes |
-| `data/processed/qc/` | Standardization, validation, and sample QC reports | Yes |
+| `data/processed/samples/trip_level_sample_20k_representative.csv` | 20,000-row representative CSV for preliminary EDA (`random_state=42`) | Yes |
+| `data/processed/samples/trip_level_sample_5k_diagnostic.csv` | Diagnostic CSV for cleaning-rule review (`random_state=42`; target 5,000 rows) | Yes |
+| `data/processed/qc/` | Standardization, validation, representative-sample, and diagnostic QC reports | Yes |
+
+### Representative 20K sample (for teammate EDA)
+
+`data/processed/samples/trip_level_sample_20k_representative.csv` is built by
+`scripts/make_representative_sample_20k.py` using **proportional stratified random
+sampling** by `service_type × year × month` (Yellow and HVFHV; Feb–Jun 2024 and 2025).
+Unlike the 100-row balanced sample, it preserves the natural trip mix—including
+2025 `charged_cbd_flag` shares—and is better suited to preliminary descriptive analysis.
+
+Use the `sample_weight` column (`stratum_population_n / stratum_sample_n`) when
+computing aggregate estimates from the sample. Yellow `payment_type` is preserved with
+review flags; March DST transition rows are flagged, not removed. HVFHV
+`passenger_cost_pretip` is reconstructed from TLC fee components and may not reflect
+app-specific discounts or refunds. Zone-level and origin–destination analysis should
+eventually use full-data aggregates, not only this extract. See
+[`docs/cleaning_notes.md`](docs/cleaning_notes.md) and
+[`docs/data_structure_and_schema.md`](docs/data_structure_and_schema.md).
+
+### Diagnostic 5K sample (for cleaning-rule review)
+
+`data/processed/samples/trip_level_sample_5k_diagnostic.csv` is built by
+`scripts/create_diagnostic_sample.py` directly from **raw** TLC parquet files (not
+standardized outputs). It **intentionally oversamples** anomaly categories—non-positive
+passenger cost, negative CBD fees, payment-review trips, duration/zone outliers, DST
+windows, and related flags—so the team can inspect records affected by cleaning rules.
+
+**Do not use this sample for aggregate estimates or population inference.** Use
+`trip_level_sample_20k_representative.csv` for preliminary EDA; use the diagnostic
+sample for anomaly inspection and cleaning-rule discussion. The local build has
+**5,000 rows**; `missing_zone` and `negative_distance` had no raw matches, so
+remaining slots were filled from other categories (see
+`data/processed/qc/diagnostic_notes.csv`). See
+[`docs/cleaning_notes.md`](docs/cleaning_notes.md).
 
 See [`docs/data_structure_and_schema.md`](docs/data_structure_and_schema.md) for the full standardized schema and cleaning rules.
 
@@ -130,17 +167,21 @@ See [`docs/data_structure_and_schema.md`](docs/data_structure_and_schema.md) for
 
 ## Project Status
 
-**Current phase: first-step data cleaning and standardization (Yellow Taxi + HVFHV).**
+**Current phase: data cleaning, teammate sampling, and cleaning diagnostics (Yellow Taxi + HVFHV).**
 
 | Area | Status |
 |------|--------|
 | Raw data download (Feb–Jun 2024 & 2025, Yellow + HVFHV) | Complete locally |
 | `scripts/standardize_trips.py` | Implemented |
 | `scripts/make_trip_level_sample.py` | Implemented |
+| `scripts/make_representative_sample_20k.py` | Implemented |
+| `scripts/create_diagnostic_sample.py` | Implemented |
 | `scripts/validate_standardized_trips.py` | Implemented |
 | `data/processed/00_standardized_trips/` | Produced locally by standardization script |
 | `data/processed/samples/trip_level_sample.csv` | Produced by sample script |
-| `data/processed/qc/` | Standardization + validation QC reports |
+| `data/processed/samples/trip_level_sample_20k_representative.csv` | Produced by 20K representative sample script |
+| `data/processed/samples/trip_level_sample_5k_diagnostic.csv` | Produced by diagnostic sample script |
+| `data/processed/qc/` | Standardization, validation, representative-sample, and diagnostic QC reports |
 | EDA, maps, modeling, disruption scores | **Started** — see [`docs/report_adithya_eda.md`](docs/report_adithya_eda.md) for some preliminary work|
 
 Green Taxi integration and January 2025 transition analysis are planned for later robustness work.

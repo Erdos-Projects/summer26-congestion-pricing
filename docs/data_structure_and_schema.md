@@ -43,7 +43,9 @@ data/raw/
 | Path | Purpose |
 |------|---------|
 | `00_standardized_trips/` | Month-by-month, service-specific trip-level parquet files after conservative cleaning and schema alignment |
-| `samples/trip_level_sample.csv` | 100-row CSV for manual teammate inspection |
+| `samples/trip_level_sample.csv` | 100-row balanced CSV for manual teammate inspection |
+| `samples/trip_level_sample_20k_representative.csv` | 20,000-row representative CSV for preliminary EDA |
+| `samples/trip_level_sample_5k_diagnostic.csv` | Diagnostic CSV for cleaning-rule and anomaly review (target 5,000 rows) |
 | `qc/` | Row-count and issue reports from standardization and sampling |
 
 #### Standardized trip output structure
@@ -61,11 +63,44 @@ data/processed/00_standardized_trips/
 Each file contains trips from **one service**, **one year**, and **one month** that pass
 fundamental validity checks (see [Cleaning rules](#conservative-cleaning-rules)).
 
-#### Sample file
+#### Sample files
 
-`data/processed/samples/trip_level_sample.csv` is a **balanced 100-row** extract
-(`random_state=42`) with teammate-friendly columns. It is for manual QA only—not for
-modeling or reporting aggregate statistics.
+| File | Purpose |
+|------|---------|
+| `samples/trip_level_sample.csv` | **Balanced 100-row** extract (`random_state=42`) for manual QA only—not for modeling or aggregate statistics |
+| `samples/trip_level_sample_20k_representative.csv` | **Representative 20,000-row** extract (`random_state=42`) for preliminary teammate EDA |
+| `samples/trip_level_sample_5k_diagnostic.csv` | **Diagnostic** extract (`random_state=42`) for cleaning-rule and anomaly review; target 5,000 rows |
+
+The 20K sample uses **proportional stratified random sampling** by
+`service_type × year × month` (largest-remainder allocation to exactly 20,000 rows).
+It is **not** balanced across strata and does **not** force a 50/50 split of 2025
+charged vs. uncharged CBD trips; it preserves the natural `charged_cbd_flag` distribution
+as much as possible. For aggregate estimates from the sample, weight rows by
+`sample_weight = stratum_population_n / stratum_sample_n`.
+
+Sampling metadata columns on the 20K file:
+
+| Column | Definition |
+|--------|------------|
+| `sample_row_id` | Sequential row identifier (1–20,000) |
+| `sampling_stratum` | Stratum key, e.g. `yellow_2025_03` |
+| `stratum_population_n` | Row count in the standardized monthly file |
+| `stratum_sample_n` | Rows drawn from that stratum |
+| `sample_weight` | `stratum_population_n / stratum_sample_n` |
+
+Yellow `payment_type` is preserved with label and review flags. March DST spring-forward
+rows are flagged (`dst_transition_day_flag`, `dst_transition_window_flag`), not removed.
+See [`cleaning_notes.md`](cleaning_notes.md) for HVFHV cost caveats and QC flag scope.
+
+The **5K diagnostic sample** is built from **raw** parquet files (not standardized
+outputs). It oversamples anomaly categories (`diagnostic_category`) such as non-positive
+passenger cost, negative CBD fees, and payment-review trips. It is **not representative**
+and must not be used for aggregate estimates. The local build reaches 5,000 rows
+when fill-in from other categories compensates for categories with no raw matches
+(e.g. `missing_zone`, `negative_distance` in the current Feb–Jun 2024/2025 window);
+see `qc/diagnostic_notes.csv`. QC outputs:
+`qc/diagnostic_anomaly_counts.csv`, `qc/diagnostic_sample_composition.csv`,
+`qc/diagnostic_notes.csv`.
 
 #### QC reports
 
@@ -73,7 +108,12 @@ modeling or reporting aggregate statistics.
 |------|----------|
 | `qc/standardization_row_counts.csv` | Per-file row counts before and after cleaning |
 | `qc/standardization_issues.csv` | Skipped files and files with notable row loss |
-| `qc/trip_level_sample_notes.csv` | Notes when sample quota groups could not be fully filled |
+| `qc/trip_level_sample_notes.csv` | Notes when 100-row sample quota groups could not be fully filled |
+| `qc/trip_level_sample_20k_representative_composition.csv` | Per-stratum population, sample size, and weight for the 20K sample |
+| `qc/trip_level_sample_20k_representative_notes.csv` | Sampling assumptions, unavailable QC flags, and caveats |
+| `qc/diagnostic_anomaly_counts.csv` | Per-flag raw counts and shares by service/year/month from raw files |
+| `qc/diagnostic_sample_composition.csv` | Diagnostic sample breakdown by category, service, and flags |
+| `qc/diagnostic_notes.csv` | Category targets, shortages, fill-in decisions, and non-representative warning |
 
 ## Scripts
 
@@ -81,12 +121,16 @@ modeling or reporting aggregate statistics.
 |--------|------|
 | `scripts/standardize_trips.py` | Discover raw parquets, clean and standardize one file at a time, write monthly outputs and QC reports |
 | `scripts/make_trip_level_sample.py` | Build the 100-row balanced CSV sample from standardized parquets |
+| `scripts/make_representative_sample_20k.py` | Build the 20,000-row representative CSV sample (memory-safe, one monthly file at a time) |
+| `scripts/create_diagnostic_sample.py` | Build the diagnostic CSV sample from raw parquets with oversampled anomaly categories |
 
 Run in order:
 
 ```bash
 python scripts/standardize_trips.py
 python scripts/make_trip_level_sample.py
+python scripts/make_representative_sample_20k.py
+python scripts/create_diagnostic_sample.py
 ```
 
 ---

@@ -1,0 +1,7 @@
+topic,note
+qc_flags_removed_at_standardization,"Standardized trip files already drop rows with invalid timestamps, month mismatches, missing zones, negative distance, non-positive duration, negative CBD fees, and non-positive passenger_cost_pretip. Those anomaly types cannot appear in this sample; corresponding flags are included for schema consistency but will be False unless derivable from retained rows."
+hvfhv_passenger_cost_pretip,"HVFHV passenger_cost_pretip is reconstructed from TLC fee components and may not capture app-specific discounts, refunds, credits, or user-specific pricing adjustments."
+possible_refund_or_adjustment_flag,This flag marks rows for manual review only; it does not assert that a refund or discount definitely occurred.
+dst_transition_flags,March DST spring-forward rows are flagged (not removed). 2024 transition date: 2024-03-10; 2025 transition date: 2025-03-09. dst_transition_window_flag is True when pickup or dropoff hour is 1–3 AM on a transition day.
+aggregate_analysis,"Use sample_weight for aggregate estimates from this sample. Final zone-level and OD-level analysis should eventually use full-data aggregates, not only this 20K extract."
+sampling_method,"Proportional stratified random sampling by service_type × year × month; random_state=42; target rows=20,000. Not balanced across strata; preserves natural charged_cbd_flag mix."

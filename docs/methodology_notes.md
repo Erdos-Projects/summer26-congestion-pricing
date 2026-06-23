@@ -118,3 +118,15 @@ Both fare metrics are reported as separate columns (not collapsed into one "avg 
 - [ ] Identify the 2 zones with `pct_volume_change IS NULL` (zero 2024 baseline) by name
 - [ ] Consider CRZ-flag-isolated version of Layer B (trips actually charged the fee, 2025-only, compared against geographically-matched 2024 trips)
 - [ ] Join `taxi_zone_lookup.csv` (LocationID → Borough/Zone/service_zone) onto both `ds_z` and `behavioral_shift` outputs for final tables
+
+## 9. Teammate sample artifacts (cleaning / EDA)
+
+Trip-level CSV extracts for manual review and preliminary work (see [`data_structure_and_schema.md`](data_structure_and_schema.md) and [`cleaning_notes.md`](cleaning_notes.md)):
+
+| File | Role |
+|------|------|
+| `data/processed/samples/trip_level_sample.csv` | 100-row balanced manual QA |
+| `data/processed/samples/trip_level_sample_20k_representative.csv` | 20,000-row representative EDA sample (use `sample_weight`) |
+| `data/processed/samples/trip_level_sample_5k_diagnostic.csv` | Diagnostic anomaly sample from **raw** files (non-representative; not for aggregates) |
+
+Diagnostic QC: `data/processed/qc/diagnostic_anomaly_counts.csv`, `diagnostic_sample_composition.csv`, `diagnostic_notes.csv`.

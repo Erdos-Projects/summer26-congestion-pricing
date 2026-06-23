@@ -1,0 +1,31 @@
+diagnostic_category,service_type,year,month,charged_cbd_flag,burden_eligible_flag,yellow_payment_type_label,row_count
+dst_transition_window,hvfhv,2024,3,False,True,,283
+hvfhv_possible_refund_or_adjustment,hvfhv,2024,2,False,False,,373
+hvfhv_possible_refund_or_adjustment,hvfhv,2024,2,False,True,,56
+hvfhv_possible_refund_or_adjustment,hvfhv,2024,4,False,True,,137
+invalid_or_nonpositive_duration,hvfhv,2024,4,False,True,,1
+invalid_or_nonpositive_duration,yellow,2024,4,False,False,Cash,13
+invalid_or_nonpositive_duration,yellow,2024,4,False,False,Dispute,8
+invalid_or_nonpositive_duration,yellow,2024,4,False,False,No charge,2
+invalid_or_nonpositive_duration,yellow,2024,4,False,True,Cash,236
+invalid_or_nonpositive_duration,yellow,2024,4,False,True,Credit card,83
+invalid_or_nonpositive_duration,yellow,2024,4,False,True,No charge,33
+invalid_or_nonpositive_duration,yellow,2024,4,False,True,Unknown,1
+negative_cbd_fee,yellow,2025,4,False,False,Cash,167
+negative_cbd_fee,yellow,2025,4,False,False,Credit card,1
+negative_cbd_fee,yellow,2025,4,False,False,Dispute,426
+negative_cbd_fee,yellow,2025,4,False,False,No charge,66
+nonpositive_passenger_cost,hvfhv,2024,4,False,False,,627
+nonpositive_passenger_cost,yellow,2024,4,False,False,Cash,6
+nonpositive_passenger_cost,yellow,2024,4,False,False,Dispute,23
+nonpositive_passenger_cost,yellow,2024,4,False,False,No charge,5
+normal_reference,hvfhv,2024,4,False,True,,1038
+very_long_distance,hvfhv,2024,4,False,True,,283
+very_long_duration,hvfhv,2024,4,False,True,,214
+very_long_duration,yellow,2024,4,False,True,Cash,23
+very_long_duration,yellow,2024,4,False,True,Credit card,46
+yellow_payment_review,yellow,2024,4,False,False,Dispute,188
+yellow_payment_review,yellow,2024,4,False,False,No charge,46
+yellow_payment_review,yellow,2024,4,False,True,Dispute,223
+yellow_payment_review,yellow,2024,4,False,True,No charge,109
+zero_distance,hvfhv,2024,4,False,True,,283

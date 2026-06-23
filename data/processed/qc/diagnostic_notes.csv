@@ -1,0 +1,24 @@
+topic,category,target_rows,actual_rows,note
+non_representative_warning,,,,This diagnostic sample intentionally oversamples problematic records. Do not use for aggregate estimates.
+relationship_to_other_samples,,,,trip_level_sample_20k_representative.csv is for preliminary EDA; trip_level_sample_5k_diagnostic.csv is for cleaning diagnostics.
+scaled_targets,,5300,5000,"Raw category targets summed to 5,300; scaled to 5,000 via largest-remainder."
+category_allocation,nonpositive_passenger_cost,661,661,Raw approximate target: 700
+category_allocation,negative_cbd_fee,660,660,Raw approximate target: 700
+category_allocation,yellow_payment_review,566,566,Raw approximate target: 600
+category_allocation,hvfhv_possible_refund_or_adjustment,566,566,Raw approximate target: 600
+category_allocation,invalid_or_nonpositive_duration,377,377,Raw approximate target: 400
+category_allocation,missing_zone,283,0,Raw approximate target: 300
+category_allocation,negative_distance,283,0,Raw approximate target: 300
+category_allocation,zero_distance,283,283,Raw approximate target: 300
+category_allocation,very_long_duration,283,283,Raw approximate target: 300
+category_allocation,very_long_distance,283,283,Raw approximate target: 300
+category_allocation,dst_transition_window,283,283,Raw approximate target: 300
+category_allocation,normal_reference,472,1038,Raw approximate target: 500
+fill_in,,,,"Primary sampling yielded 4,434 rows; filling up to 566 from other anomaly categories."
+shortage,missing_zone,283,0,"Category missing_zone: target 283, sampled 0 unique rows."
+shortage,negative_distance,283,0,"Category negative_distance: target 283, sampled 0 unique rows."
+cleaning_implication,,,,Review non-positive passenger cost and negative CBD-fee rows before final exclusion rules.
+cleaning_implication,,,,Yellow payment_type may matter for burden analysis.
+cleaning_implication,,,,"HVFHV passenger_cost_pretip is reconstructed and may not capture discounts, refunds, credits, or app-specific pricing."
+cleaning_implication,,,,"DST transition-window rows are flagged, not removed."
+assumption,,,,random_state=42; very_long_duration threshold = 4 hours.
