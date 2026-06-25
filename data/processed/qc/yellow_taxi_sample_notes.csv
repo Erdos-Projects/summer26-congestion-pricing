@@ -1,0 +1,5 @@
+topic,note
+scope,Yellow Taxi only; February-June 2024 and February-June 2025; January 2025 excluded as transition month.
+cleaning,Representative and 100-row samples are drawn after applying the team's conservative first-step cleaning rules.
+representative_sample,20K sample uses proportional stratified random sampling by year x month from cleaned Yellow rows; use sample_weight for aggregate estimates.
+diagnostic_sample,5K diagnostic sample oversamples raw anomaly categories and is not representative.
