@@ -1,0 +1,11 @@
+diagnostic_category,available_n,sample_n
+dropoff_not_after_pickup,1000,500
+nonpositive_passenger_cost,1300,650
+negative_cbd_fee,500,500
+yellow_payment_review,1800,900
+zero_distance,1100,550
+component_total_mismatch,1800,900
+very_long_duration,191,191
+very_long_distance,500,250
+normal_reference,1000,500
+representative_fill,20000,59

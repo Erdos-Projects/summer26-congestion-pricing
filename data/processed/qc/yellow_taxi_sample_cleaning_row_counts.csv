@@ -1,0 +1,11 @@
+source_file,year,month,rows_before,invalid_pickup_datetime,invalid_dropoff_datetime,dropoff_not_after_pickup,pickup_year_month_mismatch,missing_zone_id,negative_distance,non_positive_duration,missing_cbd_congestion_fee,negative_cbd_congestion_fee,non_positive_passenger_cost_pretip,rows_after,rows_dropped
+yellow_tripdata_2024-02.parquet,2024,2,3007526,0,0,803,15,0,0,0,0,0,36431,2970277,37249
+yellow_tripdata_2024-03.parquet,2024,3,3582628,0,0,1128,23,0,0,0,0,0,44695,3536782,45846
+yellow_tripdata_2024-04.parquet,2024,4,3514289,0,0,1089,9,0,0,0,0,0,44111,3469080,45209
+yellow_tripdata_2024-05.parquet,2024,5,3723833,0,0,1147,33,0,0,0,0,0,49334,3673319,50514
+yellow_tripdata_2024-06.parquet,2024,6,3539193,0,0,1140,51,0,0,0,0,0,49064,3488938,50255
+yellow_tripdata_2025-02.parquet,2025,2,3577543,0,0,5164,31,0,0,0,0,37238,18357,3516753,60790
+yellow_tripdata_2025-03.parquet,2025,3,4145257,0,0,22280,33,0,0,0,0,47165,22082,4053697,91560
+yellow_tripdata_2025-04.parquet,2025,4,3970553,0,0,34769,7,0,0,0,0,50646,22518,3862613,107940
+yellow_tripdata_2025-05.parquet,2025,5,4591845,0,0,64272,24,0,0,0,0,52624,60405,4414520,177325
+yellow_tripdata_2025-06.parquet,2025,6,4322960,0,0,68583,20,0,0,0,0,49929,24930,4179498,143462
