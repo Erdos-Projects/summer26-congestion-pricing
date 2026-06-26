@@ -39,6 +39,7 @@ Desktop.ini
 
 # Logs and local run artifacts
 *.log
+.matplotlib-cache/
 
 # --- Data: large TLC parquet files are never committed ---
 *.parquet
