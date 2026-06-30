@@ -1,20 +1,13 @@
 # NYC HVFHV CBD Congestion Fee Analysis — Code Package
 
-Run in order:
+**Authoritative run documentation:** [`data/processed/disruption_score/README.md`](../../data/processed/disruption_score/README.md) (inputs, outputs, definitions, interpretation warnings).
 
-1. `01_pipeline.py` — DuckDB pipeline. Loads parquet files, runs data
-   quality diagnostics, computes DS_z (Layer A) and behavioral shift
-   metrics (Layer B), runs the correlation check, exports parquet/CSV.
-   Requires `pip install duckdb`. Edit FILES_2024 / FILES_2025 paths
-   at the top to point at your actual data.
+Run from the repository root, in order:
 
-2. `02_zone_lookup_merge.py` — Joins the official TLC zone lookup table
-   onto the Step 1 CSV export so zones are human-readable.
-   Requires `pip install pandas`.
+1. `python scripts/EDA_adithya/01_pipeline.py` — DuckDB pipeline. Reads standardized HVFHV parquet under `data/processed/00_standardized_trips/hvfhv/`, joins `data/taxi_zone_lookup.csv`, computes DS_z and sensitivity outputs, and writes CSVs to `data/processed/disruption_score/`.
 
-3. `03_build_chart.py` — Builds the standalone HTML scatter chart
-   (DS_z vs. trip volume change) from the Step 2 output. No extra
-   dependencies; pulls Chart.js from a CDN at render time.
+2. `python scripts/EDA_adithya/02_zone_lookup_merge.py` — Builds `hvfhv_scatter_data.json` from the pipeline join export (optional; for charts).
 
-See methodology_notes.md (separate file, already delivered) for the
-full reasoning behind each data quality decision in this pipeline.
+3. `03_build_chart.py` — Standalone HTML scatter chart (DS_z vs. trip volume change) from Step 2 output. Pulls Chart.js from a CDN at render time.
+
+See [`docs/methodology_notes.md`](../../docs/methodology_notes.md) for the reasoning behind data-quality and formula decisions.

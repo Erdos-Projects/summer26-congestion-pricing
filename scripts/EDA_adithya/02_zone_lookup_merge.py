@@ -1,34 +1,62 @@
 """
-Zone lookup + merge for visualization
-======================================================================
-Joins the official NYC TLC taxi zone lookup table onto the
-ds_z_vs_volume_change.csv export from 01_pipeline.py, producing the
-data structure used to build the scatter plot (see 03_build_chart.py).
+Zone lookup merge for the HVFHV DS_z scatter data.
 
-Requires: pandas (pip install pandas)
-Input: ds_z_vs_volume_change.csv (from 01_pipeline.py Step 7)
-Output: scatter_data.json
+Uses the local TLC zone lookup file and the current disruption-score output
+folder. Run from the repository root:
+    python scripts/EDA_adithya/02_zone_lookup_merge.py
 """
+
+from __future__ import annotations
+
+from pathlib import Path
 
 import pandas as pd
 
-# Official TLC taxi zone lookup table
-# Source: https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv
-ZONE_LOOKUP_URL = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
 
-df = pd.read_csv("ds_z_vs_volume_change.csv")
-zones = pd.read_csv(ZONE_LOOKUP_URL)  # columns: LocationID, Borough, Zone, service_zone
+REPO_ROOT = Path(__file__).resolve().parents[2]
+OUTPUT_DIR = REPO_ROOT / "data" / "processed" / "disruption_score"
+INPUT_PATH = OUTPUT_DIR / "hvfhv_ds_z_vs_volume_change.csv"
+ZONE_LOOKUP_PATH = REPO_ROOT / "data" / "taxi_zone_lookup.csv"
+OUTPUT_PATH = OUTPUT_DIR / "hvfhv_scatter_data.json"
 
-merged = df.merge(zones, left_on="zone", right_on="LocationID", how="left")
-merged["Zone"] = merged["Zone"].fillna("Zone " + merged["zone"].astype(str))
-merged["Borough"] = merged["Borough"].fillna("Other")
 
-# Sanity check before export
-print(merged[["DS_z", "pct_volume_change"]].describe())
-print(merged["Borough"].value_counts())
+def main() -> None:
+    if not INPUT_PATH.exists():
+        raise FileNotFoundError(
+            f"Missing {INPUT_PATH}. Run scripts/EDA_adithya/01_pipeline.py first."
+        )
+    if not ZONE_LOOKUP_PATH.exists():
+        raise FileNotFoundError(f"Missing local zone lookup file: {ZONE_LOOKUP_PATH}")
 
-merged_out = merged[
-    ["zone", "direction", "DS_z", "N_z", "pct_volume_change", "n_2024", "n_2025", "Zone", "Borough"]
-]
-merged_out.to_json("scatter_data.json", orient="records")
-print(f"Exported {len(merged_out)} rows to scatter_data.json")
+    df = pd.read_csv(INPUT_PATH)
+    zones = pd.read_csv(ZONE_LOOKUP_PATH)
+
+    if {"Borough", "zone_name"}.issubset(df.columns):
+        merged = df.copy()
+    else:
+        merged = df.merge(zones, left_on="zone", right_on="LocationID", how="left")
+        merged["zone_name"] = merged["Zone"].fillna("Zone " + merged["zone"].astype(str))
+        merged["Borough"] = merged["Borough"].fillna("Other")
+
+    print(merged[["DS_z", "pct_volume_change"]].describe())
+    print(merged["Borough"].value_counts(dropna=False))
+
+    keep_cols = [
+        "zone",
+        "direction",
+        "DS_z",
+        "DS_z_median",
+        "N_z",
+        "pct_volume_change",
+        "n_2024",
+        "n_2025",
+        "zone_name",
+        "Borough",
+    ]
+    present_cols = [col for col in keep_cols if col in merged.columns]
+    merged[present_cols].to_json(OUTPUT_PATH, orient="records")
+    print(f"Exported {len(merged):,} rows to {OUTPUT_PATH.relative_to(REPO_ROOT)}")
+
+
+if __name__ == "__main__":
+    main()

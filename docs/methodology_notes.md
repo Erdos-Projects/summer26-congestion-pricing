@@ -76,7 +76,7 @@ Three other denominators were tested/considered during development and explicitl
 ```sql
 ROUND(passenger_cost_pretip - cbd_congestion_fee, 2) >= 1.00
 ```
-Rounding to the cent before filtering collapses floating-point noise to a true `0.00`, which the `>= 1.00` floor then correctly excludes. The same floor also excludes the 89 genuinely-sub-$1 trips — a separate, deliberate judgment call (not a bug fix) to avoid a tiny number of extreme-but-real ratios (e.g. $1.50 fee on a $0.50 ride) from disproportionately swinging a zone average. **This $1 threshold is a judgment call, not a principled cutoff** — a sensitivity check (rerunning at $0.50 and $5.00 floors, confirming zone *rankings* stay stable) is recommended before treating DS_z rankings as robust, but was not yet performed as of this writing.
+Rounding to the cent before filtering collapses floating-point noise to a true `0.00`, which the `>= 1.00` floor then correctly excludes. The same floor also excludes the 89 genuinely-sub-$1 trips — a separate, deliberate judgment call (not a bug fix) to avoid a tiny number of extreme-but-real ratios (e.g. $1.50 fee on a $0.50 ride) from disproportionately swinging a zone average. **This $1 threshold is a judgment call, not a principled cutoff** — a sensitivity check is required before treating DS_z rankings as robust. Full-data sensitivity outputs now rerun DS_z at $0.50, $1.00, $2.00, and $5.00 floors and compare mean/median rank stability via `scripts/EDA_adithya/01_pipeline.py`.
 
 **Post-fix validation:** Re-ran top-20 zones by DS_z; mean and median are now in the same range throughout (0.054–0.064), confirming the fix resolved the issue without introducing new distortions.
 
@@ -106,6 +106,8 @@ Both fare metrics are reported as separate columns (not collapsed into one "avg 
 
 **Caveat on `avg_base_fare` interpretation:** this query does not filter on `charged_cbd_flag`, so a zone's `avg_base_fare` change reflects *all* trips in that zone (CRZ-charged and not), not isolated CRZ-trip pricing behavior. A narrower "did base pricing shift specifically for CRZ-charged trips" analysis would require a different 2024 comparison group, since `charged_cbd_flag` does not exist pre-2025 (would need geographic CRZ-membership matching instead). Not yet built — flagged as a possible follow-up.
 
+**DS_z vs `pct_volume_change`:** The joined export (`hvfhv_ds_z_vs_volume_change.csv`) is for descriptive and inferential exploration only — not causal proof. DS_z summarizes post-policy fee burden among charged trips; `pct_volume_change` is a year-over-year volume summary with no fee filter. Any apparent association between the two does not establish that the CBD fee caused the volume change.
+
 ## 7. Early-stage corrections (for project history / transparency)
 
 - **Date range confusion**: initial framing referenced "Feb–Jun 2024" as if it straddled the congestion pricing policy. study design is that of a year-over-year Feb–Jun 2024 vs. Feb–Jun 2025 comparison, with Jan 2025 excluded as a transition month.
@@ -113,11 +115,11 @@ Both fare metrics are reported as separate columns (not collapsed into one "avg 
 
 ## 8. Open items / possible next steps
 
-- [ ] Sensitivity check on the $1 base-cost floor (try $0.50 and $5.00, confirm zone DS_z *rankings* are stable)
+- [x] Sensitivity check on the $1 base-cost floor: generated full-data outputs for $0.50, $1.00, $2.00, and $5.00 floors under `data/processed/disruption_score/`.
 - [ ] Formal correlation between DS_z and `pct_volume_change` across all zones (not just eyeballing top-20 overlap)
 - [ ] Identify the 2 zones with `pct_volume_change IS NULL` (zero 2024 baseline) by name
 - [ ] Consider CRZ-flag-isolated version of Layer B (trips actually charged the fee, 2025-only, compared against geographically-matched 2024 trips)
-- [ ] Join `taxi_zone_lookup.csv` (LocationID → Borough/Zone/service_zone) onto both `ds_z` and `behavioral_shift` outputs for final tables
+- [x] Join `taxi_zone_lookup.csv` (LocationID → Borough/Zone/service_zone) onto DS_z exports: `scripts/EDA_adithya/01_pipeline.py` joins via DuckDB; primary and sensitivity CSVs under `data/processed/disruption_score/` include `Borough`, `zone_name`, and `service_zone`. `hvfhv_behavioral_shift.csv` remains zone-ID only; `02_zone_lookup_merge.py` builds `hvfhv_scatter_data.json` for visualization.
 
 ## 9. Teammate sample artifacts (cleaning / EDA)
 
