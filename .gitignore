@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -42,15 +42,18 @@ Desktop.ini
 *.log
 .matplotlib-cache/
 
+# Local meeting/task notes
+Todo/
+
 # --- Data: large TLC parquet files are never committed ---
 *.parquet
 
-# Raw TLC downloads — keep folder structure only
+# Raw TLC downloads 鈥?keep folder structure only
 data/raw/**
 !data/raw/**/
 !data/raw/**/.gitkeep
 
-# Standardized trip parquets — generated locally, too large for git
+# Standardized trip parquets 鈥?generated locally, too large for git
 data/processed/00_standardized_trips/**
 !data/processed/00_standardized_trips/**/
 !data/processed/00_standardized_trips/**/.gitkeep
@@ -58,17 +61,17 @@ data/processed/00_standardized_trips/**
 # --- Tracked processed artifacts (small CSVs; do not ignore) ---
 #
 # data/processed/samples/
-#   trip_level_sample.csv                          — 100-row balanced manual QA sample
-#   trip_level_sample_20k_representative.csv       — 20,000-row representative EDA sample
-#   trip_level_sample_5k_diagnostic.csv             — diagnostic anomaly sample (target 5,000 rows)
+#   trip_level_sample.csv                          鈥?100-row balanced manual QA sample
+#   trip_level_sample_20k_representative.csv       鈥?20,000-row representative EDA sample
+#   trip_level_sample_5k_diagnostic.csv             鈥?diagnostic anomaly sample (target 5,000 rows)
 #
 # data/processed/qc/
-#   standardization_*.csv, validation_*.csv         — cleaning pipeline QC
+#   standardization_*.csv, validation_*.csv         鈥?cleaning pipeline QC
 #   trip_level_sample_notes.csv
-#   trip_level_sample_20k_representative_*.csv      — 20K sample composition and notes
-#   diagnostic_anomaly_counts.csv                 — per-flag raw monthly counts
-#   diagnostic_sample_composition.csv             — diagnostic sample breakdown
-#   diagnostic_notes.csv                          — category targets, shortages, assumptions
+#   trip_level_sample_20k_representative_*.csv      鈥?20K sample composition and notes
+#   diagnostic_anomaly_counts.csv                 鈥?per-flag raw monthly counts
+#   diagnostic_sample_composition.csv             鈥?diagnostic sample breakdown
+#   diagnostic_notes.csv                          鈥?category targets, shortages, assumptions
 #
 # Sampling scripts (regenerate locally): scripts/make_trip_level_sample.py,
 #   scripts/make_representative_sample_20k.py, scripts/create_diagnostic_sample.py
