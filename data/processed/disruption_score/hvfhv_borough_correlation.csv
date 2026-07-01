@@ -1,0 +1,27 @@
+group_type,group_name,borough,direction,n_rows,pearson_corr,spearman_corr,sufficient_n
+all_zones,all zones,,,524,-0.5247205077337138,-0.6328791824700629,True
+manhattan_split,Manhattan only,Manhattan,,135,-0.5396731354088368,-0.5264120573602576,True
+manhattan_split,non-Manhattan only,,,389,-0.2271638074709983,-0.3504227069143721,True
+borough,Bronx,Bronx,,85,-0.09229210012292355,-0.2761383623216728,True
+borough,Brooklyn,Brooklyn,,122,-0.16540512967528173,-0.3668317796848203,True
+borough,EWR,EWR,,2,,,False
+borough,Manhattan,Manhattan,,135,-0.5396731354088368,-0.5264120573602576,True
+borough,Queens,Queens,,138,0.06385858375031853,-0.11363070762051102,True
+borough,Staten Island,Staten Island,,40,-0.23165677902741244,-0.24352720450281426,True
+borough,Missing Borough,Missing Borough,,2,,,False
+direction,dropoff only,,dropoff,262,-0.483551325986077,-0.632367399732636,True
+direction,pickup only,,pickup,262,-0.5832626659811474,-0.6328217918730532,True
+borough_direction,Bronx dropoff,Bronx,dropoff,42,0.09296371484705433,-0.10574507738432867,True
+borough_direction,Bronx pickup,Bronx,pickup,43,-0.20115921623852764,-0.37707641196013286,True
+borough_direction,Brooklyn dropoff,Brooklyn,dropoff,61,-0.1055961788499993,-0.3581702802749867,True
+borough_direction,Brooklyn pickup,Brooklyn,pickup,61,-0.2301351175268223,-0.374246430460074,True
+borough_direction,EWR dropoff,EWR,dropoff,1,,,False
+borough_direction,EWR pickup,EWR,pickup,1,,,False
+borough_direction,Manhattan dropoff,Manhattan,dropoff,68,-0.5502146452254822,-0.5244111921212352,True
+borough_direction,Manhattan pickup,Manhattan,pickup,67,-0.5598717057941075,-0.5349588953627585,True
+borough_direction,Queens dropoff,Queens,dropoff,69,0.11236322802972325,-0.13343076360979175,True
+borough_direction,Queens pickup,Queens,pickup,69,0.0139534535314212,-0.10058458165875046,True
+borough_direction,Staten Island dropoff,Staten Island,dropoff,20,-0.352079805971225,-0.31879699248120297,True
+borough_direction,Staten Island pickup,Staten Island,pickup,20,-0.2617203185350027,-0.3443609022556391,True
+borough_direction,Missing Borough dropoff,Missing Borough,dropoff,1,,,False
+borough_direction,Missing Borough pickup,Missing Borough,pickup,1,,,False

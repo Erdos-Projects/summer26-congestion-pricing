@@ -1,0 +1,5 @@
+group_type,group_name,borough,direction,n_rows,pearson_corr,spearman_corr,sufficient_n
+manhattan_split,Manhattan only,Manhattan,,135,-0.5396731354088368,-0.5264120573602576,True
+borough,Manhattan,Manhattan,,135,-0.5396731354088368,-0.5264120573602576,True
+borough_direction,Manhattan dropoff,Manhattan,dropoff,68,-0.5502146452254822,-0.5244111921212352,True
+borough_direction,Manhattan pickup,Manhattan,pickup,67,-0.5598717057941075,-0.5349588953627585,True
