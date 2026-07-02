@@ -1,21 +1,31 @@
 """
 Build standalone HTML scatter chart: DS_z vs. trip volume change
 ======================================================================
-Reads scatter_data.json (from 02_zone_lookup_merge.py) and generates a
-self-contained HTML file with an embedded Chart.js bubble chart —
+Reads hvfhv_scatter_data.json (from 02_zone_lookup_merge.py) and generates a
+standalone HTML file with an embedded Chart.js bubble chart —
 DS_z (fee burden) on the x-axis, pct_volume_change on the y-axis,
 bubble size proportional to trip volume (N_z), pickup/dropoff as
 separate series, plus a least-squares trend line.
 
 Requires: none beyond the standard library (json)
-Input: scatter_data.json
-Output: ds_z_vs_volume_change.html
+Input: data/processed/disruption_score/hvfhv_scatter_data.json
+Output: artifacts/figures/ds_z_vs_volume_change.html
 """
 
 import json
+from pathlib import Path
 
-with open("scatter_data.json") as f:
+REPO_ROOT = Path(__file__).resolve().parents[2]
+INPUT_PATH = REPO_ROOT / "data" / "processed" / "disruption_score" / "hvfhv_scatter_data.json"
+OUTPUT_PATH = REPO_ROOT / "artifacts" / "figures" / "ds_z_vs_volume_change.html"
+
+with INPUT_PATH.open() as f:
     data = json.load(f)
+
+data = [
+    d for d in data
+    if d.get("DS_z") is not None and d.get("pct_volume_change") is not None
+]
 
 pickup = [d for d in data if d["direction"] == "pickup"]
 dropoff = [d for d in data if d["direction"] == "dropoff"]
@@ -28,7 +38,7 @@ def to_points(rows):
             "y": round(r["pct_volume_change"] * 100, 2),
             "r": r["N_z"],
             "zone": r["zone"],
-            "name": r["Zone"],
+            "name": r.get("zone_name") or r.get("Zone") or f"Zone {r['zone']}",
             "n2024": r["n_2024"],
             "n2025": r["n_2025"],
         }
@@ -154,8 +164,10 @@ doc = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-with open("ds_z_vs_volume_change.html", "w") as f:
+OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+with OUTPUT_PATH.open("w") as f:
     f.write(doc)
 
-print(f"Wrote ds_z_vs_volume_change.html ({len(doc):,} chars)")
+print(f"Read {len(data):,} rows from {INPUT_PATH.relative_to(REPO_ROOT)}")
+print(f"Wrote {OUTPUT_PATH.relative_to(REPO_ROOT)} ({len(doc):,} chars)")
 print(f"Trend line: slope={slope:.3f}, intercept={intercept:.3f}")

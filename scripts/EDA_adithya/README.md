@@ -8,6 +8,8 @@ Run from the repository root, in order:
 
 2. `python scripts/EDA_adithya/02_zone_lookup_merge.py` — Builds `hvfhv_scatter_data.json` from the pipeline join export (optional; for charts).
 
-3. `03_build_chart.py` — Standalone HTML scatter chart (DS_z vs. trip volume change) from Step 2 output. Pulls Chart.js from a CDN at render time.
+3. `python scripts/EDA_adithya/03_manhattan_robustness.py` — Runs within-Manhattan, borough-level, direction-level, and borough-direction robustness checks from the DS_z versus volume-change output.
+
+4. `python scripts/EDA_adithya/04_build_chart.py` — Standalone HTML scatter chart (DS_z vs. trip volume change) from Step 2 output. Pulls Chart.js from a CDN at render time.
 
 See [`docs/methodology_notes.md`](../../docs/methodology_notes.md) for the reasoning behind data-quality and formula decisions.
