@@ -70,7 +70,7 @@ not merely unrecorded. The pattern is systematic and predictable, so it's handle
 |---|---|---|---|
 | Credit card / Cash | 1, 2 | Cleanest; full components | **Primary population** for burden/cost/distance |
 | Flex Fare | 0 | Upfront-quoted; components missing/bundled; **distance unreliable** | Separate regime; `total_amount` OK for broad volume/cost only |
-| No-charge / Dispute / Unknown / Voided | 3, 4, 5, 6 | Payment outcome ambiguous | Exclude from burden; sensitivity only. (No-charge/Dispute are real trips → may enter *volume*.) |
+| No-charge / Dispute / Unknown / Voided | 3, 4, 5, 6 | **Real trips**, payment anomalous (comped/disputed; **0 voided** in the data) | Excluded from **all financial** analysis (burden, cost — payment unreliable); **counted in trip volume** (real metered trips, ~1.5%, rate stable across years) |
 
 **Why Flex is separated whenever cost is involved** (burden, DS_z, cost trends) — an
 empirical, not a mechanistic, argument: (1) Flex's cost *components* are unreliable — **≈13% of
@@ -172,7 +172,7 @@ Different questions use different row subsets of the cleaned data:
 | Question / outcome | Rows used |
 |---|---|
 | **Relative burden / DS_z** | **2025, charged, card/cash** trips only; base cost ≥ $1.00 floor; **exclude non-movement** (zero-distance with PU==DO or duration<60s); report per zone × direction, medians |
-| **Trip volume (clean policy signal)** | **card/cash** only — Flex is excluded because its adoption boom (see §6) confounds raw totals; report by month |
+| **Trip volume (clean policy signal)** | **exclude Flex** (its adoption boom confounds raw totals, §6); count card/cash **+ irregular** (no-charge/dispute) — all real metered trips; irregular rate is stable across years (§7) so no YoY bias; report by month |
 | **Total demand (context only)** | all yellow incl. Flex — but read as demand, **not** a policy effect |
 | **Distance / speed / per-mile** | card/cash, exclude zero-distance rows |
 | **Cost trend** | card/cash by month (Flex reported separately, never merged) |
@@ -194,8 +194,9 @@ fee. Two forces push the Flex Fare share up between the two windows — **neithe
 Flex's share roughly doubled–tripled (weighted ~4.8% → 13.3% in the sample; ~6–12% → 19–29%
 in full data). Because Flex is a different, structurally-shifted, growing regime, pre/post
 comparisons of *total* yellow volume or *pooled* median cost largely reflect this regime shift
-(above all the Aug-2024 program change), not policy. **The volume outcome is therefore
-restricted to card/cash (street-hail) trips**, which are insulated from the Flex channel.
+(above all the Aug-2024 program change), not policy. **The volume outcome therefore excludes
+Flex**, counting the metered population (card/cash plus the ~1.5% no-charge/dispute real
+trips), which is insulated from the Flex channel.
 (Whether Flex is pulling riders from Uber/Lyft is a cross-service substitution question that
 needs HVFHV data.)
 
@@ -218,13 +219,14 @@ needs HVFHV data.)
 
 1. Study window Feb–Jun; exclude Jan 2025; report by month.
 2. Cost = `total_amount − tip_amount`; never rebuilt from components.
-3. Card/cash is the primary population; **Flex is a separate regime**; irregular
-   (3/4/5/6) excluded from burden.
+3. Card/cash is the primary **financial** population; **Flex is a separate regime**; irregular
+   (3/4/5/6) are real trips → excluded from all **financial** analysis, but **counted in volume**.
 4. Flex distance unusable; distance analysis is card/cash only.
 5. **Non-movement dropped** — zero-distance with PU==DO or duration<60s (~0.6% of card/cash);
    genuine zero-distance PU≠DO trips (duration≥60s) kept-flagged, not used for distance analysis.
 6. Burden tail retained; medians + winsorized means + $1 floor.
-7. Volume outcome = card/cash only (Flex confound).
+7. Volume outcome = **non-Flex** metered trips (card/cash + irregular real trips); only Flex is
+   excluded (confound).
 
 Feature-level keep/drop/engineer decisions are in
 [`yellow_dropped_features.md`](yellow_dropped_features.md).
