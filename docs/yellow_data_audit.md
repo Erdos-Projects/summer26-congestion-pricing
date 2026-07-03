@@ -4,7 +4,7 @@
 NYC CBD congestion-pricing study (Feb–Jun 2024 vs. Feb–Jun 2025).*
 
 *Companion to the feature-selection deliverable
-[`yellow_dropped_features.md`](yellow_dropped_features.md). Findings here are distilled from
+[`yellow_dropped_and_engineered_features.md`](yellow_dropped_and_engineered_features.md). Findings here are distilled from
 [`notebooks/yellow_taxi_sample_EDA.ipynb`](../notebooks/yellow_taxi_sample_EDA.ipynb) (20K
 representative sample) and validated on full data in
 [`notebooks/yellow_taxi_full_EDA.ipynb`](../notebooks/yellow_taxi_full_EDA.ipynb).*
@@ -163,7 +163,18 @@ denominator is tiny. Sample p99 = 0.25 (max 0.95) driven by ~76 rows; **full-dat
 - Summaries use **median / percentiles**; any mean is **winsorized (p99) and disclosed**.
 - For the disruption metric, a **$1.00 base-cost floor** is applied (see
   [`methodology_notes.md`](methodology_notes.md)) to stop tiny denominators from swinging
-  zone averages.
+  zone averages. **This floor is inherited from the HVFHV pipeline** (where its $1.50 fee +
+  floating-point cancellation blew up a few ratios). **Yellow barely bites it** (this is *only* about the DS_z
+  denominator, not overall data quality): of 11.2M 2025 charged card/cash trips, only **5** have
+  base cost < $1 (all true zero/negative) and 0.02% are below $5 — because a metered yellow fare
+  (~$18) dwarfs the $0.75 fee, so base cost is almost always ~$17+, and comped rides (which
+  caused HVFHV's blow-up) are payment_type 3 → already excluded by the card/cash rule. So for
+  yellow the floor choice is near-inconsequential. (Other yellow anomalies — zero-distance,
+  extreme distance — are real but unrelated to the floor; see §4.2–§4.3.) It must still be
+  **validated yellow-specifically** — compute DS_z at floors {$0.50, $1, $5} in the DS_z
+  **pipeline** (mirror HVFHV's `hvfhv_ds_floor_sensitivity.csv`) and judge zone-ranking
+  stability in the **robustness / DS_z-EDA** step; **not** inherited, and **not** a
+  feature-selection decision.
 
 ## 5. Analysis-inclusion rules (by outcome)
 
@@ -221,7 +232,8 @@ needs HVFHV data.)
 2. Cost = `total_amount − tip_amount`; never rebuilt from components.
 3. Card/cash is the primary **financial** population; **Flex is a separate regime**; irregular
    (3/4/5/6) are real trips → excluded from all **financial** analysis, but **counted in volume**.
-4. Flex distance unusable; distance analysis is card/cash only.
+4. Flex distance is **less reliable** (weakly-anchored, §4.3), not unusable; distance analysis
+   uses card/cash anyway (burden population), capping rare extreme values in both regimes.
 5. **Non-movement dropped** — zero-distance with PU==DO or duration<60s (~0.6% of card/cash);
    genuine zero-distance PU≠DO trips (duration≥60s) kept-flagged, not used for distance analysis.
 6. Burden tail retained; medians + winsorized means + $1 floor.
@@ -229,4 +241,4 @@ needs HVFHV data.)
    excluded (confound).
 
 Feature-level keep/drop/engineer decisions are in
-[`yellow_dropped_features.md`](yellow_dropped_features.md).
+[`yellow_dropped_and_engineered_features.md`](yellow_dropped_and_engineered_features.md).

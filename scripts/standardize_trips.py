@@ -72,6 +72,17 @@ QC_FLAG_COLUMNS = [
     "negative_cost_flag",
 ]
 
+# Yellow-only regime / trip-type flags derived from payment_type and airport fields.
+YELLOW_FLAG_COLUMNS = [
+    "yellow_card_or_cash_flag",
+    "flex_fare_flag",
+    "irregular_payment_flag",
+    "airport_trip_flag",
+]
+
+# TLC LocationIDs for the JFK and LaGuardia airport zones (used for airport_trip_flag).
+AIRPORT_ZONE_IDS = {132, 138}
+
 # QC thresholds (flags only; rows are not dropped for these)
 VERY_LONG_DURATION_SECONDS = 24 * 60 * 60  # 24 hours
 VERY_LONG_DISTANCE_MILES = 100.0
@@ -271,6 +282,19 @@ def add_derived_and_qc_flags(df: pd.DataFrame) -> pd.DataFrame:
     df["very_long_distance_flag"] = df["trip_distance_miles"] > VERY_LONG_DISTANCE_MILES
     df["negative_cost_flag"] = df["passenger_cost_pretip"] <= 0
 
+    # Yellow-only regime / trip-type flags. payment_type is a Yellow field
+    # (HVFHV files never carry it), so its presence marks a Yellow frame.
+    if "payment_type" in df.columns:
+        pt = _safe_numeric(df["payment_type"])
+        df["yellow_card_or_cash_flag"] = pt.isin([1, 2])          # 1 = credit card, 2 = cash
+        df["flex_fare_flag"] = pt.eq(0)                            # 0 = Flex Fare
+        df["irregular_payment_flag"] = pt.isin([3, 4, 5, 6])      # no-charge / dispute / unknown / voided
+        # Airport trip = airport fee charged AND a pickup/dropoff at JFK or LaGuardia.
+        df["airport_trip_flag"] = (_safe_numeric(df["airport_fee"]) > 0) & (
+            df["PULocationID"].isin(AIRPORT_ZONE_IDS)
+            | df["DOLocationID"].isin(AIRPORT_ZONE_IDS)
+        )
+
     return df
 
 
@@ -344,6 +368,7 @@ def order_columns(df: pd.DataFrame, service_type: str) -> pd.DataFrame:
     cols = [c for c in STANDARD_COLUMNS if c in df.columns]
     cols += [c for c in optional if c in df.columns]
     cols += [c for c in QC_FLAG_COLUMNS if c in df.columns]
+    cols += [c for c in YELLOW_FLAG_COLUMNS if c in df.columns]
     return df[cols]
 
 
