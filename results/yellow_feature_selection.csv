@@ -1,0 +1,31 @@
+feature,level,near_constant_2024,max_abs_corr_pearson,VIF,leakage_status,decision,reason
+pickup_hour,trip,False,,,safe_2024,EDA-only,descriptive temporal EDA; NOT a model feature (models are zone-level)
+day_of_week,trip,False,,,safe_2024,EDA-only,descriptive temporal EDA; NOT a model feature (models are zone-level)
+PULocationID,trip,,,,safe_2024,engineer,-> charged_geo + zone x direction unit; categorical
+DOLocationID,trip,,,,safe_2024,engineer,-> charged_geo + zone x direction unit; categorical
+trip_distance_miles,trip,False,0.912,5.98,safe_2024,keep,"physical control (card/cash); Flex distance weakly-anchored/less reliable (§4), not garbage"
+trip_duration_minutes,trip,False,0.439,1.25,redundant,drop,Spearman~0.85 with distance; endogenous; off-scope (speed)
+passenger_cost_pretip,trip,False,1.0,141.12,outcome,keep,cost outcome + DS_z denominator basis (total-tip)
+cbd_congestion_fee,trip,True,,,cleaning,keep,the fee / DS_z numerator; std_2024=0 (post-policy only)
+charged_cbd_flag,trip,True,,,forbidden_2025,replace,std_2024=0; 2025-only -> use charged_geo for cross-year
+fare_amount,trip,,0.991,54.74,redundant,drop,VIF~135; r~0.99 with pretip
+total_amount,trip,,0.992,62.32,redundant,drop,VIF~62; = pretip + tip
+passenger_cost_excl_cbd,trip,,1.0,,redundant,engineer,r~1.00 with pretip; -> base_cost_ex_cbd (denominator)
+tip_amount,trip,,0.748,,redundant,drop,subtracted out to define pretip; not a covariate
+relative_cbd_burden,trip,,,,redundant,reference,r~1.00 with DS_z; secondary cross-check only
+payment_type,trip,,,,safe_2024,engineer,-> regime flags (card/cash vs Flex vs irregular)
+congestion_surcharge,trip,,,,cleaning,keep,legacy surcharge; base-cost piece; NA on Flex (upfront-priced)
+tolls,trip,,0.713,,cleaning,context,base-cost piece; not a standalone feature
+airport_fee,trip,,0.679,,safe_2024,engineer,"-> airport_trip_flag (EDA-only, not a model feature; airport analysis deferred); NA on Flex"
+extra,trip,,,,cleaning,drop,bundling -> double-count; not in standardized schema
+mta_tax,trip,,,,cleaning,drop,base-cost piece; not a feature
+improvement_surcharge,trip,,,,cleaning,drop,bundling -> double-count; not in standardized schema
+passenger_count,trip,,,,redundant,drop,low value; NA on Flex (upfront-priced)
+RatecodeID,trip,,,,redundant,drop,NA on Flex (upfront-priced); marginal use
+DS_z (mean+median),zone,,,,outcome,primary,"burden metric; 2025 charged card/cash, $1 floor"
+charged_geo,zone,,,,safe_2024,engineer,(PU or DO in CRZ); constant across years -> DiD
+pct_volume_change,zone,,,,outcome,outcome,non-Flex (card/cash+irregular) n2025/n2024-1; never a predictor
+n_2024,zone,,,,safe_2024,keep,pre-policy baseline volume; exogenous control
+avg_distance_2024,zone,,,,safe_2024,keep,pre-policy zone character
+borough,zone,,,,safe_2024,keep,pre-policy zone character
+avg_cost_2025 / n_2025 (any 2025 aggregate),zone,,,,forbidden_2025,drop,post-policy; consequence of shock -> circular

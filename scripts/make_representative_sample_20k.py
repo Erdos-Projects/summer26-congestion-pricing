@@ -94,6 +94,8 @@ YELLOW_OPTIONAL_COLUMNS = [
     "RatecodeID",
     "yellow_payment_type_label",
     "yellow_card_or_cash_flag",
+    "flex_fare_flag",
+    "irregular_payment_flag",
     "yellow_no_charge_dispute_void_flag",
     "yellow_payment_unknown_flag",
     "yellow_payment_review_flag",
@@ -317,6 +319,8 @@ def add_yellow_payment_flags(df: pd.DataFrame) -> pd.DataFrame:
     pt = _safe_numeric(df["payment_type"])
     df["yellow_payment_type_label"] = pt.map(YELLOW_PAYMENT_LABELS)
     df["yellow_card_or_cash_flag"] = pt.isin([1, 2])
+    df["flex_fare_flag"] = pt.eq(0)                       # 0 = Flex Fare
+    df["irregular_payment_flag"] = pt.isin([3, 4, 5, 6])  # no-charge / dispute / unknown / voided
     df["yellow_no_charge_dispute_void_flag"] = pt.isin([3, 4, 6])
     df["yellow_payment_unknown_flag"] = pt == 5
     df["yellow_payment_review_flag"] = pt.isin([0, 3, 4, 5, 6])
@@ -625,8 +629,11 @@ def output_column_order(df: pd.DataFrame) -> list[str]:
     for col in YELLOW_OPTIONAL_COLUMNS + HVFHV_OPTIONAL_COLUMNS + QC_FLAG_COLUMNS:
         if col in df.columns and col not in ordered:
             ordered.append(col)
+    # airport_trip_flag is emitted by standardize_trips.py but intentionally held out of
+    # the sample schema for now (no airport-specific analysis committed yet).
+    held_out = {"dropoff_date", "airport_trip_flag"}
     for col in df.columns:
-        if col not in ordered and col != "dropoff_date":
+        if col not in ordered and col not in held_out:
             ordered.append(col)
     return ordered
 
