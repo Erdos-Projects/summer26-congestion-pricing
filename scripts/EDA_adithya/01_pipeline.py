@@ -59,6 +59,8 @@ def build_pipeline() -> None:
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect()
+    # Keep AVG()/CORR() output reproducible across reruns; parallel FP sums can reorder.
+    con.execute("SET threads TO 1")
 
     print("Input files:")
     print(f"  2024 HVFHV parquet files: {len(files_2024)} from {INPUT_2024_DIR}")
