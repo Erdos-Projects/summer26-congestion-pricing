@@ -42,10 +42,9 @@ weaker proxy** (Spearman −0.89). Two consequences for feature selection:
   construction* (base cost near-deterministically), so they'd control the treatment away; and
   they are post-policy (leakage) regardless.
 - **The pre-policy 2024 baseline distance/fare CAN be controls** (this is what Model 1 uses) —
-  a *distinct* quantity, only *empirically* correlated with DS_z (zone-level, full-data
-  Spearman ≈ **−0.76** — *preview from a one-off check; to be computed reproducibly in the
-Model-1 analysis*). They validly net out the "dense short-trip zone" confound and give a
-  conservative (attenuated) DS_z estimate; the **DiD** designs (M2/M3) complement them by using
+  a *distinct* quantity, only *empirically* correlated with DS_z (zone-level Spearman ≈ **−0.88**).
+  It captures the "dense short-trip zone" confound, but is collinear enough that the DS_z
+  coefficient can't be cleanly separated from it; the **DiD** designs (M2/M3) complement it with
   a control group rather than a statistical control.
 
 ## 3. Trip-level fields
