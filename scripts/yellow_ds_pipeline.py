@@ -69,6 +69,7 @@ def build_pipeline() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     con = duckdb.connect()
+    con.execute("SET threads TO 1")  # fixed aggregation order -> byte-reproducible outputs
     glob = f"{_sql_path(YELLOW_DIR)}/*/*.parquet"
     con.execute(f"CREATE OR REPLACE VIEW trips AS SELECT * FROM read_parquet('{glob}')")
     con.execute(
@@ -95,14 +96,14 @@ def build_pipeline() -> None:
         )
         SELECT
             COUNT(*) AS n_2025_card_cash,
-            AVG(CASE WHEN charged_geo = truth THEN 1.0 ELSE 0.0 END) AS agreement,
+            ROUND(AVG(CASE WHEN charged_geo = truth THEN 1.0 ELSE 0.0 END), 4) AS agreement,
             SUM(CASE WHEN charged_geo AND truth THEN 1 ELSE 0 END) AS tp,
             SUM(CASE WHEN charged_geo AND NOT truth THEN 1 ELSE 0 END) AS fp_geo_not_charged,
             SUM(CASE WHEN NOT charged_geo AND truth THEN 1 ELSE 0 END) AS fn_charged_through_only,
-            SUM(CASE WHEN charged_geo AND truth THEN 1 ELSE 0 END)::DOUBLE
-                / NULLIF(SUM(CASE WHEN charged_geo THEN 1 ELSE 0 END), 0) AS precision_,
-            SUM(CASE WHEN charged_geo AND truth THEN 1 ELSE 0 END)::DOUBLE
-                / NULLIF(SUM(CASE WHEN truth THEN 1 ELSE 0 END), 0) AS recall_
+            ROUND(SUM(CASE WHEN charged_geo AND truth THEN 1 ELSE 0 END)::DOUBLE
+                / NULLIF(SUM(CASE WHEN charged_geo THEN 1 ELSE 0 END), 0), 4) AS precision_,
+            ROUND(SUM(CASE WHEN charged_geo AND truth THEN 1 ELSE 0 END)::DOUBLE
+                / NULLIF(SUM(CASE WHEN truth THEN 1 ELSE 0 END), 0), 4) AS recall_
         FROM cc25
         """
     )
@@ -138,7 +139,7 @@ def build_pipeline() -> None:
         ),
         aggregated AS (
             SELECT denominator_floor, zone, direction,
-                   COUNT(*) AS N_z, AVG(fee_burden) AS DS_z_mean, MEDIAN(fee_burden) AS DS_z_median
+                   COUNT(*) AS N_z, ROUND(AVG(fee_burden), 4) AS DS_z_mean, ROUND(MEDIAN(fee_burden), 4) AS DS_z_median
             FROM zone_direction GROUP BY denominator_floor, zone, direction
         )
         SELECT
@@ -171,17 +172,19 @@ def build_pipeline() -> None:
         """
         CREATE OR REPLACE TABLE behavioral_shift AS
         WITH combined AS (
-            SELECT year AS yr, PULocationID, DOLocationID, passenger_cost_pretip
+            SELECT year AS yr, PULocationID, DOLocationID, passenger_cost_pretip, trip_distance_miles
             FROM trips WHERE NOT flex_fare_flag          -- non-Flex real trips (card/cash + irregular)
         ),
         pu AS (
             SELECT PULocationID AS zone, 'pickup' AS direction, yr,
-                   COUNT(*) AS n_trips, AVG(passenger_cost_pretip) AS avg_total_cost
+                   COUNT(*) AS n_trips, ROUND(AVG(passenger_cost_pretip), 2) AS avg_total_cost,
+                   ROUND(AVG(trip_distance_miles) FILTER (WHERE trip_distance_miles BETWEEN 0 AND 100), 3) AS avg_distance
             FROM combined GROUP BY PULocationID, yr
         ),
         do_ AS (
             SELECT DOLocationID AS zone, 'dropoff' AS direction, yr,
-                   COUNT(*) AS n_trips, AVG(passenger_cost_pretip) AS avg_total_cost
+                   COUNT(*) AS n_trips, ROUND(AVG(passenger_cost_pretip), 2) AS avg_total_cost,
+                   ROUND(AVG(trip_distance_miles) FILTER (WHERE trip_distance_miles BETWEEN 0 AND 100), 3) AS avg_distance
             FROM combined GROUP BY DOLocationID, yr
         ),
         all_stats AS (SELECT * FROM pu UNION ALL SELECT * FROM do_)
@@ -189,10 +192,12 @@ def build_pipeline() -> None:
             zone, direction,
             MAX(CASE WHEN yr = 2024 THEN n_trips END) AS n_2024,
             MAX(CASE WHEN yr = 2025 THEN n_trips END) AS n_2025,
-            MAX(CASE WHEN yr = 2025 THEN n_trips END)::DOUBLE
-                / NULLIF(MAX(CASE WHEN yr = 2024 THEN n_trips END), 0) - 1 AS pct_volume_change,
+            ROUND(MAX(CASE WHEN yr = 2025 THEN n_trips END)::DOUBLE
+                / NULLIF(MAX(CASE WHEN yr = 2024 THEN n_trips END), 0) - 1, 4) AS pct_volume_change,
             MAX(CASE WHEN yr = 2024 THEN avg_total_cost END) AS avg_total_cost_2024,
             MAX(CASE WHEN yr = 2025 THEN avg_total_cost END) AS avg_total_cost_2025,
+            MAX(CASE WHEN yr = 2024 THEN avg_distance END) AS avg_distance_2024,
+            MAX(CASE WHEN yr = 2025 THEN avg_distance END) AS avg_distance_2025,
             CASE WHEN COALESCE(MAX(CASE WHEN yr = 2024 THEN n_trips END), 0) < 100
                    OR COALESCE(MAX(CASE WHEN yr = 2025 THEN n_trips END), 0) < 100
                  THEN TRUE ELSE FALSE END AS low_n_flag
@@ -206,7 +211,8 @@ def build_pipeline() -> None:
         SELECT d.zone, d.direction, d.Borough, d.zone_name, d.service_zone,
                d.DS_z, d.DS_z_median, d.N_z, d.DS_z_rank,
                b.pct_volume_change, b.n_2024, b.n_2025, b.low_n_flag,
-               b.avg_total_cost_2024, b.avg_total_cost_2025
+               b.avg_total_cost_2024, b.avg_total_cost_2025,
+               b.avg_distance_2024, b.avg_distance_2025
         FROM zone_disruption_score d
         JOIN behavioral_shift b ON d.zone = b.zone AND d.direction = b.direction
         ORDER BY d.direction, d.DS_z_rank
@@ -258,8 +264,59 @@ def build_pipeline() -> None:
         """
     )
 
+    # ---- monthly panel + 2024 charged-share exposure (Model 2 DiD) ----
+    # charged_share is direction-specific (matches the zone x direction unit) and computed from
+    # 2024 (pre-policy) so exposure is not itself a result of the fee.
+    con.execute(
+        f"""
+        CREATE OR REPLACE TABLE charged_share_2024 AS
+        WITH nf24 AS (
+            SELECT PULocationID, DOLocationID,
+                   (PULocationID IN {CRZ_SQL} OR DOLocationID IN {CRZ_SQL}) AS touches_crz
+            FROM trips WHERE year = 2024 AND NOT flex_fare_flag
+        ),
+        cs_pu AS (
+            SELECT PULocationID AS zone, 'pickup' AS direction,
+                   ROUND(AVG(touches_crz::INT), 4) AS charged_share
+            FROM nf24 GROUP BY PULocationID
+        ),
+        cs_do AS (
+            SELECT DOLocationID AS zone, 'dropoff' AS direction,
+                   ROUND(AVG(touches_crz::INT), 4) AS charged_share
+            FROM nf24 GROUP BY DOLocationID
+        )
+        SELECT * FROM cs_pu UNION ALL SELECT * FROM cs_do
+        """
+    )
+    con.execute(
+        f"""
+        CREATE OR REPLACE TABLE monthly_panel AS
+        WITH combined AS (
+            SELECT year AS yr, month AS mo, PULocationID, DOLocationID
+            FROM trips WHERE NOT flex_fare_flag
+        ),
+        pu AS (
+            SELECT PULocationID AS zone, 'pickup' AS direction, yr, mo, COUNT(*) AS n_trips
+            FROM combined GROUP BY PULocationID, yr, mo
+        ),
+        do_ AS (
+            SELECT DOLocationID AS zone, 'dropoff' AS direction, yr, mo, COUNT(*) AS n_trips
+            FROM combined GROUP BY DOLocationID, yr, mo
+        ),
+        panel AS (SELECT * FROM pu UNION ALL SELECT * FROM do_)
+        SELECT p.zone, p.direction, p.yr AS year, p.mo AS month, p.n_trips,
+               z.Borough, COALESCE(z.Zone, 'Zone ' || CAST(p.zone AS VARCHAR)) AS zone_name,
+               (p.zone IN {CRZ_SQL}) AS crz_zone, cs.charged_share
+        FROM panel p
+        LEFT JOIN zone_lookup z ON p.zone = z.LocationID
+        LEFT JOIN charged_share_2024 cs ON p.zone = cs.zone AND p.direction = cs.direction
+        ORDER BY p.zone, p.direction, p.yr, p.mo
+        """
+    )
+
     outputs = {
         "yellow_zone_disruption_score.csv": "SELECT * FROM zone_disruption_score",
+        "yellow_monthly_panel.csv": "SELECT * FROM monthly_panel",
         "yellow_behavioral_shift.csv": "SELECT * FROM behavioral_shift",
         "yellow_ds_z_vs_volume_change.csv": "SELECT * FROM ds_z_vs_volume_change",
         "yellow_ds_floor_sensitivity.csv": "SELECT * FROM ds_floor_sensitivity_base",
