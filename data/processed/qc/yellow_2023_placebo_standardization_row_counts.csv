@@ -1,0 +1,6 @@
+source_file,output_file,service_type,year,month,rows_before,rows_after,rows_dropped
+/Users/ping/Desktop/data/2023_yellow/02.parquet,/Users/ping/Desktop/data/processed/yellow/2023/02.parquet,yellow,2023,2,2887239,2887239,0
+/Users/ping/Desktop/data/2023_yellow/03.parquet,/Users/ping/Desktop/data/processed/yellow/2023/03.parquet,yellow,2023,3,3371827,3371827,0
+/Users/ping/Desktop/data/2023_yellow/04.parquet,/Users/ping/Desktop/data/processed/yellow/2023/04.parquet,yellow,2023,4,3256776,3256776,0
+/Users/ping/Desktop/data/2023_yellow/05.parquet,/Users/ping/Desktop/data/processed/yellow/2023/05.parquet,yellow,2023,5,3480221,3480221,0
+/Users/ping/Desktop/data/2023_yellow/06.parquet,/Users/ping/Desktop/data/processed/yellow/2023/06.parquet,yellow,2023,6,3274551,3274551,0

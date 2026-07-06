@@ -20,7 +20,7 @@ confirm the features serve it; the yellow DS_z pipeline
 | | **Model 1** | **Model 2** | **Model 3** |
 |---|---|---|---|
 | **What it asks** | Do higher-burden zones lose more trips? | Did higher CRZ exposure reduce trips? | Does a *bigger* fee reduce trips more? |
-| **Main comparison** | high-burden vs low-burden zones | more- vs less-exposed zone-sides (monthly, 2024→2025) | yellow vs Uber/Lyft, *same zone* (2024→2025) |
+| **Main comparison** | high-burden vs low-burden zones | more- vs less-exposed zone-sides (monthly, 2024→2025) | yellow vs HVFHV, *same exposed zone* (monthly, 2024→2025) |
 | **Trustworthiness** | weakest (correlational) | medium | strongest |
 | **Data needed** | within a service | within a service | both services combined |
 
@@ -36,12 +36,12 @@ level** `DS_z` is **strongly** correlated with the "dense core zone" characteris
 perfectly*: `DS_z` (2025) vs the **2024** trip-economics proxy (the actual Model-1 control) is
 ≈ **Spearman −0.88 / Pearson −0.81** cross-year, not −1. That is collinear enough that a
 single-period regression **cannot pin down** the `DS_z` coefficient — it is **unstable** (it swings
-with the control set, +0.72 to −3.83 across specs) rather than cleanly attenuated, and cannot isolate
-whether volume dropped because of the *fee* or because of something else about *dense core zones*.
+with the control set) rather than cleanly attenuated, and cannot isolate whether volume dropped
+because of the *fee* or because of something else about *dense core zones*.
 Models 2 and 3 sidestep this with a **comparison group** (that differs in the fee) instead of
 statistical control.
 
-*(The −1.00 identity is a separate point — it is why **2025** cost/distance can't be used as
+*(The −1.00 identity is a separate point — it is why 2025 cost/distance can't be used as
 controls: they would define `DS_z` away, and they are post-policy leakage. The 2024 baseline above
 is a distinct quantity; see Model 1.)*
 
@@ -54,7 +54,7 @@ side** and its **dropoff side**. Rejected alternatives:
 
 - **OD-pair (zone × zone)** — ~67k possible pairs, most tiny or empty → per-pair estimates are
   noisy and unstable, and the deliverable would be 67k corridors instead of a rankable set of
-  zones. (Optional finer "which corridor" analysis only.)
+  zones. 
 - **PU/DO pooled** — pooling a trip's two zones double-counts it and hides directional asymmetry
   (in HVFHV, dropoffs dominate the high-burden ranking). Keeping the sides separate avoids
   double-counting and reveals the asymmetry. It also matches how `DS_z` and volume are computed.
@@ -82,8 +82,8 @@ count 2024→2025 — and check whether higher burden goes with bigger drops.
     roughly the same thing; keep one). **Note:** 2024 distance is only *empirically* correlated
     with `DS_z` (zone-level Spearman ≈ **−0.88**, Pearson ≈ **−0.81**), **not** the −1.00 same-year
     identity. But it is collinear enough that the `DS_z` coefficient is **not identified** — adding
-    controls makes it swing (+0.72 to −3.83 across specs), so the regression *documents* the
-    confounding problem rather than resolving it.
+    controls makes it swing rather than settle, so the regression *documents* the confounding problem
+    rather than resolving it.
   - **borough** — either add borough dummies (Manhattan = baseline; one `DS_z` slope, now a
     *within-borough* comparison) **or** restrict to Manhattan only (a *diagnostic*, not clean
     robustness — holding borough fixed also removes most of the treatment variation, since the fee is
@@ -94,12 +94,12 @@ count 2024→2025 — and check whether higher burden goes with bigger drops.
 
 **Good for:** the headline zone ranking + the first burden-vs-volume look.
 **Caveat:** correlational only, and for the volume question **not identified** — the cross-zone
-correlation is **weak for yellow** (≈ −0.16, vs HVFHV ≈ −0.61) and the coefficient is unstable under
-controls, so Model 1 gives the ranking (Goal 1), not a causal effect (see the Model-1/2 notebook).
+correlation is weak and the coefficient is unstable under controls, so Model 1 gives the ranking
+(Goal 1), not a causal effect (see the Model-1/2 notebook).
 
 ---
 
-## Model 2 — geographic exposure-gradient DiD
+## Model 2 — CRZ exposure DiD
 
 **Asks:** did zone-sides more exposed to the fee lose more trips?
 
@@ -108,7 +108,8 @@ panel test whether more-exposed zone-sides changed *more* 2024→2025 than less-
 
 **Why a control group helps:** weather, the economy, post-COVID recovery all move trip counts and we
 can't measure them all — but low-exposure zone-sides are hit by the same forces, so netting them out
-ideally **cancels those at once**. We don't model demand; the exposure gradient does.
+ideally **cancels those at once**. We do not model demand directly; we compare higher-exposure
+zone-sides to lower-exposure zone-sides.
 
 **What we build:**
 - **`charged_share`** — the treatment, a **continuous exposure**: for each zone × direction, the
@@ -124,13 +125,13 @@ ideally **cancels those at once**. We don't model demand; the exposure gradient 
   pre in 2024 / all post in 2025).
 - **Model:** `log_n ~ C(zone_dir) + C(month) + post + post:charged_share`, **cluster-by-zone SE**.
   `C(zone_dir)` = each zone-side its own baseline; `C(month)` = seasonality; `post` = the common
-  2024→2025 shift (zero-exposure reference); **`post:charged_share`** = the exposure gradient, the
-  number we want. Log so it reads as a **% change**.
+  2024→2025 shift (zero-exposure reference); **`post:charged_share`** = whether higher-exposure
+  zone-sides changed more than lower-exposure zone-sides. Log so it reads as a **% change**.
 
-**Estimand & reporting:** `post:charged_share` is the **exposure gradient** (how much *more* exposed
-zone-sides changed), **not** an individual charged-trip effect; a uniform city-wide effect is
-absorbed by `post`. Report **equal-weighted and volume-weighted** — the weighting *is* the estimand
-(per zone-side vs per trip).
+**What the coefficient means:** `post:charged_share` compares higher-exposure zone-sides with
+lower-exposure zone-sides; it is **not** an individual charged-trip effect. A uniform city-wide
+change is absorbed by `post`. Report **equal-weighted and volume-weighted** because those answer
+different questions (per zone-side vs per trip).
 
 **Could go wrong:** assumes exposure groups **would have moved together** absent the fee (**parallel
 trends**, only inspectable here); riders shifting out of exposed zones push controls up
@@ -139,36 +140,69 @@ still confounds — only Model 3 breaks that tie.
 
 ---
 
-## Model 3 — Yellow vs Uber/Lyft in the same zone
+## Model 3 — cross-vehicle DiD (same zone, different fee size)
 
 **Asks:** does a *bigger* fee cause a *bigger* drop? (Yellow pays $0.75/charged trip; HVFHV $1.50.)
 
-**How:** within the same zone, compare how yellow changed 2024→2025 vs how Uber/Lyft changed.
-Same zone holds fixed many zone-level confounders (density, geography, local demand shocks); what's
-left is closer to the different-fee effect. This is the cleanest design: the thing we vary (fee
-size) is unrelated to trip length, so it sidesteps the collinearity problem entirely.
+**How:** within the same zones, compare how yellow changed 2024→2025 vs how HVFHV changed. Same zone
+→ density, geography, COVID recovery, local demand shocks hit both vehicles equally and **cancel**;
+what's left is the different-fee effect. The treatment we vary (fee size) is a property of the
+*vehicle*, not the zone, so geography is held fixed — **this is the design that breaks the confound
+Models 1–2 could not** (there, treatment ≈ geography). The trade: it **swaps the geography confound
+for a cross-vehicle-trend confound** — yellow and HVFHV are different services with different secular
+trajectories, so "they would have moved together" is now the load-bearing (and shaky) assumption.
+
+**Where the contrast lives:** the fee difference only exists on **CRZ-touching trips**, so the
+comparison must be made where both vehicles are exposed.
+- *Primary:* restrict to **high-CRZ-exposure zone-sides** and compare yellow vs HVFHV there.
+- *Advanced (triple-diff):* keep all zones and estimate `post × vehicle × charged_share` — does the
+  yellow-vs-HVFHV gap widen with exposure? This is designed to net out a common cross-vehicle trend
+  using lower-exposure zones as a comparison; run it alongside the primary contrast as a robustness /
+  advanced variant.
 
 **What we build:**
-- **`service`** — yellow vs Uber/Lyft (stands in for fee size, $0.75 vs $1.50).
-- **`post`** and **`post × HVFHV`** — the latter is how much *more* HVFHV changed than yellow.
-- **Zone fixed effects** — same as Model 2.
-- **Most of the work is data prep** — aligning yellow and HVFHV into one table with matching
-  zones, comparable counts, matched populations.
-- **Outcome:** `log(trip count)` per **zone × direction × vehicle × year**.
+- **Monthly panel** — unit = **zone × direction × vehicle × month × year** (Feb–Jun × 2024/2025), so
+  the cross-vehicle **pre-trend is inspectable**, and the same design runs on a no-fee year pair as a
+  placebo — the two central credibility checks for M3.
+- **`vehicle`** — yellow vs HVFHV (stands in for fee size, $0.75 vs $1.50).
+- **Model (primary, exposed zones):** `log_n ~ C(zone_dir_vehicle) + C(month) + post + post:hvfhv`,
+  **cluster-by-zone SE**. `C(zone_dir_vehicle)` = each zone-side × vehicle series its own baseline (so
+  the yellow/HVFHV level gap is absorbed, not treated as an effect); **`post:hvfhv`** = how much
+  *more* HVFHV changed than yellow — the coefficient we report.
+- **Populations (matched):** yellow = **card/cash only** (so Uber↔yellow-Flex substitution doesn't
+  move volume between the two compared services); HVFHV = **all HVFHV** (provider Uber/Lyft and
+  shared/solo split kept as robustness). Both aggregated with the **same rules as yellow** (38 CRZ
+  zones, non-movement drop, Feb–Jun).
 
-**Could go wrong:** yellow and Uber/Lyft serve different riders → "would have moved together" is a
-weaker assumption (yellow's Flex product complicates it), and service-specific rider mix can still
-differ even within the same zone; it measures only the *difference* between the two fees, not the
-full effect of either.
+**What the coefficient means:** `post:hvfhv` compares the higher-fee service (HVFHV, $1.50) with the
+lower-fee service (yellow, $0.75) in the same exposed zones. It is **not** the effect of the fee vs no
+fee, and **not** a per-dollar elasticity (HVFHV's higher base fare means the fee-as-%-of-fare is not
+simply double). Report **equal-weighted and volume-weighted** because those answer different
+questions (per zone-side vs per trip).
+
+**Could go wrong:**
+- **Cross-vehicle parallel trends** — the load-bearing assumption; yellow and HVFHV had different
+  pre-fee trajectories, so it is checked with the 2024 pre-trend, a 2023→2024 placebo, and a provider
+  split.
+- **Flex migration → biases toward zero.** Even on card/cash, the growing Flex product mechanically
+  pulls card/cash volume *down* on the yellow side (unrelated to the fee), making yellow look like it
+  dropped more → `post:hvfhv` biased *up* (toward 0), understating a true negative. Mitigate with a
+  non-Flex-total robustness cut.
+- **Cross-service substitution is part of the comparison.** The bigger HVFHV fee pushes some riders
+  HVFHV→yellow (HVFHV down, yellow up), *widening* the gap → `post:hvfhv` reflects the change in the
+  *relative mix* (substitution included), not pure demand reduction. Read it as such.
 
 ---
 
 ## How the three fit together
 - **Model 1** = *who / how much* (the ranking) — the headline, least airtight.
-- **Model 2** = *is there any effect* — cleaner (control group).
-- **Model 3** = *does a bigger fee do more* — cleanest (only the fee-size difference).
+- **Model 2** = *do higher-exposure places change more* — cleaner than Model 1 because it adds a
+  comparison group.
+- **Model 3** = *does a bigger fee do more* — cleanest on geography (only the fee-size difference
+  varies within a zone), but trades that for a cross-vehicle-trend assumption; credible only if the
+  yellow-vs-HVFHV pre-trend is flat.
 - If all three point the same way, we're confident; if they disagree, that tells us which
-  assumption is failing.
+  assumption needs the most scrutiny.
 
 ## Shared choices (all three)
 - **Which trips we count (yellow).**
@@ -186,9 +220,9 @@ full effect of either.
 - **Reporting.** `DS_z` as mean **and** median; any correlation two ways — **Pearson** (linear)
   and **Spearman** (rank-based, robust to a few extreme zones) — plus a burden-quartile breakdown;
   effects as a coefficient with a **confidence interval**. For the DiD, report **equal-weighted and
-  volume-weighted** estimates — the weighting *defines the estimand* (per zone-side vs per trip), so
-  a gradient that holds equal-weighted but vanishes volume-weighted is a per-zone-side pattern, not a
-  trip-weighted volume effect.
+  volume-weighted** estimates because the weighting changes the comparison (per zone-side vs per
+  trip), so an estimate that appears equal-weighted but not volume-weighted is a per-zone-side
+  pattern, not a trip-weighted volume effect.
 
 ## Robustness / evaluation
 See [`evaluation_plan.md`](evaluation_plan.md) — identification checks, robustness/sensitivity,
