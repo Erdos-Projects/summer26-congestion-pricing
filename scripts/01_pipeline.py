@@ -5,7 +5,7 @@ Reads the current standardized HVFHV parquet layout, computes the primary
 zone-level disruption score, and writes full-data sensitivity outputs.
 
 Run from the repository root:
-    python scripts/EDA_adithya/01_pipeline.py
+    python scripts/01_pipeline.py
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from pathlib import Path
 import duckdb
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 STANDARDIZED_DIR = REPO_ROOT / "data" / "processed" / "00_standardized_trips" / "hvfhv"
 INPUT_2024_DIR = STANDARDIZED_DIR / "2024"
 INPUT_2025_DIR = STANDARDIZED_DIR / "2025"

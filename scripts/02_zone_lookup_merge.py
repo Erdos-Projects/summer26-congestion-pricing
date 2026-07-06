@@ -3,7 +3,7 @@ Zone lookup merge for the HVFHV DS_z scatter data.
 
 Uses the local TLC zone lookup file and the current disruption-score output
 folder. Run from the repository root:
-    python scripts/EDA_adithya/02_zone_lookup_merge.py
+    python scripts/02_zone_lookup_merge.py
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = REPO_ROOT / "data" / "processed" / "disruption_score"
 INPUT_PATH = OUTPUT_DIR / "hvfhv_ds_z_vs_volume_change.csv"
 ZONE_LOOKUP_PATH = REPO_ROOT / "data" / "taxi_zone_lookup.csv"
@@ -23,7 +23,7 @@ OUTPUT_PATH = OUTPUT_DIR / "hvfhv_scatter_data.json"
 def main() -> None:
     if not INPUT_PATH.exists():
         raise FileNotFoundError(
-            f"Missing {INPUT_PATH}. Run scripts/EDA_adithya/01_pipeline.py first."
+            f"Missing {INPUT_PATH}. Run scripts/01_pipeline.py first."
         )
     if not ZONE_LOOKUP_PATH.exists():
         raise FileNotFoundError(f"Missing local zone lookup file: {ZONE_LOOKUP_PATH}")

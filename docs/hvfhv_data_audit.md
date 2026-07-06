@@ -249,9 +249,9 @@ the authoritative DS_z ranking is the committed disruption-score CSV.
 The downstream full-data artifacts under
 [`data/processed/disruption_score/`](../data/processed/disruption_score/) are
 the durable outputs for zone disruption analysis. They are produced by
-[`scripts/EDA_adithya/01_pipeline.py`](../scripts/EDA_adithya/01_pipeline.py)
+[`scripts/01_pipeline.py`](../scripts/01_pipeline.py)
 (with Manhattan robustness from
-[`scripts/EDA_adithya/03_manhattan_robustness.py`](../scripts/EDA_adithya/03_manhattan_robustness.py)).
+[`scripts/03_manhattan_robustness.py`](../scripts/03_manhattan_robustness.py)).
 See also [`data/processed/disruption_score/README.md`](../data/processed/disruption_score/README.md).
 
 Primary definition:
@@ -275,6 +275,10 @@ Key outputs:
 | `hvfhv_ds_top_zone_overlap.csv` | top-10/top-20 overlap across definitions |
 | `hvfhv_borough_correlation.csv` | all-zone, borough, and direction correlations |
 | `hvfhv_within_manhattan_correlation.csv` | Manhattan-focused robustness subset |
+| `hvfhv_monthly_panel.csv` | Model 2 monthly zone-direction panel with 2024 geography-based exposure |
+| `hvfhv_model2_exposure_validation.csv` | diagnostic comparison of geography-based exposure against the 2025 observed fee flag |
+| `hvfhv_pretrend_2024_diagnostic.csv` | no-June 2024 pretrend diagnostic |
+| `hvfhv_placebo_2023_2024_results.csv` | no-June 2023-vs-2024 placebo results |
 
 Top primary DS_z rows in `hvfhv_zone_disruption_score.csv` are Manhattan
 dropoff zones such as Alphabet City, Stuy Town/Peter Cooper Village, East
@@ -303,10 +307,18 @@ Pearson correlation of **-0.610** with **n = 519**. Because that figure is a
 notebook summary using its own filter, cite the durable CSV correlations when a
 committed source is preferred.
 
+Model 1 shows a strong descriptive association between higher HVFHV burden and
+larger volume declines. Model 2 shows a negative exposure-gradient estimate,
+estimated under assumptions using 2024 geography-based exposure. The no-June
+2023-vs-2024 placebo is also negative and similar in magnitude, which weakens a
+clean causal interpretation and may indicate pre-existing spatial demand trends
+in high-exposure HVFHV zones. Present Model 2 as suggestive association, not
+causal proof.
+
 **Reproducibility:** regenerate durable DS_z CSVs with DuckDB
 `SET threads TO 1` so floating-point averages are deterministic across runs.
 This is already set in the full EDA notebook and `01_pipeline.py`; see also
-§12 of the companion features doc.
+Section 12 of the companion features doc.
 
 ## 8. Analysis-inclusion rules
 
@@ -333,7 +345,10 @@ This is already set in the full EDA notebook and `01_pipeline.py`; see also
    fee/current pre-tip cost, while DS_z uses fee/base cost excluding the CBD fee.
 5. Correlations between DS_z and volume change are empirical associations, not
    causal estimates.
-6. Notebook-only tables and figures should be cited as EDA evidence unless they
+6. The negative Model 2 exposure-gradient estimate is not clean causal evidence
+   because the no-June 2023-vs-2024 placebo is also negative and similar in
+   magnitude.
+7. Notebook-only tables and figures should be cited as EDA evidence unless they
    are regenerated into durable CSVs.
 
 ## 10. Decisions carried into feature engineering

@@ -122,7 +122,7 @@ Status legend:
 | `avg_distance_2024` | Safe control (trip-level aggregate) | Pre-policy trip-shape baseline for Model 1 or Model 2 sensitivity. Not in current zone CSV exports; aggregate from 2024 standardized parquets if used. |
 | `avg_total_cost_2024`, `avg_base_fare_2024` | Safe controls/sensitivities | Pre-policy cost/fare baselines from `hvfhv_behavioral_shift.csv`. Use carefully because they are strongly related to trip length and burden. |
 | `avg_total_cost_2025`, `avg_base_fare_2025` | Drop as controls | Post-policy values; may be outcomes or mediators. |
-| `charged_share_2024_geo` | Possible Model 2 exposure | Pre-policy geographic exposure share based on CRZ pickup/dropoff geography. Needed for HVFHV Model 2 if implemented. |
+| `charged_share_2024_geo` | Model 2 exposure | Pre-policy geographic exposure share based on CRZ pickup/dropoff geography. Used for HVFHV Model 2. |
 | `borough`, `zone_name`, `service_zone` | Controls/context | Use for description, fixed effects, or borough robustness; not numeric features. |
 | floor-sensitivity ranks | Robustness outputs | Used to evaluate DS_z stability, not as model predictors. |
 
@@ -161,7 +161,7 @@ Safe controls are computed from Feb-Jun 2024 only:
 - baseline passenger cost or base fare: `avg_total_cost_2024`,
   `avg_base_fare_2024`, used only with a clear collinearity caveat;
 - borough, zone, and direction labels;
-- pre-policy geographic exposure share if Model 2 is built:
+- pre-policy geographic exposure share for Model 2:
   `charged_share_2024_geo`;
 - provider or shared-regime baseline composition, only if the model explicitly
   asks a provider/shared-regime question.
@@ -179,7 +179,7 @@ measure the short-trip/dense-core structure and can make coefficients unstable.
 | `DS_z` | Main Model 1 burden score / treatment-intensity metric. |
 | `DS_z_median` | Robustness/reporting companion to mean DS_z. |
 | `relative_cbd_burden` | Secondary burden reference, not independent from DS_z. |
-| `charged_share_2024_geo` | Preferred Model 2 exposure if HVFHV monthly panel is implemented. |
+| `charged_share_2024_geo` | Preferred Model 2 exposure in the HVFHV monthly panel. |
 | `borough` / Manhattan subset | Robustness and confounding diagnostics, not treatment by itself. |
 
 ## 9. Outcome variables
@@ -187,7 +187,7 @@ measure the short-trip/dense-core structure and can make coefficients unstable.
 | Outcome | Use |
 |---|---|
 | `pct_volume_change` | Model 1 outcome: zone-direction trip-count change from 2024 to 2025. |
-| `log_n` / monthly trip count | Model 2 outcome if a HVFHV monthly exposure-gradient DiD is built. |
+| `log_n_trips` / monthly trip count | Model 2 monthly-panel outcome. |
 | passenger-cost movement | Descriptive cost outcome, not a control in the volume model. |
 | driver-pay movement | Descriptive driver-side outcome/context. |
 | provider/share composition changes | Descriptive market-composition outcomes. |
@@ -222,34 +222,38 @@ Current evidence:
   correlation of -0.610; durable robustness CSVs report all-zone Spearman about
   -0.633 and Manhattan-only Pearson about -0.540.
 
-### Possible Model 2: geographic exposure-gradient DiD
+### Model 2: geographic exposure-gradient DiD
 
-Recommended if implemented:
+Implemented design:
 
 - unit: zone x direction x month x year;
 - treatment exposure: pre-policy geography-based `charged_share_2024_geo`,
   not the 2025 observed `charged_cbd_flag`;
-- outcome: monthly trip count or `log_n`;
+- outcome: monthly trip count or `log_n_trips`;
 - fixed effects: zone-direction and month;
-- coefficient of interest: `post:charged_share`;
+- coefficient of interest: `post:charged_share_2024_geo`;
 - standard errors: cluster by zone where possible;
 - report equal-weighted and baseline-volume-weighted estimates separately
   because the weighting changes the estimand.
 
-Required additional feature work:
+Completed diagnostics:
 
-- build or confirm a HVFHV monthly panel analogous to the Yellow Model 2 panel;
-- validate the geography-based charged-share definition against 2025
-  `charged_cbd_flag`;
-- document control-group contamination, especially for partially exposed
-  non-core zones.
+- HVFHV monthly panel and 2024 geography-based exposure are available.
+- Geography-based exposure is validated against the 2025 observed fee flag as a
+  diagnostic, not proof of clean assignment.
+- The no-June 2024 pretrend diagnostic shows weak/no clear pretrend signal.
+- The no-June 2023-vs-2024 placebo is negative and similar in magnitude to the
+  2024-vs-2025 Model 2 estimate.
+- Therefore Model 2 should be presented as suggestive association, not clean
+  causal evidence; the placebo warning may indicate pre-existing spatial demand
+  trends in high-exposure HVFHV zones.
 
 Do not:
 
 - use 2025 realized fare/cost/duration/driver-pay variables as controls;
 - treat a binary CRZ/non-CRZ split as clean without measuring exposure
   contamination;
-- block final deliverables on Model 2 if the panel cannot be completed quickly.
+- describe the negative exposure-gradient estimate as a clean causal effect.
 
 ### Model 3: Yellow versus HVFHV
 
@@ -288,7 +292,7 @@ SET threads TO 1
 ```
 
 This is already used in the HVFHV full EDA notebook and
-[`scripts/EDA_adithya/01_pipeline.py`](../scripts/EDA_adithya/01_pipeline.py).
+[`scripts/01_pipeline.py`](../scripts/01_pipeline.py).
 Keep it in any future HVFHV aggregation script that writes durable CSVs,
 especially DS_z, burden, correlation, or rank-stability outputs.
 
@@ -296,13 +300,13 @@ especially DS_z, burden, correlation, or rank-stability outputs.
 
 **Primary burden/exposure features:** `DS_z`, `DS_z_median`,
 `cbd_congestion_fee`, `charged_cbd_flag`, `relative_cbd_burden` as reference,
-and possible `charged_share_2024_geo` for Model 2.
+and `charged_share_2024_geo` for Model 2.
 
 **Safe controls:** `n_2024`, `avg_distance_2024`, possibly
 `avg_total_cost_2024`/`avg_base_fare_2024`, borough, zone-direction, and declared
 pre-policy provider/shared composition if needed.
 
-**Outcomes:** `pct_volume_change`, monthly trip count / `log_n`, cost movement,
+**Outcomes:** `pct_volume_change`, monthly trip count / `log_n_trips`, cost movement,
 driver-pay movement, provider-mix changes.
 
 **Dropped as controls:** all 2025 post-policy cost/fare/distance/duration/

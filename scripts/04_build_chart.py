@@ -15,7 +15,7 @@ Output: artifacts/figures/ds_z_vs_volume_change.html
 import json
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 INPUT_PATH = REPO_ROOT / "data" / "processed" / "disruption_score" / "hvfhv_scatter_data.json"
 OUTPUT_PATH = REPO_ROOT / "artifacts" / "figures" / "ds_z_vs_volume_change.html"
 

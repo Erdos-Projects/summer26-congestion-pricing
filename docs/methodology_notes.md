@@ -76,7 +76,7 @@ Three other denominators were tested/considered during development and explicitl
 ```sql
 ROUND(passenger_cost_pretip - cbd_congestion_fee, 2) >= 1.00
 ```
-Rounding to the cent before filtering collapses floating-point noise to a true `0.00`, which the `>= 1.00` floor then correctly excludes. The same floor also excludes the 89 genuinely-sub-$1 trips — a separate, deliberate judgment call (not a bug fix) to avoid a tiny number of extreme-but-real ratios (e.g. $1.50 fee on a $0.50 ride) from disproportionately swinging a zone average. **This $1 threshold is a judgment call, not a principled cutoff** — a sensitivity check is required before treating DS_z rankings as robust. Full-data sensitivity outputs now rerun DS_z at $0.50, $1.00, $2.00, and $5.00 floors and compare mean/median rank stability via `scripts/EDA_adithya/01_pipeline.py`.
+Rounding to the cent before filtering collapses floating-point noise to a true `0.00`, which the `>= 1.00` floor then correctly excludes. The same floor also excludes the 89 genuinely-sub-$1 trips — a separate, deliberate judgment call (not a bug fix) to avoid a tiny number of extreme-but-real ratios (e.g. $1.50 fee on a $0.50 ride) from disproportionately swinging a zone average. **This $1 threshold is a judgment call, not a principled cutoff** — a sensitivity check is required before treating DS_z rankings as robust. Full-data sensitivity outputs now rerun DS_z at $0.50, $1.00, $2.00, and $5.00 floors and compare mean/median rank stability via `scripts/01_pipeline.py`.
 
 **Post-fix validation:** Re-ran top-20 zones by DS_z; mean and median are now in the same range throughout (0.054–0.064), confirming the fix resolved the issue without introducing new distortions.
 
@@ -119,7 +119,7 @@ Both fare metrics are reported as separate columns (not collapsed into one "avg 
 - [ ] Formal correlation between DS_z and `pct_volume_change` across all zones (not just eyeballing top-20 overlap)
 - [ ] Identify the 2 zones with `pct_volume_change IS NULL` (zero 2024 baseline) by name
 - [ ] Consider CRZ-flag-isolated version of Layer B (trips actually charged the fee, 2025-only, compared against geographically-matched 2024 trips)
-- [x] Join `taxi_zone_lookup.csv` (LocationID → Borough/Zone/service_zone) onto DS_z exports: `scripts/EDA_adithya/01_pipeline.py` joins via DuckDB; primary and sensitivity CSVs under `data/processed/disruption_score/` include `Borough`, `zone_name`, and `service_zone`. `hvfhv_behavioral_shift.csv` remains zone-ID only; `02_zone_lookup_merge.py` builds `hvfhv_scatter_data.json` for visualization.
+- [x] Join `taxi_zone_lookup.csv` (LocationID → Borough/Zone/service_zone) onto DS_z exports: `scripts/01_pipeline.py` joins via DuckDB; primary and sensitivity CSVs under `data/processed/disruption_score/` include `Borough`, `zone_name`, and `service_zone`. `hvfhv_behavioral_shift.csv` remains zone-ID only; `02_zone_lookup_merge.py` builds `hvfhv_scatter_data.json` for visualization.
 
 ## 9. Teammate sample artifacts (cleaning / EDA)
 

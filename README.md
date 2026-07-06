@@ -48,7 +48,7 @@ The dataset is sourced from
 | Source | Description | Current project use |
 |---|---|---|
 | Yellow Taxi trips | Monthly trip records with pickup/dropoff times, locations, fares, and surcharges | **Included**; audit, feature documentation, DS_z outputs, and first-pass Model 1/2 work exist |
-| HVFHV trips | High-volume for-hire vehicle trip records | **Included**; audit, feature documentation, full-data DS_z outputs, floor sensitivity, and Manhattan robustness exist |
+| HVFHV trips | High-volume for-hire vehicle trip records | **Included**; audit, feature documentation, full-data DS_z outputs, Model 1/2 notebook, floor sensitivity, Manhattan robustness, and no-June placebo diagnostic exist |
 | Green Taxi trips | Boro taxi trip records | Deferred for later robustness checks |
 | FHV trips | Smaller for-hire vehicle records | Not used in current scope |
 | TLC taxi zone lookup | Zone IDs and geographic definitions | Used for zone-level outputs and robustness summaries |
@@ -160,9 +160,11 @@ diagnostics; final zone-level claims should use full-data aggregates.
 Tracked disruption-score outputs live under `data/processed/disruption_score/`.
 HVFHV outputs include DS_z, behavioral-shift joins, denominator-floor
 sensitivity, rank stability, top-zone overlap, borough correlations, and
-Manhattan robustness. Yellow outputs include DS_z, behavioral-shift joins,
-floor sensitivity, rank stability, geographic-charge validation, and a monthly
-panel used in first-pass Model 1/2 work.
+Manhattan robustness. HVFHV Model 1 and Model 2 are summarized in
+`notebooks/hvfhv_model1_model2.ipynb`; Model 2 is estimated under assumptions
+and has a no-June 2023-vs-2024 placebo warning. Yellow outputs include DS_z,
+behavioral-shift joins, floor sensitivity, rank stability, geographic-charge
+validation, and a monthly panel used in first-pass Model 1/2 work.
 
 ## Project Status
 
@@ -178,14 +180,17 @@ final-deliverable preparation.
 | Yellow Taxi audit and feature documentation | Complete enough for final-draft use |
 | HVFHV audit and feature documentation | Complete enough for final-draft use |
 | HVFHV DS_z outputs | Produced, including floor sensitivity, rank stability, top-zone overlap, borough correlations, and Manhattan robustness |
+| HVFHV Model 1/2 notebook | Produced; Model 1 shows a strong descriptive burden-volume association, while Model 2 is a negative exposure-gradient estimate with a placebo warning |
 | Yellow Taxi DS_z and Model 1/2 first pass | Outputs and notebook exist; report as first-pass/inferential, not causal proof |
 | Model 3 combined Yellow/HVFHV analysis | Deferred until separate Yellow and HVFHV analyses are complete |
 | Green Taxi integration | Deferred |
 | Final slides/video/report | Pending |
 
-Green Taxi integration, January 2025 transition analysis, placebo year analysis,
-and combined Yellow/HVFHV Model 3 are later robustness or extension work, not
-blockers for the current separate-service deliverables.
+Green Taxi integration, January 2025 transition analysis, and combined
+Yellow/HVFHV Model 3 are later robustness or extension work, not blockers for
+the current separate-service deliverables. The HVFHV no-June 2023-vs-2024
+placebo diagnostic is complete and weakens a clean causal reading of Model 2,
+so final HVFHV claims should emphasize association and burden ranking.
 
 ## Future Work
 

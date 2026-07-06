@@ -11,9 +11,11 @@ Never modifies files in data/raw/.
 from __future__ import annotations
 
 import re
+import argparse
 from pathlib import Path
 
 import pandas as pd
+import pyarrow.parquet as pq
 
 # --- Paths (relative to repository root) ---
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -351,10 +353,28 @@ def apply_conservative_filters(
     return df, drops
 
 
-def discover_raw_parquet_files() -> list[Path]:
-    """Find Yellow and HVFHV parquet files under data/raw/."""
+def discover_raw_parquet_files(
+    year: int | None = None,
+    months: set[int] | None = None,
+    services: set[str] | None = None,
+) -> list[Path]:
+    """Find Yellow and HVFHV parquet files under data/raw/, optionally scoped."""
     files = sorted(RAW_DIR.rglob("*.parquet"))
-    return [f for f in files if identify_service_type(f.name) is not None]
+    scoped_files: list[Path] = []
+    for file_path in files:
+        service_type = identify_service_type(file_path.name)
+        year_month = parse_year_month_from_path(file_path)
+        if service_type is None or year_month is None:
+            continue
+        file_year, file_month = year_month
+        if year is not None and file_year != year:
+            continue
+        if months is not None and file_month not in months:
+            continue
+        if services is not None and service_type not in services:
+            continue
+        scoped_files.append(file_path)
+    return scoped_files
 
 
 def output_path_for(service_type: str, year: int, month: int) -> Path:
@@ -372,7 +392,30 @@ def order_columns(df: pd.DataFrame, service_type: str) -> pd.DataFrame:
     return df[cols]
 
 
-def process_one_file(raw_path: Path) -> dict:
+def align_to_reference_schema(
+    df: pd.DataFrame, service_type: str, month: int, reference_year: int | None
+) -> pd.DataFrame:
+    """Optionally align output columns to an existing processed reference year."""
+    if reference_year is None:
+        return df
+
+    reference_path = output_path_for(service_type, reference_year, month)
+    if not reference_path.exists():
+        raise FileNotFoundError(
+            f"Missing reference schema file: {reference_path.relative_to(REPO_ROOT)}"
+        )
+
+    reference_columns = pq.read_schema(reference_path).names
+    missing_columns = [col for col in reference_columns if col not in df.columns]
+    if missing_columns:
+        raise ValueError(
+            f"Cannot align {service_type} {month:02d} to {reference_year}: "
+            f"missing columns {missing_columns}"
+        )
+    return df[reference_columns]
+
+
+def process_one_file(raw_path: Path, match_schema_year: int | None = None) -> dict:
     """Read, standardize, clean, and save one raw parquet file."""
     raw_path = raw_path.resolve()
     service_type = identify_service_type(raw_path.name)
@@ -414,6 +457,7 @@ def process_one_file(raw_path: Path) -> dict:
     record.update(drop_detail)
 
     df = order_columns(df, service_type)
+    df = align_to_reference_schema(df, service_type, month, match_schema_year)
 
     out_path = output_path_for(service_type, year, month)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -427,29 +471,97 @@ def process_one_file(raw_path: Path) -> dict:
     return record
 
 
-def write_qc_reports(row_records: list[dict], issue_records: list[dict]) -> None:
+def write_qc_reports(
+    row_records: list[dict], issue_records: list[dict], filename_suffix: str = ""
+) -> None:
     """Write row-count and issue summaries to data/processed/qc/."""
     QC_DIR.mkdir(parents=True, exist_ok=True)
 
     counts_df = pd.DataFrame(row_records)
-    counts_path = QC_DIR / "standardization_row_counts.csv"
+    counts_path = QC_DIR / f"standardization_row_counts{filename_suffix}.csv"
     counts_df.to_csv(counts_path, index=False)
 
     issues_df = pd.DataFrame(issue_records)
-    issues_path = QC_DIR / "standardization_issues.csv"
+    issues_path = QC_DIR / f"standardization_issues{filename_suffix}.csv"
     issues_df.to_csv(issues_path, index=False)
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Standardize raw TLC Yellow and HVFHV parquet files one file at a time."
+    )
+    parser.add_argument(
+        "--year",
+        type=int,
+        default=None,
+        help="Optional source year filter, for example 2023.",
+    )
+    parser.add_argument(
+        "--months",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Optional numeric month filter, for example --months 2 3 4 5 6.",
+    )
+    parser.add_argument(
+        "--service",
+        nargs="+",
+        choices=["yellow", "hvfhv"],
+        default=None,
+        help="Optional service filter. Defaults to both services.",
+    )
+    parser.add_argument(
+        "--qc-suffix",
+        default=None,
+        help=(
+            "Optional suffix for QC filenames, such as _2023. "
+            "Defaults to _YEAR when --year is supplied."
+        ),
+    )
+    parser.add_argument(
+        "--match-existing-schema-year",
+        type=int,
+        default=None,
+        help=(
+            "Optional processed year to use as the output column reference. "
+            "Useful when adding a new year without rewriting existing years."
+        ),
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    raw_files = discover_raw_parquet_files()
+    args = parse_args()
+    month_filter = set(args.months) if args.months is not None else None
+    service_filter = set(args.service) if args.service is not None else None
+    qc_suffix = args.qc_suffix
+    if qc_suffix is None:
+        qc_suffix = f"_{args.year}" if args.year is not None else ""
+
+    raw_files = discover_raw_parquet_files(
+        year=args.year,
+        months=month_filter,
+        services=service_filter,
+    )
     row_records: list[dict] = []
     issue_records: list[dict] = []
     created_outputs: list[str] = []
 
-    print(f"Found {len(raw_files)} raw Yellow/HVFHV parquet file(s) under {RAW_DIR}\n")
+    scope_bits = []
+    if args.year is not None:
+        scope_bits.append(f"year={args.year}")
+    if month_filter is not None:
+        scope_bits.append(f"months={sorted(month_filter)}")
+    if service_filter is not None:
+        scope_bits.append(f"services={sorted(service_filter)}")
+    scope = f" ({', '.join(scope_bits)})" if scope_bits else ""
+
+    print(f"Found {len(raw_files)} raw Yellow/HVFHV parquet file(s) under {RAW_DIR}{scope}\n")
 
     for raw_path in raw_files:
-        record = process_one_file(raw_path)
+        record = process_one_file(
+            raw_path, match_schema_year=args.match_existing_schema_year
+        )
         row_records.append(record)
 
         if record["status"] == "skipped":
@@ -473,7 +585,7 @@ def main() -> None:
         if record.get("output_file"):
             created_outputs.append(record["output_file"])
 
-    write_qc_reports(row_records, issue_records)
+    write_qc_reports(row_records, issue_records, filename_suffix=qc_suffix)
 
     # --- Summary for teammates ---
     print("\n" + "=" * 60)

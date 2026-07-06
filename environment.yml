@@ -8,3 +8,9 @@ dependencies:
   - pyarrow>=14.0
   - numpy>=1.26
   - duckdb>=1.0
+  - matplotlib
+  - jupyterlab
+  - nbconvert
+  - nbformat
+  - ipykernel
+  - statsmodels

@@ -1,0 +1,11 @@
+source_file,issue,rows_before,rows_after,rows_dropped
+data/raw/2023/Apr/fhvhv_tripdata_2023-04.parquet,rows_dropped_during_cleaning,19144903,19136520,8383
+data/raw/2023/Apr/yellow_tripdata_2023-04.parquet,rows_dropped_during_cleaning,3288250,3256776,31474
+data/raw/2023/Feb/fhvhv_tripdata_2023-02.parquet,rows_dropped_during_cleaning,17960971,17951517,9454
+data/raw/2023/Feb/yellow_tripdata_2023-02.parquet,rows_dropped_during_cleaning,2913955,2887239,26716
+data/raw/2023/June/fhvhv_tripdata_2023-06.parquet,rows_dropped_during_cleaning,19366619,19362176,4443
+data/raw/2023/June/yellow_tripdata_2023-06.parquet,rows_dropped_during_cleaning,3307234,3274551,32683
+data/raw/2023/Mar/fhvhv_tripdata_2023-03.parquet,rows_dropped_during_cleaning,20413539,20400980,12559
+data/raw/2023/Mar/yellow_tripdata_2023-03.parquet,rows_dropped_during_cleaning,3403766,3371827,31939
+data/raw/2023/May/fhvhv_tripdata_2023-05.parquet,rows_dropped_during_cleaning,19847676,19842923,4753
+data/raw/2023/May/yellow_tripdata_2023-05.parquet,rows_dropped_during_cleaning,3513649,3480221,33428

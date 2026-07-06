@@ -1,0 +1,11 @@
+source_file,service_type,status,year,month,rows_before,dropoff_not_after_pickup,non_positive_passenger_cost_pretip,rows_after,rows_dropped,output_file,pickup_year_month_mismatch
+data/raw/2023/Apr/fhvhv_tripdata_2023-04.parquet,hvfhv,ok,2023,4,19144903,3,8380,19136520,8383,data/processed/00_standardized_trips/hvfhv/2023/04.parquet,
+data/raw/2023/Apr/yellow_tripdata_2023-04.parquet,yellow,ok,2023,4,3288250,1172,30207,3256776,31474,data/processed/00_standardized_trips/yellow/2023/04.parquet,95.0
+data/raw/2023/Feb/fhvhv_tripdata_2023-02.parquet,hvfhv,ok,2023,2,17960971,2,9452,17951517,9454,data/processed/00_standardized_trips/hvfhv/2023/02.parquet,
+data/raw/2023/Feb/yellow_tripdata_2023-02.parquet,yellow,ok,2023,2,2913955,1265,25396,2887239,26716,data/processed/00_standardized_trips/yellow/2023/02.parquet,55.0
+data/raw/2023/June/fhvhv_tripdata_2023-06.parquet,hvfhv,ok,2023,6,19366619,2,4441,19362176,4443,data/processed/00_standardized_trips/hvfhv/2023/06.parquet,
+data/raw/2023/June/yellow_tripdata_2023-06.parquet,yellow,ok,2023,6,3307234,1253,31389,3274551,32683,data/processed/00_standardized_trips/yellow/2023/06.parquet,41.0
+data/raw/2023/Mar/fhvhv_tripdata_2023-03.parquet,hvfhv,ok,2023,3,20413539,2,12557,20400980,12559,data/processed/00_standardized_trips/hvfhv/2023/03.parquet,
+data/raw/2023/Mar/yellow_tripdata_2023-03.parquet,yellow,ok,2023,3,3403766,1453,30297,3371827,31939,data/processed/00_standardized_trips/yellow/2023/03.parquet,189.0
+data/raw/2023/May/fhvhv_tripdata_2023-05.parquet,hvfhv,ok,2023,5,19847676,3,4750,19842923,4753,data/processed/00_standardized_trips/hvfhv/2023/05.parquet,
+data/raw/2023/May/yellow_tripdata_2023-05.parquet,yellow,ok,2023,5,3513649,1170,32209,3480221,33428,data/processed/00_standardized_trips/yellow/2023/05.parquet,49.0

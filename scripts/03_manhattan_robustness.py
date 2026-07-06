@@ -4,7 +4,7 @@ Manhattan and within-borough robustness checks for HVFHV DS_z correlations.
 This is a small downstream check using the existing DS_z vs. volume-change
 export. It does not rerun the disruption-score pipeline or change the DS_z
 definition. Run from the repository root:
-    python scripts/EDA_adithya/03_manhattan_robustness.py
+    python scripts/03_manhattan_robustness.py
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from pathlib import Path
 import pandas as pd
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = REPO_ROOT / "data" / "processed" / "disruption_score"
 INPUT_PATH = OUTPUT_DIR / "hvfhv_ds_z_vs_volume_change.csv"
 ZONE_LOOKUP_PATH = REPO_ROOT / "data" / "taxi_zone_lookup.csv"
@@ -181,7 +181,7 @@ def build_correlations(df: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     if not INPUT_PATH.exists():
         raise FileNotFoundError(
-            f"Missing {INPUT_PATH}. Run scripts/EDA_adithya/01_pipeline.py first."
+            f"Missing {INPUT_PATH}. Run scripts/01_pipeline.py first."
         )
     if not ZONE_LOOKUP_PATH.exists():
         raise FileNotFoundError(f"Missing local zone lookup file: {ZONE_LOOKUP_PATH}")

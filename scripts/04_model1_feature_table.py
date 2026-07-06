@@ -6,7 +6,7 @@ disruption-score outputs to 2024-only controls aggregated from standardized
 HVFHV parquet files.
 
 Run from the repository root:
-    python scripts/EDA_adithya/04_model1_feature_table.py
+    python scripts/04_model1_feature_table.py
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 DISRUPTION_DIR = REPO_ROOT / "data" / "processed" / "disruption_score"
 STANDARDIZED_2024_DIR = (
     REPO_ROOT / "data" / "processed" / "00_standardized_trips" / "hvfhv" / "2024"
@@ -422,7 +422,7 @@ From the repository root (requires local Feb-Jun 2024 HVFHV standardized
 parquets under `data/processed/00_standardized_trips/hvfhv/2024/`):
 
 ```bash
-python scripts/EDA_adithya/04_model1_feature_table.py
+python scripts/04_model1_feature_table.py
 ```
 
 DuckDB aggregation uses `SET threads TO 1` for deterministic float averages.

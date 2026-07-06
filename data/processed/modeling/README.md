@@ -46,7 +46,7 @@ From the repository root (requires local Feb-Jun 2024 HVFHV standardized
 parquets under `data/processed/00_standardized_trips/hvfhv/2024/`):
 
 ```bash
-python scripts/EDA_adithya/04_model1_feature_table.py
+python scripts/04_model1_feature_table.py
 ```
 
 DuckDB aggregation uses `SET threads TO 1` for deterministic float averages.
