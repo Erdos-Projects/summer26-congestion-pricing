@@ -80,3 +80,4 @@ data/processed/00_standardized_trips/**
 artifacts/**
 !artifacts/**/
 !artifacts/**/.gitkeep
+docs/current_project_status.md
