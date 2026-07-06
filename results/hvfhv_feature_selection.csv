@@ -1,0 +1,42 @@
+feature,level,near_constant_2024,max_abs_corr_pearson,VIF,leakage_status,decision,reason
+pickup_hour,trip,False,,,safe_2024,EDA-only,descriptive temporal EDA; not a model feature
+pickup_weekday,trip,,,,safe_2024,EDA-only,descriptive temporal EDA; not a model feature
+PULocationID,trip,,,,safe_2024,engineer,defines pickup zone-direction unit and CRZ geography exposure
+DOLocationID,trip,,,,safe_2024,engineer,defines dropoff zone-direction unit and CRZ geography exposure
+hvfhs_license_num,trip,,,,context,EDA-only,provider mix context; not a primary causal control
+provider_label,trip,,,,context,EDA-only,provider mix context; use descriptively
+shared_request_yes_flag,trip,False,,,context,EDA-only,shared-ride regime context; not a primary model feature
+shared_match_yes_flag,trip,False,,,context,EDA-only,shared-ride regime context; not a primary model feature
+trip_distance_miles,trip,False,0.923,7.17,safe_2024,keep,physical trip-shape control candidate when aggregated from pre-policy data
+trip_duration_minutes,trip,False,0.907,6.27,redundant,drop,correlated with distance and potentially affected by traffic conditions
+base_passenger_fare,trip,False,0.993,72.19,safe_2024,context,component of reconstructed passenger cost; use as 2024 aggregate sensitivity only
+passenger_cost_pretip,trip,False,1.0,66.42,outcome,keep,cost outcome and DS_z denominator basis; not a 2025 control
+passenger_cost_excl_cbd,trip,,1.0,,redundant,engineer,cost denominator precursor; near-duplicate of passenger cost outside fee adjustment
+base_cost_ex_cbd,trip,,1.0,,redundant,engineer,rounded DS_z denominator with $1 floor for burden analysis
+cbd_congestion_fee,trip,True,,,cleaning,keep,policy fee and DS_z numerator; degenerate in 2024 by design
+charged_cbd_flag,trip,True,,,forbidden_2025,replace,observed post-policy charge flag; use geography exposure for cross-year Model 2
+relative_cbd_burden_current_cost,trip,,,,redundant,reference,reference burden metric; not independent from DS_z
+relative_cbd_burden_base_cost,trip,,,,redundant,reference,trip-level DS_z equivalent; reference only
+congestion_surcharge,trip,,0.294,,cleaning,context,legacy surcharge component; not a standalone model feature
+tolls,trip,,0.592,,cleaning,context,passenger-cost component; not a standalone model feature
+airport_fee,trip,,0.483,,safe_2024,context,airport exposure context; not a primary model feature
+bcf,trip,,0.981,,cleaning,context,passenger-cost component; not a standalone model feature
+sales_tax,trip,,0.741,,cleaning,context,passenger-cost component; not a standalone model feature
+tips,trip,,,,outcome,drop,post-policy rider payment behavior; not used as volume-control feature
+driver_pay,trip,False,0.936,25.67,outcome,EDA-only,driver-side outcome/context; not a post-policy volume-control feature
+DS_z,zone,False,0.997,,outcome,primary,Model 1 burden metric; 2025 charged trips with $1 denominator floor
+DS_z_median,zone,False,0.997,,outcome,reference,robustness companion to mean DS_z
+pct_volume_change,zone,False,0.525,,outcome,outcome,Model 1 outcome; never use as a predictor of itself
+delta_volume,zone,False,,,outcome,outcome,outcome ingredient; not an explanatory control
+n_trips_2024,zone,False,0.632,,safe_2024,keep,pre-policy baseline volume control
+n_trips_2025,zone,False,,,forbidden_2025,drop,post-policy outcome ingredient
+avg_base_fare_2024,zone,False,0.989,,safe_2024,keep,pre-policy fare sensitivity; use carefully with burden
+avg_total_cost_2024,zone,False,0.989,,safe_2024,keep,pre-policy cost sensitivity; use carefully with burden
+avg_trip_distance_2024,zone,False,0.757,,safe_2024,keep,pre-policy trip-shape control
+avg_trip_duration_2024,zone,False,0.826,,safe_2024,sensitivity,pre-policy duration sensitivity; interpret cautiously
+Borough,zone,False,,,safe_2024,keep,geographic context and robustness grouping
+charged_share_2024_geo,panel,False,,,safe_2024,primary,Model 2 pre-policy geography-based exposure
+post,panel,True,,,design,keep,post-period indicator for Model 2 interaction
+n_trips,panel,False,,,outcome,outcome,monthly trip-count outcome ingredient
+log_n_trips,panel,False,,,outcome,outcome,Model 2 outcome
+2025 observed charged share,panel,,,,forbidden_2025,diagnostic,validation diagnostic only; not main exposure
