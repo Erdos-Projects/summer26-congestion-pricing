@@ -1,4 +1,11 @@
-﻿# HVFHV Zone Disruption Score Outputs
+﻿# Disruption Score & DiD Panel Outputs
+
+This directory holds three groups of CSVs: **HVFHV** DS_z (documented first, below), the **yellow**
+DS_z outputs, and the **Model-2 / Model-3 DiD panels**. Each file's generating script is named in its
+section. See also [`docs/modeling_plan.md`](../../docs/modeling_plan.md) and
+[`docs/evaluation_plan.md`](../../docs/evaluation_plan.md).
+
+## HVFHV DS_z (`scripts/EDA_adithya/01_pipeline.py`)
 
 Authoritative run guide for `scripts/01_pipeline.py` and related exports. See also [`docs/methodology_notes.md`](../../docs/methodology_notes.md) for full methodology.
 
@@ -71,3 +78,38 @@ Do not regress `pct_volume_change` on a disruption score that includes volume
 change. The current DS_z definition does not include volume change directly, but
 downstream models should still use pre-policy controls only when explaining
 post-policy outcomes.
+
+---
+
+## Yellow DS_z (`scripts/yellow_ds_pipeline.py`)
+
+Same DS_z definition as HVFHV, on `data/processed/00_standardized_trips/yellow/{2024,2025}/*.parquet`.
+**Yellow-specific rules:** burden (`DS_z`) uses **2025 charged card/cash** trips; volume uses **non-Flex**
+trips; **non-movement** rows are dropped (`zero_distance AND (PU==DO OR trip_duration < 60s)`); window
+**Feb–Jun**; single-threaded + rounded so re-runs are byte-reproducible.
+
+- `yellow_zone_disruption_score.csv`: primary zone × direction DS_z table (mean + median, `DS_z_rank`, `low_n_flag`), per base-cost floor.
+- `yellow_behavioral_shift.csv`: non-Flex volume + avg cost/distance per zone × direction, 2024 vs 2025.
+- `yellow_ds_z_vs_volume_change.csv`: DS_z + rank joined to the 2024→2025 volume change — the **Model-1** input.
+- `yellow_ds_floor_sensitivity.csv`, `yellow_ds_rank_stability.csv`: DS_z at $0.50 / $1 / $2 / $5 floors + rank stability.
+- `yellow_charged_geo_validation.csv`: agreement of the geographic CRZ rule vs the 2025 `charged_cbd_flag`.
+- `yellow_monthly_panel.csv`: the **Model-2** input — non-Flex trip counts per `zone × direction × month × year` (Feb–Jun 2024/2025), with `crz_zone` (binary CRZ membership) and `charged_share` (2024, direction-specific CRZ exposure).
+
+## Model 2 / Model 3 DiD panels
+
+Monthly trip-count panels for the difference-in-differences volume analysis. **All aggregated with
+matched rules:** the 38 CRZ zones, the non-movement drop, Feb–Jun, single-threaded for reproducibility.
+Shared columns: `n_trips`, `crz_zone`, `charged_share` (pre-year direction-specific CRZ exposure), plus
+`vehicle` for the cross-vehicle panels.
+
+- `m3_cross_vehicle_panel.csv` — `scripts/build_m3_panel.py`. yellow (**card/cash**) + HVFHV (**all**),
+  unit `zone × direction × vehicle × month × year`, 2024/2025 — the **Model-3** input.
+- `m3_placebo_panel_2023_2024.csv` — `scripts/build_m3_panel.py --placebo`. Same structure but the
+  no-fee **2023 vs 2024** pair (exposure computed from 2023) — the **Model-3 placebo** input.
+- `yellow_2023_placebo_monthly_panel.csv` — `scripts/build_yellow_2023_placebo_panel.py`. Yellow
+  non-Flex, **2023 vs 2024**, carrying both `charged_share_2023` (no-leakage) and `charged_share_2024` —
+  the **Model-2 placebo** input.
+
+The per-model estimates and verdicts live in the notebooks
+([`../../notebooks/yellow_model1_model2.ipynb`](../../notebooks/yellow_model1_model2.ipynb),
+[`../../notebooks/model3_cross_vehicle.ipynb`](../../notebooks/model3_cross_vehicle.ipynb)), not here.
