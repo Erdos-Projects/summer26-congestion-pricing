@@ -110,6 +110,7 @@ def build_pipeline() -> None:
 
     # ---- DS_z at multiple floors (2025 charged card/cash, non-movement dropped) ----
     floors_sql = ", ".join(f"({f:.2f})" for f in SENSITIVITY_FLOORS)
+    top_n_values_sql = ", ".join(f"({n})" for n in TOP_N_VALUES)
     con.execute(
         f"""
         CREATE OR REPLACE TABLE ds_floor_sensitivity_base AS
@@ -169,11 +170,11 @@ def build_pipeline() -> None:
 
     # ---- behavioral shift: non-Flex volume per zone x direction ----
     con.execute(
-        """
+        f"""
         CREATE OR REPLACE TABLE behavioral_shift AS
         WITH combined AS (
             SELECT year AS yr, PULocationID, DOLocationID, passenger_cost_pretip, trip_distance_miles
-            FROM trips WHERE NOT flex_fare_flag          -- non-Flex real trips (card/cash + irregular)
+            FROM trips WHERE NOT flex_fare_flag AND NOT {NON_MOVEMENT_SQL}   -- non-Flex real trips (card/cash + irregular), drop non-movement
         ),
         pu AS (
             SELECT PULocationID AS zone, 'pickup' AS direction, yr,
@@ -263,6 +264,29 @@ def build_pipeline() -> None:
         ORDER BY aggregation_method, denominator_floor, direction
         """
     )
+    con.execute(
+        f"""
+        CREATE OR REPLACE TABLE top_zone_overlap AS
+        WITH top_n(top_n) AS (VALUES {top_n_values_sql}),
+        primary_rank AS (
+            SELECT zone, direction, rank_position AS primary_rank
+            FROM ds_definition_ranks
+            WHERE denominator_floor = {PRIMARY_FLOOR:.2f} AND aggregation_method = 'mean'
+        ),
+        comparisons AS (
+            SELECT r.definition_key, r.denominator_floor, r.aggregation_method, r.direction, n.top_n,
+                   SUM(CASE WHEN p.primary_rank <= n.top_n AND r.rank_position <= n.top_n THEN 1 ELSE 0 END)
+                       AS overlapping_zone_count
+            FROM ds_definition_ranks r
+            JOIN primary_rank p ON r.zone = p.zone AND r.direction = p.direction
+            CROSS JOIN top_n n
+            GROUP BY r.definition_key, r.denominator_floor, r.aggregation_method, r.direction, n.top_n
+        )
+        SELECT definition_key, denominator_floor, aggregation_method, direction, top_n,
+               overlapping_zone_count, overlapping_zone_count::DOUBLE / top_n AS overlap_share
+        FROM comparisons ORDER BY aggregation_method, denominator_floor, direction, top_n
+        """
+    )
 
     # ---- monthly panel + 2024 charged-share exposure (Model 2 DiD) ----
     # charged_share is direction-specific (matches the zone x direction unit) and computed from
@@ -293,7 +317,7 @@ def build_pipeline() -> None:
         CREATE OR REPLACE TABLE monthly_panel AS
         WITH combined AS (
             SELECT year AS yr, month AS mo, PULocationID, DOLocationID
-            FROM trips WHERE NOT flex_fare_flag
+            FROM trips WHERE NOT flex_fare_flag AND year IN (2024, 2025) AND NOT {NON_MOVEMENT_SQL}  -- Model-2 fee window only, drop non-movement
         ),
         pu AS (
             SELECT PULocationID AS zone, 'pickup' AS direction, yr, mo, COUNT(*) AS n_trips
@@ -321,6 +345,7 @@ def build_pipeline() -> None:
         "yellow_ds_z_vs_volume_change.csv": "SELECT * FROM ds_z_vs_volume_change",
         "yellow_ds_floor_sensitivity.csv": "SELECT * FROM ds_floor_sensitivity_base",
         "yellow_ds_rank_stability.csv": "SELECT * FROM rank_stability",
+        "yellow_ds_top_zone_overlap.csv": "SELECT * FROM top_zone_overlap",
         "yellow_charged_geo_validation.csv": "SELECT * FROM charged_geo_validation",
     }
     for filename, query in outputs.items():

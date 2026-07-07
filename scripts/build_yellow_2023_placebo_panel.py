@@ -31,7 +31,7 @@ from standardize_trips import (
     order_columns,
     standardize_yellow,
 )
-from yellow_ds_pipeline import CRZ_ZONE_IDS
+from yellow_ds_pipeline import CRZ_ZONE_IDS, NON_MOVEMENT_SQL
 
 
 DEFAULT_SOURCE_2023_DIR = Path("/Users/ping/Desktop/data/2023_yellow")
@@ -165,6 +165,7 @@ def build_placebo_panel() -> Path:
                 WHERE year = {exposure_year}
                   AND month BETWEEN 2 AND 6
                   AND NOT flex_fare_flag
+                  AND NOT {NON_MOVEMENT_SQL}
             ),
             cs_pu AS (
                 SELECT PULocationID AS zone, 'pickup' AS direction,
@@ -189,6 +190,7 @@ def build_placebo_panel() -> Path:
             WHERE year IN (2023, 2024)
               AND month BETWEEN 2 AND 6
               AND NOT flex_fare_flag
+              AND NOT {NON_MOVEMENT_SQL}
         ),
         pu AS (
             SELECT PULocationID AS zone, 'pickup' AS direction, yr, mo, COUNT(*) AS n_trips

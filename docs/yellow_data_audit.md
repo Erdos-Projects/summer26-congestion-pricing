@@ -183,7 +183,7 @@ Different questions use different row subsets of the cleaned data:
 | Question / outcome | Rows used |
 |---|---|
 | **Relative burden / DS_z** | **2025, charged, card/cash** trips only; base cost ≥ $1.00 floor; **exclude non-movement** (zero-distance with PU==DO or duration<60s); report per zone × direction, medians |
-| **Trip volume (clean policy signal)** | **exclude Flex** (its adoption boom confounds raw totals, §6); count card/cash **+ irregular** (no-charge/dispute) — all real metered trips; irregular rate is stable across years (§7) so no YoY bias; report by month |
+| **Trip volume (clean policy signal)** | **exclude Flex** (its adoption boom confounds raw totals, §6); **exclude non-movement** (zero-distance with PU==DO or duration<60s — same rule as DS_z, invalid rows); count card/cash **+ irregular** (no-charge/dispute) — all real metered trips; irregular rate is stable across years (§7) so no YoY bias; report by month |
 | **Total demand (context only)** | all yellow incl. Flex — but read as demand, **not** a policy effect |
 | **Distance / speed / per-mile** | card/cash, exclude zero-distance rows |
 | **Cost trend** | card/cash by month (Flex reported separately, never merged) |
@@ -191,7 +191,10 @@ Different questions use different row subsets of the cleaned data:
 ## 6. The Flex-adoption confound (why raw volume is not a policy signal)
 
 Yellow trip volume rose ~11–20% in every post-policy month, but this is **not** the congestion
-fee. Two forces push the Flex Fare share up between the two windows — **neither is the fee**:
+fee. Over the Feb–Jun window, raw **all-yellow volume is +16.9%** (2024→2025) — yet the
+**fee-relevant non-Flex population is flat (−0.8%; card/cash −1.4%)** while **Flex alone grew
++164.1%** (share **10.7% → 24.3%**). The entire raw rise is Flex. Two forces push the Flex Fare
+share up between the two windows — **neither is the fee**:
 
 1. **A structural program change:** the Flex Fare (TLC upfront-pricing) pilot was made
    permanent — **adopted Aug 14, 2024, effective Sept 21, 2024** — which falls **exactly
@@ -234,7 +237,8 @@ needs HVFHV data.)
    (3/4/5/6) are real trips → excluded from all **financial** analysis, but **counted in volume**.
 4. Flex distance is **less reliable** (weakly-anchored, §4.3), not unusable; distance analysis
    uses card/cash anyway (burden population), capping rare extreme values in both regimes.
-5. **Non-movement dropped** — zero-distance with PU==DO or duration<60s (~0.6% of card/cash);
+5. **Non-movement dropped from volume and burden alike** — zero-distance with PU==DO or
+   duration<60s (~0.6% of card/cash); a single "valid trip" definition applied across both services;
    genuine zero-distance PU≠DO trips (duration≥60s) kept-flagged, not used for distance analysis.
 6. Burden tail retained; medians + winsorized means + $1 floor.
 7. Volume outcome = **non-Flex** metered trips (card/cash + irregular real trips); only Flex is
