@@ -8,16 +8,17 @@ what we found, how strong each result is, and where we need cautious language.
 
 Source notebooks:
 
+- `notebooks/yellow_burden_ranking_and_heterogeneity.ipynb`
+- `notebooks/hvfhv_burden_ranking_and_heterogeneity.ipynb`
 - `notebooks/yellow_model1_model2.ipynb`
 - `notebooks/hvfhv_model1_model2.ipynb`
 - `notebooks/model3_cross_vehicle.ipynb`
-- `notebooks/zones_stratify.ipynb`
 - `notebooks/yellow_taxi_full_EDA.ipynb`
 - `notebooks/hvfhv_full_EDA.ipynb`
 
 Companion docs:
 
-- `docs/modeling_plan.md`
+- `docs/burden_analysis_and_modeling_plan.md`
 - `docs/evaluation_plan.md`
 - `docs/yellow_data_audit.md`
 - `docs/hvfhv_data_audit.md`
@@ -75,14 +76,16 @@ We should not present as established:
 - A clean statement that the CBD fee caused Yellow trip volume to fall.
 - A clean statement that the CBD fee caused HVFHV trip volume to fall.
 - A per-dollar fee elasticity estimate.
-- A claim that Model 1 is causal. Model 1 is a ranking and descriptive association, not identification.
+- A claim that Model 1 is causal. Model 1 is a descriptive burden-volume association (the ranking
+  itself is the Goal-1 deliverable), not identification.
 
-## Model 1: Burden Ranking And Descriptive Association
+## Model 1: Descriptive Burden-Volume Association
 
 Model 1 asks whether higher-burden zone-sides lost more trips from Feb-Jun 2024 to Feb-Jun 2025.
-It is the best model for answering "who bears more relative fee burden?" It is not a clean causal
-design for volume effects because high `DS_z`, short trips, dense Manhattan geography, and CRZ
-charging are closely related.
+The burden ranking itself is the Goal-1 deliverable and now lives in the
+`*_burden_ranking_and_heterogeneity` notebooks; Model 1 is the first descriptive check of whether
+that ranking lines up with volume change. It is not a clean causal design for volume effects because
+high `DS_z`, short trips, dense Manhattan geography, and CRZ charging are closely related.
 
 ### Yellow Taxi
 
@@ -308,7 +311,8 @@ Medium priority:
 
 - Move any remaining final-facing plots from notebook-only outputs into `results/` rather than
   `artifacts/`, since `artifacts/` is ignored.
-- Add an HVFHV `airport_trip_flag` only if airport-trip analysis is included in the final
-  presentation.
+- HVFHV airport-vs-non-airport burden is now covered in
+  `hvfhv_burden_ranking_and_heterogeneity.ipynb`, matching the yellow burden notebook; no separate
+  `airport_trip_flag` build is needed for the presentation.
 - Check that all final materials use the same causal language: "suggestive association" rather than
   "causal effect" unless the claim is only about burden ranking.

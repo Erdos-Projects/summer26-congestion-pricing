@@ -1,21 +1,93 @@
-# Modeling Plan — CBD Congestion Pricing (yellow taxi + HVFHV)
+# Burden Analysis and Modeling Plan
 
-**This project is inference only** — we estimate an *effect* (how the CBD congestion fee changed
-rider behavior), not a prediction. Written for both vehicle tracks; yellow-specific choices are
-marked. This file **explains the design**; the data audit
-([`yellow_data_audit.md`](yellow_data_audit.md)) and the feature list
-([`yellow_dropped_and_engineered_features.md`](yellow_dropped_and_engineered_features.md))
-confirm the features serve it; the yellow DS_z pipeline
-([`scripts/yellow_ds_pipeline.py`](../scripts/yellow_ds_pipeline.py)) applies it to full data.
+This project has two linked parts. First, a **descriptive burden analysis** ranks zone-sides by how
+large the congestion fee is relative to trip cost. Second, the **modeling plan** asks whether fee
+exposure is associated with changes in trip volume. The burden analysis produces the `DS_z` ranking
+and heterogeneity summaries; the modeling plan uses comparisons over time, exposure, and vehicle
+type to evaluate volume-change patterns.
 
-**Two goals:**
+This file defines the burden analysis and volume-modeling design. It is written for both vehicle
+tracks; service-specific choices are marked where they matter. The EDA summary, data audits, and
+feature-engineering notes provide the data-quality support for these choices:
+[`eda_summary.md`](eda_summary.md), [`yellow_data_audit.md`](yellow_data_audit.md),
+[`hvfhv_data_audit.md`](hvfhv_data_audit.md),
+[`yellow_dropped_and_engineered_features.md`](yellow_dropped_and_engineered_features.md), and
+[`hvfhv_dropped_and_engineered_features.md`](hvfhv_dropped_and_engineered_features.md).
+
+**Project goals:**
 1. **Who bears the burden?** Rank each zone by how heavy the fee is relative to the fare — the
    Zone Disruption Score, `DS_z`.
 2. **Did the fee reduce trips?** Test whether zones/trips charged more lost more volume.
 
 ---
 
-## The three models
+## Part I — Burden Analysis Design
+
+Goal 1 is a **burden-ranking analysis**. The goal is to identify which zone-sides face the largest
+fee relative to the underlying trip cost, and to check whether that ranking is stable enough to
+report.
+
+**Unit.** The unit is **zone × direction**. Pickup and dropoff sides are kept separate because the
+same physical zone can have different burden profiles depending on whether trips start there or end
+there. Keeping the two sides separate also avoids hiding directional patterns in one pooled zone
+score.
+
+**Population.**
+- The burden metric is a **financial burden** measure: it needs a comparable rider-cost denominator,
+  not just a trip count. The EDA and audit files are used to decide which fare records can support
+  that denominator.
+- For Yellow, the burden metric uses **card/cash trips only**, because Flex is upfront-priced and is
+  not directly comparable to the metered fare base used for `DS_z`
+  (see [`yellow_data_audit.md`](yellow_data_audit.md);
+  [`yellow_dropped_and_engineered_features.md`](yellow_dropped_and_engineered_features.md)).
+- For HVFHV, the burden metric uses the standardized passenger-cost measure built for the HVFHV
+  track (see [`hvfhv_data_audit.md`](hvfhv_data_audit.md);
+  [`hvfhv_dropped_and_engineered_features.md`](hvfhv_dropped_and_engineered_features.md)). Shared
+  and provider-specific fields are kept as descriptive context unless the analysis is explicitly
+  asking a shared-trip or provider-specific question.
+- Trips used for the burden metric must have a valid fee and a valid base cost after removing the
+  fee. Rows with implausibly small denominators are handled with a base-cost floor.
+
+**Metric.** For each charged trip, compute:
+
+`relative fee burden = congestion fee / cost excluding the congestion fee`
+
+Then aggregate this trip-level ratio to zone × direction as `DS_z`, reported with both mean and
+median. The mean captures the average fee burden among charged trips; the median is reported because
+the Yellow audit found a long right tail when denominators are small, and the EDA summary therefore
+uses medians and a base-cost floor rather than raw tail values
+([`yellow_data_audit.md`](yellow_data_audit.md); [`eda_summary.md`](eda_summary.md)).
+
+`DS_z` rankings are built **within each service**. Yellow and HVFHV face different fee amounts and
+different underlying cost bases, so a raw cross-service comparison of `DS_z` would mix fee size,
+fare structure, and trip composition rather than giving a clean burden ranking.
+
+**Base-cost floor.** A small denominator can mechanically create very large ratios. The primary
+ranking uses a `$1` base-cost floor after rounding the denominator to cents. This choice is supported
+by the data-audit and feature-engineering checks: Yellow shows that the floor removes almost no
+card/cash charged trips (5 of about 11.2M charged card/cash trips have base cost below `$1`, and
+about 0.02% are below `$5`), while HVFHV documents denominator-floor sensitivity and stable rankings
+under `$0.50`, `$1`, `$2`, and `$5` floors. The ranking is considered more credible when the top
+zones and rank correlations are stable across those floor choices.
+
+**Geography and heterogeneity.** The ranking is summarized by pickup/dropoff side, Manhattan versus
+outer-borough zones, airport-related zones, and trip-length groups. Choropleth maps are used as a
+geographic readout of the same ranking, not as a separate model. These cuts are descriptive: they
+explain where the burden is concentrated and whether the ranking is mainly a short-trip / core-zone
+pattern.
+
+**How to read Goal 1.** A stable `DS_z` ranking answers who faces a higher fee relative to trip
+cost. 
+
+---
+
+## Part II — Modeling Plan
+
+The modeling part asks whether fee exposure is associated with trip-volume change. These models use
+comparisons over zones, time, and vehicle type to make the volume-change interpretation more
+credible.
+
+### The three models
 
 | | **Model 1** | **Model 2** | **Model 3** |
 |---|---|---|---|
@@ -47,7 +119,7 @@ is a distinct quantity; see Model 1.)*
 
 ---
 
-## Unit of analysis — zone × direction
+### Unit of analysis — zone × direction
 
 The observation unit is **zone × direction**: each TLC zone is scored separately on its **pickup
 side** and its **dropoff side**. Rejected alternatives:
@@ -63,9 +135,9 @@ side** and its **dropoff side**. Rejected alternatives:
 
 ---
 
-## Model 1 — Compare zones by their burden score
+### Model 1 — Compare zones by their burden score
 
-**Asks:** do higher-burden zones lose more trips? (And rank the zones — Goal 1.)
+**Asks:** do higher-burden zones lose more trips?
 
 **How:** for each zone × direction compute two numbers — its `DS_z` and its % change in trip
 count 2024→2025 — and check whether higher burden goes with bigger drops.
@@ -78,12 +150,13 @@ count 2024→2025 — and check whether higher burden goes with bigger drops.
   (audit §4.2).
 - **Controls — pre-policy (2024) values only.** Any 2025 value is already a *result* of the fee
   and would cancel the effect. Specifically:
-  - *one* trip-economics measure — 2024 average **distance** (distance/fare/duration all measure
-    roughly the same thing; keep one). **Note:** 2024 distance is only *empirically* correlated
-    with `DS_z` (zone-level Spearman ≈ **−0.88**, Pearson ≈ **−0.81**), **not** the −1.00 same-year
-    identity. But it is collinear enough that the `DS_z` coefficient is **not identified** — adding
-    controls makes it swing rather than settle, so the regression *documents* the confounding problem
-    rather than resolving it.
+  - trip-economics measures from **2024 only** — average distance is the main readable proxy, with
+    baseline fare/cost shown as a sensitivity because distance, fare, cost, and duration all measure
+    the same short-trip / dense-core structure. **Note:** 2024 distance is only *empirically*
+    correlated with `DS_z` (zone-level Spearman ≈ **−0.88**, Pearson ≈ **−0.81**), **not** the
+    −1.00 same-year identity. But it is collinear enough that the `DS_z` coefficient is **not
+    identified** — adding controls makes it swing rather than settle, so the regression *documents*
+    the confounding problem rather than resolving it.
   - **borough** — either add borough dummies (Manhattan = baseline; one `DS_z` slope, now a
     *within-borough* comparison) **or** restrict to Manhattan only (a *diagnostic*, not clean
     robustness — holding borough fixed also removes most of the treatment variation, since the fee is
@@ -92,14 +165,15 @@ count 2024→2025 — and check whether higher burden goes with bigger drops.
 - **Outcome** — each zone × direction's % change in trip count 2024→2025 (**non-Flex** for yellow;
   see *Shared choices*).
 
-**Good for:** the headline zone ranking + the first burden-vs-volume look.
-**Caveat:** correlational only, and for the volume question **not identified** — the cross-zone
-correlation is weak and the coefficient is unstable under controls, so Model 1 gives the ranking
-(Goal 1), not a causal effect (see the Model-1/2 notebook).
+**Good for:** a first burden-vs-volume look after the Goal 1 ranking has been defined.
+**Caveat:** descriptive by design. `DS_z` is mechanically tied to base cost and closely tied to
+short-trip, dense-core geography before any regression is run, so high- and low-`DS_z` zones are not
+clean comparison groups for identifying a fee effect. Model 1 should be read as a descriptive
+association between the Goal 1 burden ranking and volume change.
 
 ---
 
-## Model 2 — CRZ exposure DiD
+### Model 2 — CRZ exposure DiD
 
 **Asks:** did zone-sides more exposed to the fee lose more trips?
 
@@ -134,13 +208,12 @@ change is absorbed by `post`. Report **equal-weighted and volume-weighted** beca
 different questions (per zone-side vs per trip).
 
 **Could go wrong:** assumes exposure groups **would have moved together** absent the fee (**parallel
-trends**, only inspectable here); riders shifting out of exposed zones push controls up
-(**spillover**); the treatment varies with geography, so any differential core-vs-periphery trend
+trends**, only inspectable here); riders shifting out of exposed zones push controls up; the treatment varies with geography, so any differential core-vs-periphery trend
 still confounds — only Model 3 breaks that tie.
 
 ---
 
-## Model 3 — cross-vehicle DiD (same zone, different fee size)
+### Model 3 — cross-vehicle DiD (same zone, different fee size)
 
 **Asks:** does a *bigger* fee cause a *bigger* drop? (Yellow pays $0.75/charged trip; HVFHV $1.50.)
 
@@ -165,6 +238,10 @@ comparison must be made where both vehicles are exposed.
   the cross-vehicle **pre-trend is inspectable**, and the same design runs on a no-fee year pair as a
   placebo — the two central credibility checks for M3.
 - **`vehicle`** — yellow vs HVFHV (stands in for fee size, $0.75 vs $1.50).
+- **Comparability diagnostics** — before reading the cross-vehicle coefficient, check that the two
+  services are aligned on scale, citywide movement, CRZ footprint, and the shape of vehicle-specific
+  seasonality. These checks do not replace the main contrast; they show whether the comparison is
+  being driven by an obvious mismatch between the two vehicle series.
 - **Model (primary, exposed zones):** `log_n ~ C(zone_dir_vehicle) + C(month) + post + post:hvfhv`,
   **cluster-by-zone SE**. `C(zone_dir_vehicle)` = each zone-side × vehicle series its own baseline (so
   the yellow/HVFHV level gap is absorbed, not treated as an effect); **`post:hvfhv`** = how much
@@ -194,8 +271,9 @@ questions (per zone-side vs per trip).
 
 ---
 
-## How the three fit together
-- **Model 1** = *who / how much* (the ranking) — the headline, least airtight.
+## How the pieces fit together
+- **Goal 1** = *who faces the largest relative fee burden* — the ranking.
+- **Model 1** = *whether that burden ranking lines up with volume change* — descriptive only.
 - **Model 2** = *do higher-exposure places change more* — cleaner than Model 1 because it adds a
   comparison group.
 - **Model 3** = *does a bigger fee do more* — cleanest on geography (only the fee-size difference
@@ -204,10 +282,11 @@ questions (per zone-side vs per trip).
 - If all three point the same way, we're confident; if they disagree, that tells us which
   assumption needs the most scrutiny.
 
-## Shared choices (all three)
+## Shared choices (all three models)
 - **Which trips we count (yellow).**
-  - *Financial / burden (Model 1 `DS_z`):* **card/cash only** — Flex is upfront-priced with
-    unreliable distance and non-comparable cost, so it can't enter a fare-based metric (audit §4).
+  - *Financial / burden (Model 1 `DS_z`):* **card/cash only**, following the burden-analysis
+    population above; Flex uses a different upfront-pricing regime and is not comparable for a
+    fare-denominator burden metric.
   - *Trip counts (Model 1 outcome, Models 2–3 yellow side):* **non-Flex** = card/cash **+ irregular
     real trips** (no-charge/dispute are real rides, 0 voided in the data). **Flex is a separate
     regime**, reported alongside but read with caution — its 2024→2025 jump is largely a *program

@@ -8,7 +8,7 @@ HVFHV track separate. Data-quality basis is in
 [`hvfhv_data_audit.md`](hvfhv_data_audit.md). The general leakage /
 manufactured-correlation framework is in
 [`presentation/feature_leakage.markdown`](../presentation/feature_leakage.markdown).
-Model design is in [`modeling_plan.md`](modeling_plan.md), and evaluation rules
+Model design is in [`burden_analysis_and_modeling_plan.md`](burden_analysis_and_modeling_plan.md), and evaluation rules
 are in [`evaluation_plan.md`](evaluation_plan.md).*
 
 ---
