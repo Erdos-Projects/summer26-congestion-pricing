@@ -2,12 +2,14 @@
 
 This directory holds three groups of CSVs: **HVFHV** DS_z (documented first, below), the **yellow**
 DS_z outputs, and the **Model-2 / Model-3 DiD panels**. Each file's generating script is named in its
-section. See also [`docs/modeling_plan.md`](../../docs/modeling_plan.md) and
+section. See also [`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md) and
 [`docs/evaluation_plan.md`](../../docs/evaluation_plan.md).
 
 ## HVFHV DS_z (`scripts/EDA_adithya/01_pipeline.py`)
 
-Authoritative run guide for `scripts/01_pipeline.py` and related exports. See also [`docs/methodology_notes.md`](../../docs/methodology_notes.md) for full methodology.
+Authoritative run guide for `scripts/01_pipeline.py` and related exports. See also
+[`docs/hvfhv_data_audit.md`](../../docs/hvfhv_data_audit.md) and
+[`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md).
 
 Run from the repository root:
 

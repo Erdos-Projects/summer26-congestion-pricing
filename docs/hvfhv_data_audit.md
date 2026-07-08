@@ -8,7 +8,6 @@ For-Hire Vehicle (HVFHV) portion of the NYC CBD congestion-pricing study
 [`hvfhv_dropped_and_engineered_features.md`](hvfhv_dropped_and_engineered_features.md).
 Findings here are distilled from
 [`notebooks/hvfhv_full_EDA.ipynb`](../notebooks/hvfhv_full_EDA.ipynb),
-[`docs/methodology_notes.md`](methodology_notes.md),
 [`data/processed/qc/validation_row_counts.csv`](../data/processed/qc/validation_row_counts.csv),
 and the durable disruption-score outputs under
 [`data/processed/disruption_score/`](../data/processed/disruption_score/).*

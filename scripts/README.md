@@ -18,4 +18,6 @@ Run from the repository root, in order:
 
 7. `python scripts/hvfhv_pretrend_placebo.py` - Builds the no-June HVFHV pretrend and placebo diagnostics.
 
-See [`docs/methodology_notes.md`](../../docs/methodology_notes.md) for the reasoning behind data-quality and formula decisions.
+See [`docs/hvfhv_data_audit.md`](../../docs/hvfhv_data_audit.md) and
+[`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md)
+for the reasoning behind data-quality and formula decisions.

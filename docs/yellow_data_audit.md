@@ -161,9 +161,9 @@ denominator is tiny. Sample p99 = 0.25 (max 0.95) driven by ~76 rows; **full-dat
 - These extreme rows are **low-cost short-haul riders — the population of greatest policy
   interest** — so they are **retained, not dropped**.
 - Summaries use **median / percentiles**; any mean is **winsorized (p99) and disclosed**.
-- For the disruption metric, a **$1.00 base-cost floor** is applied (see
-  [`methodology_notes.md`](methodology_notes.md)) to stop tiny denominators from swinging
-  zone averages. **This floor is inherited from the HVFHV pipeline** (where its $1.50 fee +
+- For the disruption metric, a **$1.00 base-cost floor** is applied to stop tiny
+  denominators from swinging zone averages. **This floor is inherited from the HVFHV pipeline**
+  (where its $1.50 fee +
   floating-point cancellation blew up a few ratios). **Yellow barely bites it** (this is *only* about the DS_z
   denominator, not overall data quality): of 11.2M 2025 charged card/cash trips, only **5** have
   base cost < $1 (all true zero/negative) and 0.02% are below $5 — because a metered yellow fare

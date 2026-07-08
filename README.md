@@ -99,7 +99,8 @@ volume change, exposure, cost, and robustness rather than predictive accuracy.
 - HVFHV audit: [`docs/hvfhv_data_audit.md`](docs/hvfhv_data_audit.md)
 - HVFHV feature decisions:
   [`docs/hvfhv_dropped_and_engineered_features.md`](docs/hvfhv_dropped_and_engineered_features.md)
-- Modeling plan: [`docs/modeling_plan.md`](docs/modeling_plan.md)
+- Burden analysis and modeling plan:
+  [`docs/burden_analysis_and_modeling_plan.md`](docs/burden_analysis_and_modeling_plan.md)
 - Evaluation plan: [`docs/evaluation_plan.md`](docs/evaluation_plan.md)
 - HVFHV DS_z outputs guide:
   [`data/processed/disruption_score/README.md`](data/processed/disruption_score/README.md)

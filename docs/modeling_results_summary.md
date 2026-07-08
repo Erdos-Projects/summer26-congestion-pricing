@@ -22,9 +22,7 @@ Companion docs:
 - `docs/evaluation_plan.md`
 - `docs/yellow_data_audit.md`
 - `docs/hvfhv_data_audit.md`
-- `docs/report_adithya_eda.md`
 - `docs/eda_summary.md`
-- `docs/NYC_HVFHV_Zone_Disruption_Final_Report.markdown`
 
 ## Team Takeaway
 
@@ -246,26 +244,6 @@ So our shared modeling conclusion is:
 > checks show that these models also pick up pre-existing spatial and provider-specific demand
 > patterns. We therefore do not claim a clean causal volume reduction for Yellow Taxi or HVFHV.
 
-## Relationship To The Older HVFHV EDA Report
-
-`docs/report_adithya_eda.md` remains useful for the original HVFHV DS_z construction and the first
-Layer A/Layer B burden-volume story. The main Model 1 finding from that report is still retained:
-HVFHV `DS_z` is negatively associated with 2024->2025 volume change.
-
-Several next steps listed in that older report are now completed or superseded:
-
-- Base-cost floor sensitivity has been completed.
-- Manhattan-only robustness has been completed.
-- Pearson and Spearman robustness tables have been completed.
-- HVFHV Model 2 has been implemented in `hvfhv_model1_model2.ipynb`.
-- Model 3 has been implemented in `model3_cross_vehicle.ipynb`.
-- A newer HVFHV-focused zone disruption report now exists in
-  `docs/NYC_HVFHV_Zone_Disruption_Final_Report.markdown`; it should be treated as the updated
-  technical write-up for the HVFHV Model 1 heterogeneity checks.
-
-If we keep `report_adithya_eda.md` as a final-facing document, we should update it or clearly mark
-it as a historical HVFHV Model 1 report so it does not conflict with the newer modeling results.
-
 ## Presentation/Report Framing
 
 A coherent structure for the final materials is:
@@ -298,8 +276,6 @@ Phrasing we should avoid:
 High priority:
 
 - Use this file as the main modeling-results narrative, or fold it into the final report.
-- Update or archive stale parts of `docs/report_adithya_eda.md` so old "next steps" do not look
-  unfinished.
 - Select the final Model 1 tables/figures from `results/figures/`, `results/eda/figures/`, and the
   model result CSVs.
 - Select the final Model 2 and Model 3 coefficient/diagnostic tables from `results/tables/` for

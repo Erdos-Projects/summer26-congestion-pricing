@@ -8,7 +8,7 @@ Rules applied to both vehicles (matching the yellow Model-1/2 pipeline):
   * non-movement drop: zero_distance AND (PU == DO OR duration < 60s)
   * unit: zone x direction (pickup side = PULocationID, dropoff side = DOLocationID)
 
-Vehicle-specific population (deliberate, see modeling_plan.md Model 3):
+Vehicle-specific population (deliberate, see burden_analysis_and_modeling_plan.md Model 3):
   * yellow: card/cash only (yellow_card_or_cash_flag) -- excludes Flex so Uber<->yellow-Flex
     substitution does not move volume between the two compared services
   * hvfhv:  all HVFHV trips (no Flex regime)
