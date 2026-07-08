@@ -1,6 +1,6 @@
 # Modeling Results Summary
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08
 
 This note pulls together our current modeling conclusions across Yellow Taxi, HVFHV, and the
 cross-vehicle comparison. The goal is to keep the team aligned before report/presentation writing:
@@ -11,6 +11,7 @@ Source notebooks:
 - `notebooks/yellow_model1_model2.ipynb`
 - `notebooks/hvfhv_model1_model2.ipynb`
 - `notebooks/model3_cross_vehicle.ipynb`
+- `notebooks/zones_stratify.ipynb`
 - `notebooks/yellow_taxi_full_EDA.ipynb`
 - `notebooks/hvfhv_full_EDA.ipynb`
 
@@ -21,6 +22,8 @@ Companion docs:
 - `docs/yellow_data_audit.md`
 - `docs/hvfhv_data_audit.md`
 - `docs/report_adithya_eda.md`
+- `docs/eda_summary.md`
+- `docs/NYC_HVFHV_Zone_Disruption_Final_Report.markdown`
 
 ## Team Takeaway
 
@@ -56,6 +59,8 @@ We can state confidently:
   zones.
 - Yellow and HVFHV need different interpretation. Yellow is affected by the Flex Fare regime shift;
   HVFHV is affected by provider composition and Uber/Lyft dynamics.
+- HVFHV shared rides remain small enough for the main rider-level summaries to pool them, but they
+  should be treated as a sensitivity issue for vehicle-volume interpretation.
 - HVFHV has a strong descriptive burden-volume relationship.
 - The DiD-style models are useful diagnostics, but the placebo checks prevent a clean causal claim.
 
@@ -83,12 +88,13 @@ charging are closely related.
 
 Yellow Model 1 gives a weak and non-identified burden-volume relationship.
 
-- Cross-zone `DS_z` vs volume change is weak: Pearson/Spearman about -0.16.
-- The highest-burden quartile is the only quartile with a volume decline: Q1 about +2.9 percent,
+- Cross-zone `DS_z` vs volume change is weak: Pearson about -0.170 and Spearman about -0.163.
+- The highest-burden quartile is the only quartile with a volume decline: Q1 about +3.8 percent,
   Q4 about -1.4 percent.
-- The coefficient is unstable under controls: raw -1.84; with borough +0.72; with distance -3.83;
-  with both -2.81.
-- Within Manhattan alone, the correlation is about +0.15 with confidence interval including zero.
+- The coefficient is unstable under controls: raw -2.04; with borough +0.95; with distance -5.11;
+  with both -3.61.
+- Within Manhattan alone, the correlation is small and positive, about +0.07 Pearson / +0.14
+  Spearman, with confidence intervals including zero.
 
 How we read this: Yellow Model 1 gives the burden ranking, not a reliable volume effect. The weak
 correlation and specification swings show that the dense-core geography confound cannot be resolved
@@ -118,6 +124,14 @@ HVFHV Model 1 gives a much stronger descriptive association.
   Pearson about -0.540, Manhattan dropoff about -0.550, and Manhattan pickup about -0.560.
 - Distance and fare control variants keep the `DS_z` coefficient negative, roughly from -3.25 to
   -1.37 across reported specifications.
+- The newer heterogeneity analysis keeps the main pattern within Manhattan: excluding Randalls
+  Island, the within-Manhattan correlation is about -0.50. Trip-length disaggregation shows short,
+  medium, and long trips all have negative gradients, suggesting a zone-level demand pattern rather
+  than only a short-trip response.
+- Shared rides are not driving the main EDA population: in 2025, shared requests are 3.06 percent of
+  HVFHV rows and matched shared rides are 1.69 percent. They are cheaper within distance buckets, so
+  they need caveating for burden/vehicle-volume interpretation, but the share is small enough for a
+  sensitivity check rather than a full rebuild.
 
 How we read this: HVFHV Model 1 is strong descriptive evidence that higher-burden zones had weaker
 volume growth. We still do not call it causal because the highest-burden zones are concentrated in
@@ -146,11 +160,11 @@ zone-sides. The key exposure is pre-policy geography-based `charged_share_2024_g
 
 Yellow Model 2 is a fragile geographic association.
 
-- Equal-weighted high-exposure estimate is about -9.5 percent, with confidence interval excluding
+- Equal-weighted high-exposure estimate is about -11.1 percent, with confidence interval excluding
   zero.
-- Volume weighting moves the estimate to about +1.5 percent with confidence interval including zero.
+- Volume weighting moves the estimate to about +1.4 percent with confidence interval including zero.
 - Within-Manhattan is close to zero.
-- The 2023->2024 no-fee placebo is strongly negative, about -25 percent.
+- The 2023->2024 no-fee placebo is strongly negative, about -25.8 percent.
 
 How we read this: the equal-weighted negative estimate is a per-zone-side pattern, not a robust
 trip-weighted fee effect. Because the no-fee placebo is even more negative, high-exposure Yellow
@@ -193,7 +207,8 @@ Main results:
 - This primary gap is stable to weighting, a zone-shock control, vehicle-specific seasonality, and
   CRZ bottom-volume trimming.
 - Triple-diff reduces the estimate to about -2 percent in the binary specification.
-- Dropping June gives roughly -4.5 percent.
+- Dropping June gives roughly -6.4 percent for the primary within-CRZ estimate and about -4.3
+  percent in the binary triple-diff specification.
 
 Diagnostics limiting the causal interpretation:
 
@@ -241,6 +256,9 @@ Several next steps listed in that older report are now completed or superseded:
 - Pearson and Spearman robustness tables have been completed.
 - HVFHV Model 2 has been implemented in `hvfhv_model1_model2.ipynb`.
 - Model 3 has been implemented in `model3_cross_vehicle.ipynb`.
+- A newer HVFHV-focused zone disruption report now exists in
+  `docs/NYC_HVFHV_Zone_Disruption_Final_Report.markdown`; it should be treated as the updated
+  technical write-up for the HVFHV Model 1 heterogeneity checks.
 
 If we keep `report_adithya_eda.md` as a final-facing document, we should update it or clearly mark
 it as a historical HVFHV Model 1 report so it does not conflict with the newer modeling results.
@@ -279,13 +297,17 @@ High priority:
 - Use this file as the main modeling-results narrative, or fold it into the final report.
 - Update or archive stale parts of `docs/report_adithya_eda.md` so old "next steps" do not look
   unfinished.
-- Select the final Model 1 tables/figures: top zones, quartiles, and robustness.
-- Select the final Model 2 and Model 3 coefficient/diagnostic tables for presentation.
+- Select the final Model 1 tables/figures from `results/figures/`, `results/eda/figures/`, and the
+  model result CSVs.
+- Select the final Model 2 and Model 3 coefficient/diagnostic tables from `results/tables/` for
+  presentation.
+- Standardize notation across final materials: use `DS_z` consistently, since the new HVFHV report
+  sometimes renders the metric as `DSₐ`.
 
 Medium priority:
 
-- Export any Yellow figures needed for slides, because the Yellow full EDA notebook mostly keeps
-  plots inside the notebook.
+- Move any remaining final-facing plots from notebook-only outputs into `results/` rather than
+  `artifacts/`, since `artifacts/` is ignored.
 - Add an HVFHV `airport_trip_flag` only if airport-trip analysis is included in the final
   presentation.
 - Check that all final materials use the same causal language: "suggestive association" rather than
