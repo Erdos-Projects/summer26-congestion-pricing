@@ -1,0 +1,6 @@
+stratum,n,median_DS_z,pearson_r,ci_low,ci_high,note
+(all),328,0.0204,-0.17,-0.273,-0.063,
+manhattan,126,0.0408,0.073,-0.103,0.245,
+outer,197,0.015,-0.01,-0.15,0.13,
+airport,4,0.0108,,,,n too small
+ewr,1,0.0067,,,,n too small

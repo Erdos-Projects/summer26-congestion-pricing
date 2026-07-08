@@ -1,0 +1,16 @@
+zone,direction,zone_name,Borough,DS_z,DS_z_median,N_z,DS_z_rank
+90,pickup,Flatiron,Manhattan,0.0475,0.0466,235158,1
+50,pickup,Clinton West,Manhattan,0.0463,0.0455,75181,2
+107,pickup,Gramercy,Manhattan,0.0462,0.0457,285732,3
+137,pickup,Kips Bay,Manhattan,0.0462,0.0455,142690,4
+229,pickup,Sutton Place/Turtle Bay North,Manhattan,0.0462,0.0455,254119,5
+113,pickup,Greenwich Village North,Manhattan,0.0461,0.0457,213588,6
+48,pickup,Clinton East,Manhattan,0.0458,0.0457,369419,7
+234,pickup,Union Sq,Manhattan,0.0455,0.0446,421971,8
+142,pickup,Lincoln Square East,Manhattan,0.045,0.0446,288415,9
+249,pickup,West Village,Manhattan,0.045,0.0446,327111,10
+224,pickup,Stuy Town/Peter Cooper Village,Manhattan,0.0449,0.0439,14113,11
+79,pickup,East Village,Manhattan,0.0448,0.0439,328832,12
+143,pickup,Lincoln Square West,Manhattan,0.0447,0.0439,75446,13
+170,pickup,Murray Hill,Manhattan,0.0446,0.0436,423436,14
+164,pickup,Midtown South,Manhattan,0.0444,0.0439,324764,15

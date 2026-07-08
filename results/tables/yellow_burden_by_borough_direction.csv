@@ -1,0 +1,8 @@
+zone_type,direction,n_zone_dir,median_DS_z,mean_DS_z
+airport,dropoff,2,0.0109,0.0109
+airport,pickup,2,0.01065,0.01065
+ewr,dropoff,1,0.0067,0.0067
+manhattan,dropoff,66,0.04,0.036033333333333334
+manhattan,pickup,60,0.04165,0.038068333333333336
+outer,dropoff,154,0.0146,0.015897402597402598
+outer,pickup,43,0.0212,0.01969767441860465

@@ -1,0 +1,6 @@
+model,track,estimand,headline,key_check,placebo,verdict,source
+Model 1,yellow,cross-zone DS_z<->volume association (burden ranking),Pearson -0.17,spec swings (raw -2.04 -> +borough +0.95),n/a,not a causal design; delivers the burden ranking (Goal 1),scripts/run_models.py
+Model 1,HVFHV,cross-zone DS_z<->volume association (burden ranking),Pearson -0.61,Q1 +4.5% -> Q4 -5.1%; distance/fare controls -3.25..-1.37,n/a,"descriptive, not causal; delivers the burden ranking (Goal 1)",notebooks/hvfhv_model1_model2.ipynb
+Model 2,yellow,CRZ exposure DiD (higher- vs lower-exposure zone-sides),-11.1% equal-weight,volume-weight +1.4% (flips sign),2023->2024 -25.8%,"fragile geographic association, not clean causal evidence",scripts/run_models.py
+Model 2,HVFHV,CRZ exposure DiD (higher- vs lower-exposure zone-sides),-11.4% FE-style,volume-weight -9.7% (holds sign),"2023->2024 negative, similar magnitude","suggestive association, not clean causal evidence",notebooks/hvfhv_model1_model2.ipynb
+Model 3,yellow vs HVFHV,cross-vehicle DiD within CRZ ($0.75 vs $1.50 fee),-5.9% primary,triple-diff -2.2%; provider Uber -11.4% vs Lyft +10.3%,2023->2024 triple +7.5%,"suggestive cross-vehicle gap, limited causal interpretation",scripts/run_models.py (provider split: notebooks/model3_cross_vehicle.ipynb)

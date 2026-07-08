@@ -1,0 +1,5 @@
+stratum,n_zone_dir,mean_DS_z,median_DS_z,p25_DS_z,p75_DS_z,max_DS_z,top_zone,top_direction
+manhattan,126,0.03700238095238095,0.0408,0.031825,0.044375,0.0476,Kips Bay,dropoff
+outer,197,0.01672690355329949,0.015,0.0123,0.0203,0.0421,zone 264,dropoff
+airport,4,0.010775,0.0108,0.009425,0.01215,0.0123,LaGuardia Airport,dropoff
+ewr,1,0.0067,0.0067,0.0067,0.0067,0.0067,Newark Airport,dropoff
