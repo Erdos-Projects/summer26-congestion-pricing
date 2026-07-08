@@ -71,7 +71,9 @@ under `$0.50`, `$1`, `$2`, and `$5` floors. The ranking is considered more credi
 zones and rank correlations are stable across those floor choices.
 
 **Geography and heterogeneity.** The ranking is summarized by pickup/dropoff side, Manhattan versus
-outer-borough zones, airport-related zones, and trip-length groups. Choropleth maps are used as a
+outer-borough zones, airport-related zones, and trip-length groups. Airport-related zone summaries
+keep JFK/LaGuardia separate from EWR/Newark: JFK and LaGuardia are NYC airport-fee zones, while
+Newark is an EWR/NJ zone and is reported as its own stratum. Choropleth maps are used as a
 geographic readout of the same ranking, not as a separate model. These cuts are descriptive: they
 explain where the burden is concentrated and whether the ranking is mainly a short-trip / core-zone
 pattern.
