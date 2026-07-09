@@ -257,11 +257,6 @@ Do not:
 
 ### Model 3: Yellow versus HVFHV
 
-Model 3 has been implemented in
-[`model3_cross_vehicle.ipynb`](../notebooks/model3_cross_vehicle.ipynb). It is
-a combined Yellow-versus-HVFHV design, so the HVFHV feature decisions above
-carry into Model 3 with additional cross-service alignment rules.
-
 Implemented design:
 
 - unit: zone x direction x vehicle x month x year;
