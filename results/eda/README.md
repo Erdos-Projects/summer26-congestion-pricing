@@ -6,6 +6,12 @@ output of the EDA notebooks.
 Source notebooks: `notebooks/yellow_taxi_full_EDA.ipynb`, `notebooks/hvfhv_full_EDA.ipynb`, and
 `notebooks/yellow_taxi_sample_EDA.ipynb`. 
 
+Additional exploratory chart exports retained from earlier work:
+
+| Figure | What it shows | Supports |
+|---|---|---|
+| `tlc-chart.png` / `tlc-chart.html` | Earlier TLC chart export retained for reference. | Historical EDA context; not a primary final figure unless selected for presentation. |
+
 ## Yellow Taxi
 
 | Figure | What it shows | Supports |
@@ -24,4 +30,3 @@ Source notebooks: `notebooks/yellow_taxi_full_EDA.ipynb`, `notebooks/hvfhv_full_
 | `hvfhv_full_charged_comparison_2025.png` | Median cost / distance / driver-pay / airport-fee share, charged vs not (full EDA §8) | Charged HVFHV trips are longer, more expensive, and more airport-exposed — composition, not just the fee. |
 | `hvfhv_full_burden_quantiles_2025.png` | 2025 CBD burden quantiles (full EDA §9) | Burden distribution and tail behavior for the HVFHV burden metric. |
 | `hvfhv_full_distance_exposure_2025.png` | Charged share + median burden by distance bucket (full EDA §9) | Fee burden is regressive in trip length, as for Yellow. |
-

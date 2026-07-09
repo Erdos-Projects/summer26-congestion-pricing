@@ -9,7 +9,7 @@ separate series, plus a least-squares trend line.
 
 Requires: none beyond the standard library (json)
 Input: data/processed/disruption_score/hvfhv_scatter_data.json
-Output: artifacts/figures/ds_z_vs_volume_change.html
+Output: results/modeling/figures/ds_z_vs_volume_change.html
 """
 
 import json
@@ -17,7 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INPUT_PATH = REPO_ROOT / "data" / "processed" / "disruption_score" / "hvfhv_scatter_data.json"
-OUTPUT_PATH = REPO_ROOT / "artifacts" / "figures" / "ds_z_vs_volume_change.html"
+OUTPUT_PATH = REPO_ROOT / "results" / "modeling" / "figures" / "ds_z_vs_volume_change.html"
 
 with INPUT_PATH.open() as f:
     data = json.load(f)
