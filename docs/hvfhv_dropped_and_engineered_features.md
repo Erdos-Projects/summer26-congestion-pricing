@@ -257,11 +257,45 @@ Do not:
 
 ### Model 3: Yellow versus HVFHV
 
-Model 3 is **postponed** and should not block HVFHV or Yellow standalone
-analysis. It requires a combined, aligned Yellow/HVFHV table with matched
-populations, comparable counts, zone-direction alignment, and a clear strategy
-for Yellow Flex Fare. Until that work is complete, keep HVFHV and Yellow claims
-separate.
+Model 3 has been implemented in
+[`model3_cross_vehicle.ipynb`](../notebooks/model3_cross_vehicle.ipynb). It is
+a combined Yellow-versus-HVFHV design, so the HVFHV feature decisions above
+carry into Model 3 with additional cross-service alignment rules.
+
+Implemented design:
+
+- unit: zone x direction x vehicle x month x year;
+- HVFHV population: all standardized HVFHV trips, with provider and shared-ride
+  fields retained for diagnostics;
+- Yellow comparison population: matched Yellow population defined in the Yellow
+  feature and audit documents;
+- treatment contrast: HVFHV as the higher-fee service versus Yellow as the
+  lower-fee service, within CRZ-exposed zone-sides;
+- outcome: monthly trip count or `log_n_trips`;
+- coefficient of interest: `post:hvfhv` in the within-CRZ comparison, with a
+  triple-diff specification using CRZ exposure as the stricter diagnostic.
+
+Completed diagnostics:
+
+- The primary within-CRZ estimate is negative, with HVFHV losing more volume
+  than Yellow from 2024 to 2025.
+- The no-fee 2023-vs-2024 placebo produces a large opposite-signed
+  CRZ-specific contrast, which limits causal interpretation.
+- The provider split is inconsistent: Yellow-versus-Uber and Yellow-versus-Lyft
+  move in opposite directions even though Uber and Lyft face the same HVFHV fee.
+- Low-exposure checks are supportive but underpowered.
+
+Feature implications:
+
+- `provider_label` and `hvfhs_license_num` remain EDA/context fields in the
+  main HVFHV feature set, but they are important Model 3 diagnostics because the
+  Uber/Lyft split reveals provider-specific movement.
+- `shared_request_flag` and `shared_match_flag` remain descriptive/sensitivity
+  fields. Matched shared rides are a small share of HVFHV rows, but they can
+  affect vehicle-volume interpretation because one vehicle movement can create
+  multiple passenger records.
+- Model 3 should be reported as a suggestive cross-vehicle association, not a
+  clean causal fee estimate or a per-dollar fee elasticity.
 
 ## 11. Leakage rules to carry forward
 
@@ -278,8 +312,9 @@ separate.
 6. Distinguish descriptive controls from causal controls. Provider and shared
    status can describe composition; they do not automatically identify a causal
    effect.
-7. Keep Yellow and HVFHV feature sets separate unless a dedicated combined
-   Model 3 design is being implemented.
+7. Keep Yellow and HVFHV feature sets separate except inside the dedicated
+   combined Model 3 design, where populations, zone-direction units, months, and
+   volume definitions must be aligned before comparison.
 
 ## 12. Reproducibility note
 
