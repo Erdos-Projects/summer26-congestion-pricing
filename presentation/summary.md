@@ -181,17 +181,20 @@ Current review-ready outputs are organized under [`../results/`](../results/): b
 
 ## Future Directions
 
-The strongest next improvements would focus on identification and external context:
+The main opportunities for future work focus on identification, external transportation context, and
+reproducibility:
 
-- Build a cleaner final-results notebook that reproduces the exact tables and figures used in the presentation.
-- Extend the pre-policy panel to more months or years so parallel-trend assumptions can be inspected more directly.
-- Explore matched-zone, border, or event-study style comparisons to reduce the Manhattan-core confound.
-- Add external mode-substitution data, such as MTA ridership, bus ridership, Citi Bike, pedestrian counts, or traffic-speed data, if the project expands beyond TLC records.
-- Add app-side HVFHV information if available: final rider wallet price, discounts, credits, abandoned requests, driver supply, and provider-specific pricing or matching changes.
-- Add equity context by joining TLC zones to neighborhood demographics or income measures.
-- Study time-of-day and day-of-week heterogeneity, since commute and discretionary trips may respond differently.
-- Treat driver pay as a possible outcome in future work, not as a post-policy control.
-- Keep provider-specific HVFHV checks visible, especially Uber versus Lyft.
+- A final-results notebook can reproduce the exact tables and figures used in the presentation.
+- Longer pre-policy panels would allow parallel-trend assumptions to be inspected more directly.
+- Matched-zone, border, or event-study style comparisons would reduce the Manhattan-core confound.
+- External mode-substitution data, such as MTA ridership, bus ridership, Citi Bike, pedestrian counts, or traffic-speed data, would broaden the analysis beyond TLC records.
+- App-side HVFHV information would clarify rider price, discounts, credits, abandoned requests, driver supply, and provider-specific pricing or matching changes.
+- Zone-level demographic or income measures would add equity context to the burden analysis.
+- Time-of-day and day-of-week heterogeneity would show whether commute and discretionary trips respond differently.
+- Driver pay could be analyzed as a possible outcome rather than a post-policy control.
+- Provider-specific HVFHV checks, especially Uber versus Lyft, are important for interpreting pooled HVFHV results.
+
+The full future-work discussion is in [`../docs/future directions.md`](<../docs/future directions.md>).
 
 ## Evidence Base
 
