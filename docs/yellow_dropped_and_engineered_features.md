@@ -7,7 +7,7 @@ engineered, and why.*
 engineered-feature construction live in
 [`yellow_feature_selection_and_engineering.ipynb`](../notebooks/yellow_feature_selection_and_engineering.ipynb).
 The leakage / manufactured-correlation framework is general to the whole project and
-written in [`presentation/feature_leakage.markdown`](../presentation/feature_leakage.markdown);
+written in [`feature_leakage_and_post_policy_controls.md`](feature_leakage_and_post_policy_controls.md);
 the 2024-safe / 2025-forbidden rule referenced below is defined there. Data-quality basis
 for the reliability decisions is in [`yellow_data_audit.md`](yellow_data_audit.md).*
 
