@@ -34,7 +34,8 @@ Airport trips have lower measured burden in both services. Among charged trips, 
 median burden is about 0.99% versus 4.19% for non-airport trips; HVFHV airport-trip median burden is
 about 1.69% versus 4.67% for non-airport trips.
 
-Yellow and HVFHV results are reported within service rather than as a raw cross-service `DS_z` ranking, because the total-cost fields are not constructed the same way.
+Yellow and HVFHV results are reported within service rather than as a raw cross-service `DS_z`
+ranking, because the total-cost fields are constructed differently.
 
 ### Yellow Taxi
 
@@ -49,7 +50,8 @@ Village, West Village, Greenwich Village, and Kips Bay, with `DS_z` around 6%.
 
 ## 2. Inference Results
 
-Several volume specifications estimate larger 2025 declines in higher-burden or higher-exposure areas. However, the placebo and sensitivity checks make the evidence insufficient to attribute those declines clearly to the congestion fee.
+This section reports the volume-model results. The causal reading of these results is discussed
+separately in Section 3.
 
 ### Across Models and Services
 
@@ -60,7 +62,7 @@ Model 2 estimates lower 2025 volume in higher-exposure areas for both services i
 equal-weighted comparison. HVFHV gives the more stable negative higher-exposure versus lower-exposure
 association, while Yellow is unstable across weighting and within-Manhattan checks. In the
 2023-to-2024 no-fee placebo window, both services also show negative exposure-related estimates, so
-Model 2 is interpreted as an exposure-gradient association rather than strong causal evidence.
+Model 2 is interpreted as an exposure-volume association rather than strong causal evidence.
 
 Model 3 estimates a negative cross-vehicle gap inside the CRZ, but the no-fee placebo and provider
 split show substantial cross-vehicle and provider-specific movement.
@@ -85,7 +87,7 @@ but it is still not a causal estimate.
 **Yellow Model 2.** Yellow has a negative equal-weighted estimate of about -11.1%, but it is not
 stable across the most important diagnostics. Volume weighting moves the estimate to about +1.4%,
 within-Manhattan is close to zero, and the 2023->2024 no-fee placebo is strongly negative at about
--26%. Yellow Model 2 is therefore a fragile geographic association.
+-26%. Yellow Model 2 is therefore sensitive to weighting and comparison choices.
 
 **HVFHV Model 2.** HVFHV Model 2 is more stable within the 2024->2025 window. The FE-style
 exposure estimate is about -10.7% for a zero-to-full exposure contrast; volume weighting remains
@@ -112,62 +114,51 @@ The diagnostics limit the interpretation:
 
 ## 3. Causal Interpretation
 
-The results support a clear burden finding and several negative volume associations, especially for
-HVFHV. However, the inference models do not isolate a clean causal effect of the congestion fee on
-trip volume. The credibility checks show that the same designs also capture spatial,
-service-specific, and provider-specific changes that are not uniquely attributable to the fee.
+The inference results above should be read as volume associations, not as direct estimates of how
+many trips the congestion fee caused to disappear. This is not because the analysis lacks checks. The
+project uses lower-exposure comparisons, no-fee placebo windows, weighting choices, sample trimming,
+no-June specifications, within-Manhattan comparisons, and provider-split diagnostics.
+
+The main issue is that the TLC data only observe completed Yellow and HVFHV trips, while the policy
+can also affect private-car entry, transit use, walking/biking, app-side pricing, provider mix, and
+service substitution. The models can show whether completed trip volume changed differently across
+burden, exposure, or vehicle comparisons; they cannot fully separate the congestion fee from those
+other channels.
 
 The main identification limits are:
 
-- **Model 1 is descriptive by construction.** High `DS_z` zones are dense, short-trip, Manhattan-core
-  zones. Those zones differ from lower-burden zones in ways that are not caused by the fee, so the
-  burden-volume association cannot by itself isolate a fee effect.
-- **Model 2 is weakened by placebo checks.** The exposure-gradient estimates are negative in the
-  2024->2025 policy window, but both Yellow and HVFHV also show negative exposure-related estimates
-  in the 2023->2024 no-fee placebo window. That suggests the model is partly capturing pre-existing
-  spatial demand trends.
-- **Model 3 is limited by cross-vehicle dynamics.** Comparing Yellow and HVFHV within the same zones
-  helps with geography, but it relies on Yellow and HVFHV having comparable trends absent the fee.
-  The no-fee placebo and the opposite-signed Uber/Lyft split show that vehicle and provider trends
-  are large enough to complicate the pooled estimate.
+- **Model 1 is descriptive by construction.** High `DS_z` zones differ from lower-burden zones in
+  geography, trip length, and trip cost, so the burden-volume association cannot by itself isolate a
+  fee effect.
+- **Model 2 relies on exposure groups being comparable over time.** The design is stronger than Model
+  1 because exposure is defined before the policy window, but the comparison still depends on
+  higher- and lower-exposure zones having similar underlying trends.
+- **Model 3 relies on Yellow and HVFHV being comparable counterfactuals inside the same zones.**
+  Holding geography more fixed helps, but vehicle-specific and provider-specific trends still matter.
 - **The estimates are not per-dollar fee elasticities.** Model 3 compares services with different
   fares, rider populations, providers, and secular trends. The coefficient is a cross-vehicle volume
-  gap, not a clean price-response parameter.
+  gap, not a direct price-response parameter.
+
+The detailed reasoning is documented in
+[`causal_interpretation_limitations.md`](causal_interpretation_limitations.md).
 
 The results therefore support two distinct conclusions:
 
 - **Burden result:** clear and stable. The fixed fee creates higher relative burden for shorter,
   lower-cost trips, especially in dense Manhattan zone-sides.
 - **Volume result:** suggestive but not causal. Higher-burden or higher-exposure areas often have
-  weaker volume performance, but the evidence does not cleanly establish that the fee caused the
+  weaker volume performance, but the evidence does not establish that the fee caused the
   volume changes.
 
-## 4. Limitations
-
-The following limitations affect interpretation of the results:
-
-- **Observed-trip burden.** `DS_z` is computed on observed 2025 charged trips. If the fee changed
-  which trips still occurred, the observed burden distribution may not equal the counterfactual
-  burden for trips that would have happened without the fee.
-- **Geographic confounding.** High-burden and high-exposure zones are not random. They are strongly
-  tied to Manhattan core geography, short trips, and local demand patterns.
-- **Placebo evidence.** The 2023->2024 no-fee checks show sizable effects in periods without the CBD
-  fee, so the DiD-style estimates cannot be read as clean fee effects.
-- **Service composition.** Yellow is affected by the Flex Fare regime shift, while HVFHV is affected
-  by provider mix and Uber/Lyft dynamics.
-- **Shared rides.** HVFHV shared rides are a small share of rows, but they are cheaper within
-  distance buckets and can affect interpretation of rider-level burden versus vehicle-level volume.
-- **Exposure measurement.** Geography-based CRZ exposure is reproducible and pre-policy, but it can
-  miss through-trips and leaves some nominal control zones partly exposed.
-
-## 5. Overall Conclusion
+## 4. Overall Conclusion
 
 For both Yellow and HVFHV, the fee burden is measurable,
 stable, and concentrated in short, lower-cost Manhattan core trips. 
 
 For the inference models: Model 1 is mainly a descriptive burden-volume result, Model 2
 is weakened by no-fee placebo comparisons, and Model 3 is limited by the no-fee placebo and provider
-split. The evidence therefore does not support a clean causal interpretation of the volume changes.
+split. The evidence therefore does not support a direct causal interpretation of the volume changes.
 
 **Overall result:** the analysis supports a clear burden finding and a suggestive negative volume
-signal, but it cannot cleanly establish a robust fee-attributable trip-volume reduction for Yellow Taxi or HVFHV.
+signal, but it cannot establish a robust fee-attributable trip-volume reduction for Yellow Taxi or
+HVFHV.
