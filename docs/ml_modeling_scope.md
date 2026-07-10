@@ -534,10 +534,7 @@ X^{policy}_{z,t},
 ).
 $$
 
-
 ---
-
-
 
 #### * Important Sampling Issue
 
@@ -617,7 +614,6 @@ $$
 $$
 
 Use metrics such as:
-
 
 $$
 \mathrm{RMSE}
@@ -716,7 +712,7 @@ $$
 
 This ratio is used because the fee is mostly flat within service, while trip cost varies widely. A fixed surcharge is a much larger burden on short, low-cost trips than on long, high-cost trips.
 
-For example, a $1.50 fee on a $10 non-fee trip cost is:
+For example, a \$1.50 fee on a \$10 non-fee trip cost is:
 
 $$
 \frac{1.50}{10}=0.15,
@@ -724,7 +720,7 @@ $$
 
 or 15 percent.
 
-The same $1.50 fee on a $60 non-fee trip cost is:
+The same \$1.50 fee on a \$60 non-fee trip cost is:
 
 $$
 \frac{1.50}{60}=0.025,
@@ -750,8 +746,6 @@ This measures how connected a zone-side-service market was to the Congestion Rel
 # Other models
 
 ---
-
-
 
 ## MODEL 1: Expected Trip-Volume Prediction
 
