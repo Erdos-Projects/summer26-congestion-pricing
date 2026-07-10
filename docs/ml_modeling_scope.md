@@ -1,6 +1,6 @@
 # Machine Learning Modeling Scope for NYC CBD Congestion Pricing Taxi/FHV Analysis
 
-## # Project Context
+## Project Context
 
 On January 5, 2025, New York City's Central Business District (CBD) congestion-pricing fee went into effect. This project studies how the policy is associated with fare burden and trip-volume changes across TLC zones using NYC Taxi and Limousine Commission trip records.
 
@@ -18,7 +18,7 @@ The current analysis excludes or defers:
 
 The project is primarily an inference-focused descriptive analysis. The current regression and exploratory work should be interpreted as association-based unless a specific design and robustness evidence support a stronger interpretation.
 
-For more information on interpreting the burden and volume results, please see `docs/causal_interpretation_limitations.md`
+For more information on interpreting the burden and volume results, please see [docs/causal_interpretation_limitations.md](docs/causal_interpretation_limitations.md)
 
 The proposed machine learning extension should therefore be framed as:
 
@@ -28,7 +28,7 @@ Machine learning can help identify nonlinear patterns, predict expected post-pol
 
 ---
 
-## # Main Research Questions for the ML Extension
+## Main Research Questions for the ML Extension
 
 The machine learning extension can address the following questions:
 
@@ -44,13 +44,11 @@ The machine learning extension can address the following questions:
 
 ---
 
-## # Machine Learning Modeling Options for the NYC CBD Congestion Pricing Taxi/FHV Project
+## Machine Learning Modeling Options for the NYC CBD Congestion Pricing Taxi/FHV Project
 
-## ## Predicting Disruption Scores for Unobserved Zones Using Partial Future TLC Data
+### Predicting Disruption Scores for Unobserved Zones Using Partial Future TLC Data
 
-==================================================================================
-
-#### * Problem Setup
+#### Problem Setup
 
 ---
 
@@ -84,7 +82,7 @@ For zones in $Z_{obs}$, we observe future-year data such as:
 Using these observed future-year data, we can compute a future-year disruption score:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
+DisruptionScore_{z,t}^{obs}
 $$
 
 for each observed zone $z \in Z_{obs}$.
@@ -92,14 +90,14 @@ for each observed zone $z \in Z_{obs}$.
 The goal is to predict:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
+\widehat{DisruptionScore}_{z,t}
 $$
 
 for each unobserved zone $z \in Z_{miss}$.
 
 This is a missing-zone prediction problem, spatial imputation problem, or small-area prediction problem.
 
-### * Main Modeling Question
+### Main Modeling Question
 
 ---
 
@@ -110,8 +108,8 @@ Can we learn the relationship between observed zone characteristics and observed
 Formally, we want to estimate a function:
 
 $$
-\text{DisruptionScore}_{z,t}
-=
+DisruptionScore_{z,t}
+---
 f(X_{z,t})
 +
 \epsilon_{z,t},
@@ -119,7 +117,7 @@ $$
 
 where:
 
-- $\text{DisruptionScore}_{z,t}$ is the future-year disruption score for zone $z$,
+- $DisruptionScore_{z,t}$ is the future-year disruption score for zone $z$,
 - $X_{z,t}$ is a feature vector describing zone $z$,
 - $f(\cdot)$ is the learned prediction function,
 - $\epsilon_{z,t}$ is prediction error.
@@ -139,7 +137,7 @@ $$
 and
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}.
+DisruptionScore_{z,t}^{obs}.
 $$
 
 For missing zones:
@@ -159,14 +157,14 @@ but do not observe the disruption score.
 The trained model is then used to predict:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \widehat{f}(X_{z,t})
 $$
 
 for all zones $z \in Z_{miss}$.
 
-### * What Features Can Be Used?
+### What Features Can Be Used?
 
 ---
 
@@ -230,18 +228,18 @@ For zone $z$, define neighboring zones as $\mathcal{N}(z)$.
 Neighbor average disruption among observed neighboring zones:
 
 $$
-\text{NeighborDisruption}_{z,t}
-=
+NeighborDisruption_{z,t}
+---
 \frac{1}{|\mathcal{N}_{obs}(z)|}
 \sum_{j \in \mathcal{N}_{obs}(z)}
-\text{DisruptionScore}_{j,t}^{obs}.
+DisruptionScore_{j,t}^{obs}.
 $$
 
 Neighbor average burden:
 
 $$
-\text{NeighborBurden}_{z,t}
-=
+NeighborBurden_{z,t}
+---
 \frac{1}{|\mathcal{N}(z)|}
 \sum_{j \in \mathcal{N}(z)}
 DS_{j,t}.
@@ -250,8 +248,8 @@ $$
 Neighbor average exposure:
 
 $$
-\text{NeighborExposure}_{z,t}
-=
+NeighborExposure_{z,t}
+---
 \frac{1}{|\mathcal{N}(z)|}
 \sum_{j \in \mathcal{N}(z)}
 E_{j,t}.
@@ -259,15 +257,15 @@ $$
 
 Neighbor features are useful because zones near each other may experience similar trip-market conditions.
 
-### * Basic Prediction Model
+### Basic Prediction Model
 
 ---
 
 The simplest supervised learning model is:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
-=
+DisruptionScore_{z,t}^{obs}
+---
 f(
 DS_{z,t},
 E_{z,t},
@@ -283,8 +281,8 @@ $$
 Then, for missing zones:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \widehat{f}(
 DS_{z,t},
 E_{z,t},
@@ -315,8 +313,8 @@ Model A: Ridge Regression
 A transparent baseline model is:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
-=
+DisruptionScore_{z,t}^{obs}
+---
 \beta_0
 +
 \beta_1 DS_{z,t}
@@ -325,15 +323,15 @@ $$
 +
 \beta_3 \log(1+N^{hist}_{z})
 +
-\beta_4 \text{fare}^{hist}_{z}
+\beta_4 fare^{hist}_{z}
 +
-\beta_5 \text{distance}^{hist}_{z}
+\beta_5 distance^{hist}_{z}
 +
-\beta_6 \text{airport share}^{hist}_{z}
+\beta_6 airport share^{hist}_{z}
 +
-\beta_7 \text{Manhattan}_{z}
+\beta_7 Manhattan_{z}
 +
-\beta_8 \text{borough}_{z}
+\beta_8 borough_{z}
 +
 \epsilon_{z,t}.
 $$
@@ -348,8 +346,8 @@ Model B: Random Forest Regression
 A random forest model is:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
-=
+DisruptionScore_{z,t}^{obs}
+---
 f_{RF}(X_{z,t})
 +
 \epsilon_{z,t}.
@@ -371,8 +369,8 @@ Model C: Gradient Boosting / XGBoost / LightGBM / CatBoost
 A gradient boosting model is:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
-=
+DisruptionScore_{z,t}^{obs}
+---
 f_{GBM}(X_{z,t})
 +
 \epsilon_{z,t}.
@@ -385,15 +383,15 @@ DS_{z,t} \times E_{z,t},
 $$
 
 $$
-DS_{z,t} \times \text{Manhattan}_{z},
+DS_{z,t} \times Manhattan_{z},
 $$
 
 $$
-E_{z,t} \times \text{provider share}^{hist}_{z},
+E_{z,t} \times provider share^{hist}_{z},
 $$
 
 $$
-\text{airport share}_{z} \times \text{service}_{s}.
+airport share_{z} \times service_{s}.
 $$
 
 Model D: Spatial Smoothing / Neighbor Imputation
@@ -404,15 +402,15 @@ If unobserved zones are geographically close to observed zones, a spatial smooth
 A simple version is:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \alpha \widehat{f}(X_{z,t})
 +
 (1-\alpha)
 \left[
 \frac{1}{|\mathcal{N}_{obs}(z)|}
 \sum_{j \in \mathcal{N}_{obs}(z)}
-\text{DisruptionScore}_{j,t}^{obs}
+DisruptionScore_{j,t}^{obs}
 \right].
 $$
 
@@ -440,22 +438,22 @@ denote the cluster of zone $z$.
 Then for a missing zone, predict disruption using observed zones in the same cluster:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \frac{1}{|\{j \in Z_{obs}: C(j)=C(z)\}|}
 \sum_{j \in Z_{obs}: C(j)=C(z)}
-\text{DisruptionScore}_{j,t}^{obs}.
+DisruptionScore_{j,t}^{obs}.
 $$
 
 A more flexible version uses both cluster averages and ML predictions:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \alpha \widehat{f}(X_{z,t})
 +
 (1-\alpha)
-\overline{\text{DisruptionScore}}_{C(z),t}^{obs}.
+\overline{DisruptionScore}_{C(z),t}^{obs}.
 $$
 
 Cluster-based imputation is useful because some zones may not be geographically adjacent but may represent similar trip markets.
@@ -488,7 +486,7 @@ Possible approaches include:
 
 This is useful when $X$ is small but the feature structure across all zones is informative.
 
-### * Best Practical Approach
+### Best Practical Approach
 
 ---
 
@@ -503,16 +501,16 @@ The best practical approach is usually a combined model:
 A strong combined model is:
 
 $$
-\text{DisruptionScore}_{z,t}^{obs}
-=
+DisruptionScore_{z,t}^{obs}
+---
 f(
 DS_{z,t},
 E_{z,t},
 X^{hist}_{z},
 X^{geo}_{z},
 X^{policy}_{z,t},
-\text{NeighborFeatures}_{z,t},
-\text{ClusterFeatures}_{z}
+NeighborFeatures_{z,t},
+ClusterFeatures_{z}
 )
 +
 \epsilon_{z,t}.
@@ -521,22 +519,22 @@ $$
 For missing zones:
 
 $$
-\widehat{\text{DisruptionScore}}_{z,t}
-=
+\widehat{DisruptionScore}_{z,t}
+---
 \widehat{f}(
 DS_{z,t},
 E_{z,t},
 X^{hist}_{z},
 X^{geo}_{z},
 X^{policy}_{z,t},
-\text{NeighborFeatures}_{z,t},
-\text{ClusterFeatures}_{z}
+NeighborFeatures_{z,t},
+ClusterFeatures_{z}
 ).
 $$
 
 ---
 
-#### * Important Sampling Issue
+#### Important Sampling Issue
 
 The model works best if the observed $X$ zones are representative of all zones.
 
@@ -572,7 +570,7 @@ For example, choose observed zones across strata defined by:
 - airport/non-airport status,
 - zone cluster.
 
-#### * Validation Strategy
+#### Validation Strategy
 
 ---
 
@@ -606,22 +604,22 @@ $$
 Evaluate:
 
 $$
-\text{error}_{z}
-=
-\text{DisruptionScore}_{z,2025}
+error_{z}
+---
+DisruptionScore_{z,2025}
 -
-\widehat{\text{DisruptionScore}}_{z,2025}.
+\widehat{DisruptionScore}_{z,2025}.
 $$
 
 Use metrics such as:
 
 $$
-\mathrm{RMSE}
-=
+RMSE
+---
 \sqrt{
-\frac{1}{|Z_{\mathrm{test}}|}
-\sum_{z \in Z_{\mathrm{test}}}
-\left(\mathrm{DisruptionScore}_{z,2025}\right)^2}
+\frac{1}{|Z_{test}|}
+\sum_{z \in Z_{test}}
+\left(DisruptionScore_{z,2025}\right)^2}
 $$
 
 Core notation
@@ -693,13 +691,13 @@ Main burden target
 At the trip level, define burden as:
 
 $$
-DS_i=\frac{\text{congestion fee}_i}{\text{cost excluding congestion fee}_i}.
+DS_i=\frac{congestion fee_i}{cost excluding congestion fee_i}.
 $$
 
 A floor-adjusted version is:
 
 $$
-DS_i^{floor}=\frac{\text{congestion fee}_i}{\max(\text{cost excluding congestion fee}_i,f)},
+DS_i^{floor}=\frac{congestion fee_i}{\max(cost excluding congestion fee_i,f)},
 $$
 
 where $f$ is a denominator floor such as 5, 7.5, or 10 dollars.
@@ -707,7 +705,7 @@ where $f$ is a denominator floor such as 5, 7.5, or 10 dollars.
 At the zone-side-service level, a robust burden measure is:
 
 $$
-DS_{zds}=\operatorname{median}_{i\in zds}\left(\frac{\text{congestion fee}_i}{\max(\text{cost excluding congestion fee}_i,f)}\right).
+DS_{zds}=median_{i\in zds}\left(\frac{congestion fee_i}{\max(cost excluding congestion fee_i,f)}\right).
 $$
 
 This ratio is used because the fee is mostly flat within service, while trip cost varies widely. A fixed surcharge is a much larger burden on short, low-cost trips than on long, high-cost trips.
@@ -736,7 +734,7 @@ Main exposure target
 Define pre-policy exposure as:
 
 $$
-E^{pre}_{zds}=\frac{\text{CRZ-touching trips}_{zds,2024}}{\text{total trips}_{zds,2024}}.
+E^{pre}_{zds}=\frac{CRZ-touching trips_{zds,2024}}{total trips_{zds,2024}}.
 $$
 
 This measures how connected a zone-side-service market was to the Congestion Relief Zone before the policy began. It should generally be defined using pre-policy data rather than 2025 data, because 2025 exposure may itself be affected by the policy.
@@ -837,8 +835,8 @@ Interpretation
 
 This model identifies zone-side-service-months where observed volume was lower or higher than expected. It does not prove that the congestion fee caused the residual.
 
-====================================================================================
-====================================================================================
+---
+---
 
 ## MODEL 2: Year-over-Year Volume Change Model
 
@@ -933,9 +931,9 @@ Interpretation
 
 This model asks which baseline features predict larger 2024-to-2025 volume declines. It is descriptive and predictive, not automatically causal.
 
-====================================================================================
+---
 MODEL 4: Large-Decline Classification Model
-===========================================
+---
 
 Goal
 ----
@@ -1023,9 +1021,9 @@ Interpretation
 
 This model identifies features associated with large observed declines. It does not prove those features caused the declines.
 
-====================================================================================
+---
 MODEL 5: Burden Prediction Model
-================================
+---
 
 Goal
 ----
@@ -1036,7 +1034,7 @@ Continuous target
 -----------------
 
 $$
-DS_{zds}=\operatorname{median}_{i\in zds}\left(\frac{\text{fee}_i}{\max(\text{cost excluding fee}_i,f)}\right).
+DS_{zds}=median_{i\in zds}\left(\frac{fee_i}{\max(cost excluding fee_i,f)}\right).
 $$
 
 Classification target
@@ -1119,9 +1117,9 @@ Interpretation
 
 This model strengthens the descriptive burden story. It explains which trip-market features are predictive of high relative burden. It does not estimate volume response.
 
-====================================================================================
+---
 MODEL 6: Zone Market Clustering / Market Typology
-=================================================
+---
 
 Goal
 ----
@@ -1134,7 +1132,7 @@ Input feature vector
 For each zone-side-service market, define:
 
 $$
-X_{zds}=[\overline{\text{distance}}_{zds},\overline{\text{fare}}_{zds},DS_{zds},E^{pre}_{zds},\text{airport share}_{zds},\text{baseline volume}_{zds},\text{Yellow share}_{zd},\text{HVFHV share}_{zd},\text{Manhattan indicator}_{z},\text{borough indicators}_{z}].
+X_{zds}=[\overline{distance}_{zds},\overline{fare}_{zds},DS_{zds},E^{pre}_{zds},airport share_{zds},baseline volume_{zds},Yellow share_{zd},HVFHV share_{zd},Manhattan indicator_{z},borough indicators_{z}].
 $$
 
 Standardization
@@ -1197,9 +1195,9 @@ Interpretation
 
 Clustering helps compare more similar trip markets. It does not identify causal effects. It is especially useful because high-burden and low-burden zones may otherwise represent very different markets.
 
-====================================================================================
+---
 MODEL 7: Residual-Based Anomaly Detection
-=========================================
+---
 
 Goal
 ----
@@ -1279,5 +1277,5 @@ Interpretation
 
 Anomaly detection flags unusual observations. It does not explain why they are unusual and does not prove the fee caused the anomaly.
 
-===================================================================================================================
-===================================================================================================================
+---
+---
