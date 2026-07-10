@@ -109,7 +109,10 @@ Formally, we want to estimate a function:
 
 $$
 DisruptionScore_{z,t}
+$$
+
 ---
+$$
 f(X_{z,t})
 +
 \epsilon_{z,t},
@@ -158,7 +161,10 @@ The trained model is then used to predict:
 
 $$
 \widehat{DisruptionScore}_{z,t}
+$$
+
 ---
+$$
 \widehat{f}(X_{z,t})
 $$
 
@@ -229,7 +235,11 @@ Neighbor average disruption among observed neighboring zones:
 
 $$
 NeighborDisruption_{z,t}
+$$
+
 ---
+
+$$
 \frac{1}{|\mathcal{N}_{obs}(z)|}
 \sum_{j \in \mathcal{N}_{obs}(z)}
 DisruptionScore_{j,t}^{obs}.
@@ -239,7 +249,11 @@ Neighbor average burden:
 
 $$
 NeighborBurden_{z,t}
+$$
+
 ---
+
+$$
 \frac{1}{|\mathcal{N}(z)|}
 \sum_{j \in \mathcal{N}(z)}
 DS_{j,t}.
@@ -249,7 +263,11 @@ Neighbor average exposure:
 
 $$
 NeighborExposure_{z,t}
+$$
+
 ---
+
+$$
 \frac{1}{|\mathcal{N}(z)|}
 \sum_{j \in \mathcal{N}(z)}
 E_{j,t}.
@@ -265,7 +283,10 @@ The simplest supervised learning model is:
 
 $$
 DisruptionScore_{z,t}^{obs}
+$$
+
 ---
+$$
 f(
 DS_{z,t},
 E_{z,t},
@@ -282,7 +303,11 @@ Then, for missing zones:
 
 $$
 \widehat{DisruptionScore}_{z,t}
+$$
+
 ---
+
+$$
 \widehat{f}(
 DS_{z,t},
 E_{z,t},
@@ -313,9 +338,10 @@ Model A: Ridge Regression
 A transparent baseline model is:
 
 $$
-DisruptionScore_{z,t}^{obs}
+DisruptionScore_{z,t}^{obs}$$
+
 ---
-\beta_0
+$$\beta_0
 +
 \beta_1 DS_{z,t}
 +
@@ -346,9 +372,9 @@ Model B: Random Forest Regression
 A random forest model is:
 
 $$
-DisruptionScore_{z,t}^{obs}
+DisruptionScore_{z,t}^{obs}$$
 ---
-f_{RF}(X_{z,t})
+$$f_{RF}(X_{z,t})
 +
 \epsilon_{z,t}.
 $$
@@ -369,9 +395,9 @@ Model C: Gradient Boosting / XGBoost / LightGBM / CatBoost
 A gradient boosting model is:
 
 $$
-DisruptionScore_{z,t}^{obs}
+DisruptionScore_{z,t}^{obs}$$
 ---
-f_{GBM}(X_{z,t})
+$$f_{GBM}(X_{z,t})
 +
 \epsilon_{z,t}.
 $$
@@ -402,9 +428,9 @@ If unobserved zones are geographically close to observed zones, a spatial smooth
 A simple version is:
 
 $$
-\widehat{DisruptionScore}_{z,t}
+\widehat{DisruptionScore}_{z,t}$$
 ---
-\alpha \widehat{f}(X_{z,t})
+$$\alpha \widehat{f}(X_{z,t})
 +
 (1-\alpha)
 \left[
@@ -438,9 +464,9 @@ denote the cluster of zone $z$.
 Then for a missing zone, predict disruption using observed zones in the same cluster:
 
 $$
-\widehat{DisruptionScore}_{z,t}
+\widehat{DisruptionScore}_{z,t}$$
 ---
-\frac{1}{|\{j \in Z_{obs}: C(j)=C(z)\}|}
+$$\frac{1}{|\{j \in Z_{obs}: C(j)=C(z)\}|}
 \sum_{j \in Z_{obs}: C(j)=C(z)}
 DisruptionScore_{j,t}^{obs}.
 $$
@@ -448,9 +474,9 @@ $$
 A more flexible version uses both cluster averages and ML predictions:
 
 $$
-\widehat{DisruptionScore}_{z,t}
+\widehat{DisruptionScore}_{z,t}$$
 ---
-\alpha \widehat{f}(X_{z,t})
+$$\alpha \widehat{f}(X_{z,t})
 +
 (1-\alpha)
 \overline{DisruptionScore}_{C(z),t}^{obs}.
@@ -501,9 +527,9 @@ The best practical approach is usually a combined model:
 A strong combined model is:
 
 $$
-DisruptionScore_{z,t}^{obs}
+DisruptionScore_{z,t}^{obs}$$
 ---
-f(
+$$f(
 DS_{z,t},
 E_{z,t},
 X^{hist}_{z},
@@ -519,9 +545,9 @@ $$
 For missing zones:
 
 $$
-\widehat{DisruptionScore}_{z,t}
+\widehat{DisruptionScore}_{z,t}$$
 ---
-\widehat{f}(
+$$\widehat{f}(
 DS_{z,t},
 E_{z,t},
 X^{hist}_{z},
@@ -604,19 +630,21 @@ $$
 Evaluate:
 
 $$
-error_{z}
+error_{z}$$
 ---
-DisruptionScore_{z,2025}
+$$DisruptionScore_{z,2025}$$
 -
+$$
 \widehat{DisruptionScore}_{z,2025}.
 $$
 
 Use metrics such as:
 
 $$
-RMSE
+RMSE$$
 ---
-\sqrt{
+
+$$\sqrt{
 \frac{1}{|Z_{test}|}
 \sum_{z \in Z_{test}}
 \left(DisruptionScore_{z,2025}\right)^2}
