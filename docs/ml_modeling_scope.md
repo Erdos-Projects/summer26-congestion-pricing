@@ -28,22 +28,6 @@ Machine learning can help identify nonlinear patterns, predict expected post-pol
 
 ---
 
-## Main Research Questions for the ML Extension
-
-The machine learning extension can address the following questions:
-
-1. Can pre-policy zone, service, fare, and trip characteristics predict expected 2025 trip volume?
-2. Which zone-sides show the largest negative deviations from predicted 2025 trip volume?
-3. Are high-burden or high-exposure zone-sides more likely to show unusually weak post-policy volume performance?
-4. Do Yellow Taxi and HVFHV differ in the features that predict post-policy volume decline?
-5. Do Uber and Lyft show different provider-specific post-policy residual patterns?
-6. Can unsupervised clustering identify distinct taxi/FHV trip-market types?
-7. Do burden-volume associations differ across these market types?
-8. Are observed post-policy volume changes spatially clustered around the Congestion Relief Zone?
-9. Can ML-assisted controls improve descriptive exposure-volume or burden-volume association models?
-
----
-
 ## Machine Learning Modeling Options for the NYC CBD Congestion Pricing Taxi/FHV Project
 
 ### Predicting Disruption Scores for Unobserved Zones Using Partial Future TLC Data
