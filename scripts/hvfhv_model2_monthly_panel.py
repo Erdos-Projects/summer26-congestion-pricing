@@ -204,7 +204,7 @@ def _write_notes(panel: pd.DataFrame, validation: pd.DataFrame, files_2024: list
             "- Use `charged_share_2024_geo` as the Model 2 exposure.",
             "- Do not use 2025 observed charged shares as the treatment in the Model 2 regression.",
             "- Do not use 2025 cost, fare, duration, driver pay, or volume-change fields as controls.",
-            "- Model 3 remains postponed and is not touched by this output.",
+            "- This panel is for HVFHV Model 2 only; Model 3 uses a separate cross-vehicle panel.",
             "",
         ]
     )

@@ -93,13 +93,14 @@ credible.
 
 | | **Model 1** | **Model 2** | **Model 3** |
 |---|---|---|---|
-| **What it asks** | Do higher-burden zones lose more trips? | Did higher CRZ exposure reduce trips? | Does a *bigger* fee reduce trips more? |
+| **What it asks** | Do higher-burden zones lose more trips? | Did higher CRZ exposure reduce trips? | Did the higher-fee service change more in the same exposed geography? |
 | **Main comparison** | high-burden vs low-burden zones | more- vs less-exposed zone-sides (monthly, 2024→2025) | yellow vs HVFHV, *same exposed zone* (monthly, 2024→2025) |
-| **Trustworthiness** | weakest (correlational) | medium | strongest |
+| **Interpretation** | descriptive association | DiD-style estimate under geographic parallel-trends assumptions | exploratory cross-service DiD-style evidence under strong service-comparability assumptions |
 | **Data needed** | within a service | within a service | both services combined |
 
-These are a **ladder** — we report all three and check whether they agree (**triangulation**: if
-three methods with different weaknesses point the same way, the answer is far more believable).
+These models provide an evidence ladder, but agreement in sign is not causal proof. Each model relies
+on a different comparison and a different assumption. Model 3 is included as exploratory diagnostic
+and triangulation evidence, not as preferred or definitive causal evidence.
 
 **Why one model isn't enough (the collinearity problem).** `DS_z` is `flat fee ÷ base cost`, so
 with a near-constant fee it is mechanically **DS_z ≈ 1 / base_cost** — a *trip-level, same-year*
@@ -211,21 +212,21 @@ different questions (per zone-side vs per trip).
 
 **Could go wrong:** assumes exposure groups **would have moved together** absent the fee (**parallel
 trends**, only inspectable here); riders shifting out of exposed zones push controls up; the treatment varies with geography, so any differential core-vs-periphery trend
-still confounds — only Model 3 breaks that tie.
+still confounds. Model 3 holds geography more fixed, but replaces that problem with strong
+cross-service comparability assumptions.
 
 ---
 
-### Model 3 — cross-vehicle DiD (same zone, different fee size)
+### Model 3 - cross-vehicle DiD-style comparison
 
-**Asks:** does a *bigger* fee cause a *bigger* drop? (Yellow pays $0.75/charged trip; HVFHV $1.50.)
+**Asks:** did the higher-fee service change more than the lower-fee service in the same exposed
+geography? Yellow pays $0.75 per charged trip and HVFHV pays $1.50.
 
-**How:** within the same zones, compare how yellow changed 2024→2025 vs how HVFHV changed. Same zone
-→ density, geography, COVID recovery, local demand shocks hit both vehicles equally and **cancel**;
-what's left is the different-fee effect. The treatment we vary (fee size) is a property of the
-*vehicle*, not the zone, so geography is held fixed — **this is the design that breaks the confound
-Models 1–2 could not** (there, treatment ≈ geography). The trade: it **swaps the geography confound
-for a cross-vehicle-trend confound** — yellow and HVFHV are different services with different secular
-trajectories, so "they would have moved together" is now the load-bearing (and shaky) assumption.
+**How:** within the same zones, compare how Yellow changed from 2024 to 2025 with how HVFHV changed.
+Holding zone more fixed reduces geographic mismatch, but the remaining coefficient is a
+cross-service gap, not automatically a fee-size effect. Yellow and HVFHV differ in riders, booking
+channels, pricing, providers, and secular trends. The load-bearing assumption is that these services
+would have changed similarly in the absence of the fee difference.
 
 **Where the contrast lives:** the fee difference only exists on **CRZ-touching trips**, so the
 comparison must be made where both vehicles are exposed.
@@ -248,10 +249,10 @@ comparison must be made where both vehicles are exposed.
   **cluster-by-zone SE**. `C(zone_dir_vehicle)` = each zone-side × vehicle series its own baseline (so
   the yellow/HVFHV level gap is absorbed, not treated as an effect); **`post:hvfhv`** = how much
   *more* HVFHV changed than yellow — the coefficient we report.
-- **Populations (matched):** yellow = **card/cash only** (so Uber↔yellow-Flex substitution doesn't
-  move volume between the two compared services); HVFHV = **all HVFHV** (provider Uber/Lyft and
-  shared/solo split kept as robustness). Both aggregated with the **same rules as yellow** (38 CRZ
-  zones, non-movement drop, Feb–Jun).
+- **Populations (aligned but not equivalent):** Yellow = **card/cash only**; HVFHV = **all HVFHV**.
+  Excluding Flex avoids directly counting its structural growth, but it does not eliminate Flex
+  spillovers or cross-service substitution. Provider and shared/solo differences remain diagnostic
+  concerns. Both services use the same 38 CRZ zones, non-movement rule, and February-June window.
 
 **What the coefficient means:** `post:hvfhv` compares the higher-fee service (HVFHV, $1.50) with the
 lower-fee service (yellow, $0.75) in the same exposed zones. It is **not** the effect of the fee vs no
@@ -271,6 +272,13 @@ questions (per zone-side vs per trip).
   HVFHV→yellow (HVFHV down, yellow up), *widening* the gap → `post:hvfhv` reflects the change in the
   *relative mix* (substitution included), not pure demand reduction. Read it as such.
 
+**Implemented result and status:** Model 3 is complete and included as exploratory diagnostic and
+triangulation evidence. HVFHV changed about 5.9% more negatively than Yellow in the primary CRZ
+sample. The binary and continuous triple-difference estimates attenuate; the continuous interval
+includes zero. The 2023-2024 no-fee placebo produces large nonzero contrasts, and the Uber/Lyft
+provider splits have opposite signs. Model 3 therefore shows a 2025 cross-service volume gap but
+does not identify a clean causal effect of the fee difference.
+
 ---
 
 ## How the pieces fit together
@@ -278,11 +286,10 @@ questions (per zone-side vs per trip).
 - **Model 1** = *whether that burden ranking lines up with volume change* — descriptive only.
 - **Model 2** = *do higher-exposure places change more* — cleaner than Model 1 because it adds a
   comparison group.
-- **Model 3** = *does a bigger fee do more* — cleanest on geography (only the fee-size difference
-  varies within a zone), but trades that for a cross-vehicle-trend assumption; credible only if the
-  yellow-vs-HVFHV pre-trend is flat.
-- If all three point the same way, we're confident; if they disagree, that tells us which
-  assumption needs the most scrutiny.
+- **Model 3** = *did the higher-fee service change more in the same exposed geography* - an
+  exploratory cross-service comparison under strong service-comparability assumptions.
+- Agreement in sign can motivate triangulation, but the failed placebo and provider diagnostics
+  prevent Model 3 from supplying causal proof.
 
 ## Shared choices (all three models)
 - **Which trips we count (yellow).**

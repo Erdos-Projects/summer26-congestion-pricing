@@ -94,7 +94,7 @@ Model 2 asks whether zone-sides with higher pre-policy geography-based CRZ expos
 
 ### Model 3: Cross-Vehicle Difference-In-Differences
 
-Model 3 compares Yellow and HVFHV inside the same exposed zones. This holds geography more fixed and uses the fact that HVFHV faces a higher per-trip fee than Yellow. It is the strongest design geographically, but it depends on a cross-vehicle trend assumption and is sensitive to Uber/Lyft provider dynamics.
+Model 3 compares Yellow card/cash and HVFHV inside the same exposed zones. It is included as an exploratory cross-service DiD-style comparison that holds geography more fixed, but it relies on strong service-comparability assumptions and remains sensitive to Yellow Flex spillovers, cross-service substitution, and provider/platform dynamics.
 
 Design details are in [`../docs/burden_analysis_and_modeling_plan.md`](../docs/burden_analysis_and_modeling_plan.md). Results are in [`../docs/burden_analysis_and_modeling_results.md`](../docs/burden_analysis_and_modeling_results.md). The causal interpretation is separated in [`../docs/causal_interpretation_limitations.md`](../docs/causal_interpretation_limitations.md).
 
@@ -105,9 +105,9 @@ Because the project is inference-focused, there is no single predictive model se
 - the burden ranking is the primary descriptive output;
 - Model 1 checks whether the burden ranking lines up with volume change;
 - Model 2 adds a within-service exposure comparison over time;
-- Model 3 adds a cross-vehicle comparison inside exposed zones.
+- Model 3 adds exploratory diagnostic and triangulation evidence from a cross-service comparison inside exposed zones.
 
-Model 3 is the strongest design for holding geography fixed, but it is not selected as a definitive causal model because the placebo and provider-split diagnostics do not clear the evaluation bar. The final conclusion therefore relies on the stable burden result and treats the volume models as an evidence ladder with explicit limitations.
+Model 3 holds geography more fixed than the within-service comparisons, but it is not a clean or preferred causal model. The cross-service pretrend, placebo, and provider-split diagnostics do not support the service-comparability assumptions required for fee attribution. The final conclusion therefore relies on the stable burden result and treats all volume models as an evidence ladder with explicit limitations.
 
 ## Main Results
 
@@ -131,9 +131,9 @@ The volume findings are more cautious.
 
 Model 1 shows a weak Yellow burden-volume relationship: Yellow correlations are about -0.17, and the relationship is unstable under controls. HVFHV shows a much stronger descriptive relationship: among 519 usable zone-direction pairs, Pearson is about -0.61 and Spearman about -0.64. The lowest-burden HVFHV quartile grows by about 4.5% on average, while the highest-burden quartile declines by about 5.1%.
 
-Model 2 gives negative equal-weighted exposure-gradient estimates for both services, but placebo checks weaken the causal interpretation. Yellow has a negative equal-weighted estimate around -11.1%, but volume weighting moves the estimate close to zero, within-Manhattan checks are weak, and the 2023-to-2024 no-fee placebo is strongly negative. HVFHV has a more stable negative 2024-to-2025 estimate around -10.7% in the FE-style specification and about -9% with volume weighting, but the 2023-to-2024 placebo is also negative and similar in magnitude.
+Model 2 gives negative equal-weighted exposure-gradient estimates for both services, but placebo checks weaken the causal interpretation. Yellow has a negative equal-weighted estimate around -11.1%, but volume weighting moves the estimate close to zero, within-Manhattan checks are weak, and the 2023-to-2024 no-fee placebo is strongly negative. HVFHV has a more stable negative 2024-to-2025 estimate around -10.7% in the FE-style specification and about -9.2% with baseline volume weighting, but the 2023-to-2024 placebo is also negative and similar in magnitude.
 
-Model 3 finds that, within CRZ-exposed zones, HVFHV lost about 5.9% more volume than Yellow from 2024 to 2025. This estimate is stable across several robustness checks. However, the more demanding triple-diff estimate is smaller, the no-fee placebo is large, and the Uber/Lyft provider split moves in opposite directions. That prevents a clean causal reading.
+Model 3 finds that, within the primary CRZ sample, HVFHV changed about 5.9% more negatively than Yellow from 2024 to 2025. The triple-difference estimates attenuate; the continuous-exposure triple-difference interval includes zero. The 2023-2024 placebo produces large nonzero contrasts, and the Uber/Lyft provider splits move in opposite directions despite the same HVFHV fee. Yellow Flex and provider/platform dynamics further limit attribution. Model 3 therefore shows a 2025 cross-service volume gap, not a clean causal effect of the fee difference.
 
 ## Final Interpretation
 

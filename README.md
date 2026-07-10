@@ -183,15 +183,19 @@ final-deliverable preparation.
 | HVFHV DS_z outputs | Produced, including floor sensitivity, rank stability, top-zone overlap, borough correlations, and Manhattan robustness |
 | HVFHV Model 1/2 notebook | Produced; Model 1 shows a strong descriptive burden-volume association, while Model 2 is a negative exposure-gradient estimate with a placebo warning |
 | Yellow Taxi DS_z and Model 1/2 first pass | Outputs and notebook exist; report as first-pass/inferential, not causal proof |
-| Model 3 combined Yellow/HVFHV analysis | Deferred until separate Yellow and HVFHV analyses are complete |
+| Model 3 combined Yellow/HVFHV analysis | Completed as exploratory cross-service DiD-style evidence; the primary CRZ gap is negative, but attenuated triple-difference estimates, a large no-fee placebo, and opposite provider splits prevent a clean causal interpretation |
 | Green Taxi integration | Deferred |
 | Final slides/video/report | Pending |
 
-Green Taxi integration, January 2025 transition analysis, and combined
-Yellow/HVFHV Model 3 are later robustness or extension work, not blockers for
-the current separate-service deliverables. The HVFHV no-June 2023-vs-2024
-placebo diagnostic is complete and weakens a clean causal reading of Model 2,
-so final HVFHV claims should emphasize association and burden ranking.
+Green Taxi integration and January 2025 transition analysis are later
+extensions, not blockers for the current deliverables. Model 3 is included as
+exploratory triangulation evidence: HVFHV changed about 5.9% more negatively
+than Yellow in the primary CRZ sample, but the triple-difference estimates
+attenuate, the continuous-exposure confidence interval includes zero, the
+2023-2024 placebo produces large nonzero contrasts, and the Uber/Lyft splits
+have opposite signs. The HVFHV Model 2 placebo warning and the Model 3
+diagnostics both support cautious association language rather than causal
+proof.
 
 ## Future Work
 

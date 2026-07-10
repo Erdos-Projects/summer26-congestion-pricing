@@ -1,10 +1,10 @@
 check,spec,est_pct,ci_low,ci_high,zone_dir,zones,source
-no-June,"primary within-CRZ, no-June",-6.4121546278389285,-7.701559322132578,-5.104737013137783,76.0,38.0,scripts/run_models.py
-no-June,"triple-diff binary CRZ, no-June",-4.293949939663699,-6.372430819103014,-2.1693279203444438,450.0,238.0,scripts/run_models.py
-no-June,"triple-diff continuous exposure, no-June",-4.736570915289384,-7.515693986503935,-1.8739361070258531,450.0,238.0,scripts/run_models.py
-within-CRZ volume trim,baseline,-5.892018116137631,-7.161215397742682,-4.605469662320072,76.0,38.0,scripts/run_models.py
-within-CRZ volume trim,drop bottom 10%,-5.901533039681805,-7.2577332865792705,-4.525500636693436,68.0,34.0,scripts/run_models.py
-within-CRZ volume trim,drop bottom 20%,-5.749179735571341,-6.995363173341717,-4.4862984941907325,60.0,30.0,scripts/run_models.py
-low-exposure comparison,pooled exposure < 0.05,1.378397710421586,-7.7759424961608925,11.441415618745454,15.0,15.0,scripts/run_models.py
+no-June,"primary within-CRZ, no-June",-6.4121546278389285,-7.701559322132578,-5.104737013137783,76.0,38.0,notebooks/model3_cross_vehicle.ipynb
+no-June,"triple-diff binary CRZ, no-June",-4.293949939663699,-6.372430819103014,-2.1693279203444438,450.0,238.0,notebooks/model3_cross_vehicle.ipynb
+no-June,"triple-diff continuous exposure, no-June",-4.736570915289384,-7.515693986503935,-1.8739361070258531,450.0,238.0,notebooks/model3_cross_vehicle.ipynb
+within-CRZ volume trim,baseline,-5.892018116137631,-7.161215397742682,-4.605469662320072,76.0,38.0,notebooks/model3_cross_vehicle.ipynb
+within-CRZ volume trim,drop bottom 10%,-5.901533039681805,-7.2577332865792705,-4.525500636693436,68.0,34.0,notebooks/model3_cross_vehicle.ipynb
+within-CRZ volume trim,drop bottom 20%,-5.749179735571341,-6.995363173341717,-4.4862984941907325,60.0,30.0,notebooks/model3_cross_vehicle.ipynb
+low-exposure comparison,pooled exposure < 0.05,1.378397710421586,-7.7759424961608925,11.441415618745454,15.0,15.0,notebooks/model3_cross_vehicle.ipynb
 provider split,yellow vs Uber,-11.4,-12.7,-10.1,,,notebooks/model3_cross_vehicle.ipynb
 provider split,yellow vs Lyft,10.3,8.5,12.2,,,notebooks/model3_cross_vehicle.ipynb

@@ -67,10 +67,12 @@ For each model, we state the comparison and the assumption that makes the compar
   places would have moved similarly. We check this with the 2024 pre-period view, the 2023→2024
   placebo, the within-Manhattan comparison, and the binary-vs-continuous exposure comparison.
 
-- **Model 3: cross-vehicle DiD.** This compares yellow and HVFHV within the same exposed zones. The
-  key assumption is that, without the fee-size difference, yellow and HVFHV would have moved similarly
-  within those zones. We check this with the 2024 pre-trend, the 2023→2024 placebo, the Uber-vs-Lyft
-  provider split, matched populations, and zone alignment.
+- **Model 3: cross-vehicle DiD-style comparison.** This completed model is included as exploratory,
+  diagnostic, and triangulation evidence. It compares Yellow card/cash and HVFHV within the same
+  exposed zones, holding geography more fixed but relying on strong service-comparability assumptions.
+  The key assumption is that, without the fee-size difference and other service-specific changes, the
+  two services would have moved similarly within those zones. We check this with the 2024 pre-trend,
+  the 2023-2024 placebo, the Uber-vs-Lyft provider split, matched populations, and zone alignment.
 
 ---
 
@@ -118,6 +120,11 @@ Placebo checks run the same logic in settings where the fee should not be drivin
   should be close to zero. Because this sample can be small, this check is supportive rather than
   decisive.
 
+The completed Model 3 diagnostics do not clear the causal bar: the primary CRZ gap is negative, but
+the triple differences attenuate, the continuous-exposure interval includes zero, the 2023-2024
+placebo is large and nonzero, and the Uber/Lyft splits have opposite signs. Model 3 should therefore
+be reported as a 2025 cross-service volume gap, not as causal proof of the fee difference.
+
 ---
 
 ## 4. Standard Errors
@@ -138,7 +145,8 @@ Each number should be labeled by what it estimates.
   zone-sides. It is not a trip-level charged-vs-uncharged comparison.
 
 - **Model 3.** `post:hvfhv` compares the higher-fee service with the lower-fee service inside the
-  same exposed zones. It is not the effect of having a fee versus no fee.
+  same exposed zones. It is a cross-service DiD-style estimate under service-comparability
+  assumptions, not the effect of having a fee versus no fee and not causal proof.
 
 - **Weighting.** Equal-weighted and volume-weighted versions have different estimands: average
   zone-side vs average trip/rider.
@@ -152,8 +160,9 @@ The three models have different weaknesses, so we compare them rather than relyi
 - Goal 1 is best for the burden ranking.
 - Model 1 is the first descriptive check of whether that ranking lines up with volume change.
 - Model 2 adds a time dimension and a lower-exposure comparison group.
-- Model 3 holds geography more fixed by comparing yellow and HVFHV within the same exposed zones, but
-  relies on a cross-vehicle trend assumption.
+- Model 3 holds geography more fixed by comparing Yellow and HVFHV within the same exposed zones, but
+  remains exploratory because it relies on strong service-comparability assumptions and its placebo
+  and provider diagnostics do not support a clean causal interpretation.
 
 Agreement across the models would strengthen the interpretation. Disagreement helps identify which
 assumption needs more caution.

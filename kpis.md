@@ -24,4 +24,4 @@ stronger claim.
 |---|---|---|
 | HVFHV Model 2 exposure-gradient DiD metric | Completed / available | Use `hvfhv_monthly_panel.csv` with 2024 geography-based exposure. Interpret as a negative exposure-gradient estimate, estimated under assumptions, not clean causal evidence. |
 | No-June 2023-vs-2024 placebo diagnostic | Completed / available | Use `hvfhv_placebo_2023_2024_results.csv`. The placebo estimate is also negative and similar in magnitude, which weakens causal interpretation. |
-| Combined Yellow vs HVFHV Model 3 metric | Postponed | Requires aligned combined service table and matched populations after separate Yellow and HVFHV analyses are complete. |
+| Combined Yellow vs HVFHV Model 3 metric | Completed / exploratory | The aligned monthly panel and estimates are available. Use Model 3 as diagnostic and triangulation evidence under strong service-comparability assumptions: the primary CRZ gap is about -5.9%, but triple-difference estimates attenuate, the continuous-exposure interval includes zero, the 2023-2024 placebo is large and nonzero, and Uber/Lyft splits have opposite signs. It does not identify a clean causal effect of the fee difference. |

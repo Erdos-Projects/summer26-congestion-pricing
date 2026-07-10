@@ -268,26 +268,30 @@ Model 2 should therefore be reported as an exposure-volume association, not a cl
 
 ### Model 3
 
-Model 3 compares Yellow and HVFHV inside the same exposed zones. This is the strongest design for
-addressing the geography problem because the zone is held more fixed and the fee size differs by
-vehicle type.
+Model 3 is included as exploratory, diagnostic, and triangulation evidence. It compares Yellow
+card/cash and HVFHV monthly trip-count changes inside the same exposed zones. This holds geography
+more fixed than the within-service comparisons, but it remains a cross-service DiD-style comparison
+under strong service-comparability assumptions. Service identity stands in for the fee difference;
+it also captures differences in riders, booking channels, pricing, providers, and secular trends.
 
-For Model 3 to have a causal fee-size interpretation, Yellow and HVFHV in the same exposed zones would
-need to provide a reasonable counterfactual for each other. That is, without the fee
-difference, their 2024-to-2025 changes inside those zones would need to have been similar enough that
-the remaining gap can be attributed to the larger HVFHV fee.
+The primary CRZ estimate shows that HVFHV changed about 5.9% more negatively than Yellow from 2024
+to 2025. The more demanding triple-difference estimates attenuate: the binary estimate is about
+-2.2%, while the continuous-exposure estimate is about -1.9% and its confidence interval includes
+zero.
 
-That assumption can break if Yellow and HVFHV were already on different trends, or if one service had
-other changes in the same period. The current diagnostics point to that concern:
+The diagnostics do not support a clean causal fee-size interpretation:
 
-- Yellow has the Flex regime shift.
-- HVFHV has provider-mix changes.
-- Uber and Lyft move differently even though they face the same HVFHV fee.
-- The no-fee placebo produces a sizable cross-vehicle contrast.
-- HVFHV cost burden is based on reconstructed TLC cost, not final app price.
+- The 2024 Yellow-HVFHV pre-policy gap is not flat.
+- The 2023-2024 no-fee placebo produces large nonzero, opposite-signed cross-service contrasts.
+- Yellow-versus-Uber and Yellow-versus-Lyft estimates have opposite signs even though Uber and Lyft
+  face the same HVFHV fee.
+- Yellow Flex growth can affect the remaining card/cash market and cross-service substitution.
+- HVFHV provider, platform-pricing, and shared-ride dynamics can change completed trip counts for
+  reasons other than the congestion fee.
 
-Model 3 is therefore useful evidence on the Yellow-HVFHV gap, but it should not be described as a
-clear per-dollar fee elasticity or a clear causal effect of the larger HVFHV fee.
+Model 3 therefore documents a 2025 cross-service volume gap that is consistent with several possible
+mechanisms, including a fee response. It does not identify a clean causal effect of the fee
+difference, and it should not be described as a per-dollar fee elasticity or as causal proof.
 
 ## 4. What Additional Information Could Help
 

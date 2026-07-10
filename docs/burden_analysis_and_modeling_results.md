@@ -64,8 +64,9 @@ association, while Yellow is unstable across weighting and within-Manhattan chec
 2023-to-2024 no-fee placebo window, both services also show negative exposure-related estimates, so
 Model 2 is interpreted as an exposure-volume association rather than strong causal evidence.
 
-Model 3 estimates a negative cross-vehicle gap inside the CRZ, but the no-fee placebo and provider
-split show substantial cross-vehicle and provider-specific movement.
+Model 3 is included as exploratory cross-service DiD-style evidence. It estimates a negative
+cross-service gap inside the CRZ, but the attenuated triple differences, no-fee placebo, and provider
+split show substantial cross-service and provider-specific movement.
 
 ### Model 1: Burden-Volume Association
 
@@ -89,19 +90,23 @@ stable across the most important diagnostics. Volume weighting moves the estimat
 within-Manhattan is close to zero, and the 2023->2024 no-fee placebo is strongly negative at about
 -26%. Yellow Model 2 is therefore sensitive to weighting and comparison choices.
 
-**HVFHV Model 2.** HVFHV Model 2 is more stable within the 2024->2025 window. The FE-style
-exposure estimate is about -10.7% for a zero-to-full exposure contrast; volume weighting remains
-negative at about -9.7%, and low-volume trims keep the estimate near the same range. However, the
+**HVFHV Model 2.** HVFHV Model 2 is more stable within the 2024->2025 window. The current notebook's
+FE-style exposure estimate is about -10.7% for a zero-to-full exposure contrast; the
+baseline-volume-weighted sensitivity is about -9.2%, and low-volume trims keep the estimate near the
+same range. However, the
 2023->2024 placebo is also negative and similar in magnitude.
 
 
 ### Model 3: Cross-Vehicle DiD
 
-The primary within-CRZ estimate is about -5.9%: HVFHV lost about 5.9% more volume than Yellow from
+Model 3 is a cross-service DiD-style comparison under strong service-comparability assumptions. The
+primary within-CRZ estimate is about -5.9%: HVFHV changed about 5.9% more negatively than Yellow from
 2024 to 2025. This primary gap is stable to weighting, a zone-shock control, vehicle-specific
-seasonality, and CRZ bottom-volume trimming.
+seasonality, and CRZ bottom-volume trimming. It is a relative cross-service change, not a direct
+estimate of trips caused to disappear by the fee difference.
 
 The more demanding triple-diff specification reduces the estimate to about -2% in the binary version.
+The continuous-exposure triple difference is about -1.9%, and its confidence interval includes zero.
 Dropping June gives a negative estimate as well, roughly -4% to -6% depending on the specification.
 
 The diagnostics limit the interpretation:
@@ -111,6 +116,11 @@ The diagnostics limit the interpretation:
 - The placebo magnitude is large relative to the 2024->2025 estimates.
 - The provider split is inconsistent: Yellow-vs-Uber is about -11.4%, while Yellow-vs-Lyft is about
   +10.3%, even though Uber and Lyft face the same USD 1.50 HVFHV fee.
+- Yellow Flex growth can affect the card/cash comparison population, while HVFHV provider and
+  platform dynamics can change the cross-service gap independently of the fee.
+
+Model 3 therefore shows a 2025 cross-service volume gap and adds useful diagnostic and triangulation
+evidence. It does not identify a clean causal effect of the fee difference.
 
 ## 3. Causal Interpretation
 
