@@ -1,0 +1,4 @@
+diagnostic,coefficient,std_error,ci_lower,ci_upper,interpretation
+2024 pretrend interaction,-0.012863,0.020331,-0.052711,0.026984,weak/no clear pretrend signal
+2023-vs-2024 placebo FE,-0.1012236881308078,0.0106329709300933,-0.1220639282024521,-0.0803834480591634,weakens causal interpretation
+2024-vs-2025 Model 2 FE-style,-0.11302791906928913,0.007603616053446375,-0.1279307326863146,-0.09812510545226366,similar magnitude to placebo

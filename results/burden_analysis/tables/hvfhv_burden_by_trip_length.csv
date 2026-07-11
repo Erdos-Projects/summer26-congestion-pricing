@@ -1,4 +1,4 @@
-trip_length,q,avg_DS_z,median_DS_z,n_zone_dir,median_trip_count
+trip_length,q,mean_DS_z,median_DS_z,n_zone_directions,median_trip_count
 short,1,0.07156982655639645,0.07183908045977012,25,208753.0
 short,2,0.07826381970470556,0.07880312535361704,24,173946.0
 short,3,0.08097774778251882,0.08112493239588968,25,225875.0

@@ -193,7 +193,9 @@ zone-sides to lower-exposure zone-sides.
   **2024 (pre-policy)** share of trips whose pickup **or** dropoff is in the **38 CRZ LocationIDs**
   (Manhattan south of 60th St). Direction-specific (matches the unit). Defined from **geography**
   (not the 2025 fee column) so the *same* rule applies to 2024; validated against the 2025
-  `charged_cbd_flag` (**96% agreement**, in [`scripts/yellow_ds_pipeline.py`](../scripts/yellow_ds_pipeline.py)).
+  `charged_cbd_flag` (Yellow **96% agreement**, in [`scripts/yellow_ds_pipeline.py`](../scripts/yellow_ds_pipeline.py);
+  HVFHV **97.7% match, 5.6% of charged trips missed by the geography rule**, in
+  [`hvfhv_model2_exposure_validation`](../results/modeling/tables/hvfhv_model2_exposure_validation.csv)).
   A **binary** CRZ/non-CRZ split is kept only as a *contamination diagnostic* — even non-CRZ
   zone-sides are materially exposed (median share ≈ 0.21), so a binary control is partially treated.
   - *Known limitation:* geography misses **through-trips** (~3.7% of charged trips); flagged, not modeled.

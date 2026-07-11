@@ -6,12 +6,6 @@ output of the EDA notebooks.
 Source notebooks: `notebooks/yellow_taxi_full_EDA.ipynb`, `notebooks/hvfhv_full_EDA.ipynb`, and
 `notebooks/yellow_taxi_sample_EDA.ipynb`. 
 
-Additional exploratory chart exports retained from earlier work:
-
-| Figure | What it shows | Supports |
-|---|---|---|
-| `tlc-chart.png` / `tlc-chart.html` | Earlier TLC chart export retained for reference. | Historical EDA context; not a primary final figure unless selected for presentation. |
-
 ## Yellow Taxi
 
 | Figure | What it shows | Supports |
@@ -20,6 +14,7 @@ Additional exploratory chart exports retained from earlier work:
 | `yellow_full_hourly_cbd_exposure.png` | 2025 charged share + median burden by pickup hour (full EDA §6) | CBD exposure is uneven across the day (low early morning, high late night) — an exposure KPI. |
 | `yellow_full_charged_vs_uncharged.png` | Median cost / distance / airport-trip share, charged vs not-charged (full EDA §9) | Charged trips are a route/geography selection (longer, far less airport-heavy), not uncharged trips plus a fee. |
 | `yellow_full_burden_by_distance.png` | Charged share + median base-cost burden by distance bucket (full EDA §10) | Fee burden is regressive in trip length — short trips carry the largest fee share. |
+| `yellow_full_burden_quantiles_2025.png` | Current-cost and base-cost burden quantiles for charged trips. | Full-data burden distribution and tail behavior. |
 
 ## HVFHV
 
@@ -30,3 +25,10 @@ Additional exploratory chart exports retained from earlier work:
 | `hvfhv_full_charged_comparison_2025.png` | Median cost / distance / driver-pay / airport-fee share, charged vs not (full EDA §8) | Charged HVFHV trips are longer, more expensive, and more airport-exposed — composition, not just the fee. |
 | `hvfhv_full_burden_quantiles_2025.png` | 2025 CBD burden quantiles (full EDA §9) | Burden distribution and tail behavior for the HVFHV burden metric. |
 | `hvfhv_full_distance_exposure_2025.png` | Charged share + median burden by distance bucket (full EDA §9) | Fee burden is regressive in trip length, as for Yellow. |
+
+## Companion Tables
+
+The `tables/` folder contains the data behind the selected cross-service EDA comparisons. Each
+service has a monthly volume/service-mix summary, charged-versus-uncharged composition, distance-
+bucket exposure and burden, and burden quantiles. Sample-only diagnostics remain in the sample EDA
+notebooks and are not duplicated here.
