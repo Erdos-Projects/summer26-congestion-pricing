@@ -8,6 +8,8 @@ and HVFHV (high-volume for-hire vehicle) source fields.
 
 - **Included:** Yellow Taxi and HVFHV monthly trip records for **February–June 2024** and
   **February–June 2025**.
+- **Placebo window:** February-June **2023** standardized files are used only for the
+  2023-to-2024 no-fee placebo comparisons.
 - **Excluded for now:** Green Taxi (deferred to later robustness checks).
 - **Policy context:** NYC congestion pricing in the Central Business District (CBD) took
   effect on **January 5, 2025**. We treat **January 2025 as a transition month** and do
@@ -22,6 +24,9 @@ organized by calendar year and month:
 
 ```
 data/raw/
+  2023/
+    Feb/   yellow_tripdata_2023-02.parquet, fhvhv_tripdata_2023-02.parquet
+    ...
   2024/
     Feb/   yellow_tripdata_2024-02.parquet, fhvhv_tripdata_2024-02.parquet
     Mar/
@@ -53,12 +58,17 @@ data/raw/
 ```
 data/processed/00_standardized_trips/
   yellow/
+    2023/02.parquet ... 06.parquet
     2024/02.parquet ... 06.parquet
     2025/02.parquet ... 06.parquet
   hvfhv/
+    2023/02.parquet ... 06.parquet
     2024/02.parquet ... 06.parquet
     2025/02.parquet ... 06.parquet
 ```
+
+The large standardized files are available through the external package documented in
+[`../data/README.md`](../data/README.md). They can also be regenerated from the public TLC files.
 
 Each file contains trips from **one service**, **one year**, and **one month** that pass
 fundamental validity checks (see [Cleaning rules](#conservative-cleaning-rules)).
@@ -173,6 +183,21 @@ python scripts/create_diagnostic_sample.py
 | `total_amount` | `total_amount` | Total passenger charge including fare, surcharges, tolls, and tip |
 | `RatecodeID` | `RatecodeID` | TLC rate code |
 
+**Derived Yellow flags** (computed in `standardize_trips.py`; they define the analysis populations
+used downstream):
+
+| Column | Derived from | Definition |
+|--------|--------------|------------|
+| `yellow_card_or_cash_flag` | `payment_type` | `True` when `payment_type ∈ {1 credit card, 2 cash}`. The card/cash population used for the fare-based `DS_z` burden metric. |
+| `flex_fare_flag` | `payment_type` | `True` when `payment_type = 0` (Flex Fare, upfront-priced). Excluded from the primary Yellow volume outcome because it is a separate pricing regime whose share grew independently of the fee. |
+| `irregular_payment_flag` | `payment_type` | `True` when `payment_type ∈ {3, 4, 5, 6}` (no-charge / dispute / unknown / voided). Real rides kept in the non-Flex volume count. |
+| `airport_trip_flag` | `airport_fee`, `PU/DOLocationID` | `True` when `airport_fee > 0` **and** pickup or dropoff is JFK (`132`) or LaGuardia (`138`). Newark (`EWR`) is excluded — it carries no NYC airport fee. |
+
+These four flags are the **canonical** standardized columns. The 20K representative sample derives a
+few finer `payment_type` fields for QA (splitting `irregular_payment_flag` into no-charge/dispute/void
+vs unknown, plus a text label and review flag); those are documented in
+[`cleaning_notes.md`](cleaning_notes.md), which references this table as the source of truth.
+
 ### Optional HVFHV-specific columns
 
 | Column | Raw source | Notes |
@@ -285,8 +310,8 @@ Applied in `scripts/standardize_trips.py` before writing monthly parquet outputs
 4. Keep only rows where `PULocationID` and `DOLocationID` are not missing.
 5. Keep only rows where `trip_distance_miles >= 0` (zero-distance trips retained).
 6. Keep only rows where `trip_duration_seconds > 0`.
-7. `cbd_congestion_fee` must not be missing; for pre-policy **2024** data, missing values
-   are filled with **0**. For **2025+**, missing values cause the row to be dropped.
+7. `cbd_congestion_fee` must not be missing; for pre-policy data (**year < 2025**), missing
+   values are filled with **0**. For **2025+**, missing values cause the row to be dropped.
 8. Keep only rows where `cbd_congestion_fee >= 0`.
 9. Keep only rows where `passenger_cost_pretip > 0` (required for burden metrics).
 
@@ -295,7 +320,8 @@ QC flags instead.
 
 ---
 
-## Next steps (not in this document)
+## Downstream use
 
-EDA, zone-level aggregation, disruption scores, maps, and modeling will use the
-standardized trip files as input in later project phases.
+The EDA, burden-analysis, and modeling notebooks use these standardized trip files. Smaller
+model-ready panels and exported results are tracked separately under `data/processed/` and
+`results/`.

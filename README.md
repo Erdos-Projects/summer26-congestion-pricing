@@ -47,8 +47,8 @@ The dataset is sourced from
 
 | Source | Description | Current project use |
 |---|---|---|
-| Yellow Taxi trips | Monthly trip records with pickup/dropoff times, locations, fares, and surcharges | **Included**; audit, feature documentation, DS_z outputs, and first-pass Model 1/2 work exist |
-| HVFHV trips | High-volume for-hire vehicle trip records | **Included**; audit, feature documentation, full-data DS_z outputs, Model 1/2 notebook, floor sensitivity, Manhattan robustness, and no-June placebo diagnostic exist |
+| Yellow Taxi trips | Monthly trip records with pickup/dropoff times, locations, fares, and surcharges | **Included**; full pipeline — audit, features, burden analysis, Model 1/2, and Model 3 inputs |
+| HVFHV trips | High-volume for-hire vehicle trip records | **Included**; full pipeline — audit, features, burden analysis, Model 1/2 (floor + Manhattan robustness, no-June placebo), and Model 3 inputs |
 | Green Taxi trips | Boro taxi trip records | Deferred for later robustness checks |
 | FHV trips | Smaller for-hire vehicle records | Not used in current scope |
 | TLC taxi zone lookup | Zone IDs and geographic definitions | Used for zone-level outputs and robustness summaries |
@@ -64,7 +64,9 @@ The dataset is sourced from
 
 Raw TLC parquet files are stored locally under `data/raw/` by year and month
 and are not committed due to size. Standardized parquet files are generated
-under `data/processed/00_standardized_trips/` and are also not committed.
+under `data/processed/00_standardized_trips/` and are also not committed. A
+[downloadable standardized-data package](data/README.md) provides Yellow and HVFHV files for
+February-June 2023-2025; 2023 is used only for no-fee placebo comparisons.
 
 ### Passenger Cost Definitions
 
@@ -112,9 +114,10 @@ Intended deliverables include:
 - `README.md` - project description, current state, and reproduction notes.
 - `kpis.md` - KPI definitions and status.
 - `docs/` - audit, feature-selection, modeling, and evaluation documentation.
-- `notebooks/` - exploratory and first-pass modeling notebooks.
+- `notebooks/` - EDA, feature, burden, and modeling notebooks (goal-based, per service).
 - `scripts/` - standardization, QC, feature engineering, and output generation.
-- `presentation/` - stakeholder summary materials.
+- `results/` - exported tables and figures by stage (eda / features / burden_analysis / modeling).
+- `presentation/` - executive summary and presentation materials.
 
 ## Reproducing The Analysis
 
@@ -126,6 +129,14 @@ conda activate congestion-pricing
 ```
 
 ### Data
+
+The recommended route is to download the 7.3 GB
+[standardized-data package](https://drive.google.com/file/d/1lceqcvCE38_g8thraWwVSv_J1t-7Vatp/view?usp=sharing),
+verify its SHA-256 checksums, and copy its `00_standardized_trips/` directory to
+`data/processed/`. Follow [`data/README.md`](data/README.md) for the safe extraction procedure and
+expected folder layout.
+
+To rebuild the standardized files from the public source data instead:
 
 1. Download monthly TLC trip record files from the
    [TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
@@ -146,7 +157,7 @@ Outputs:
 
 | Output | Description | Committed to git? |
 |---|---|---|
-| `data/processed/00_standardized_trips/` | Monthly cleaned parquet files by service (`yellow/`, `hvfhv/`) | No, too large; regenerate locally |
+| `data/processed/00_standardized_trips/` | Monthly cleaned parquet files by service (`yellow/`, `hvfhv/`) | No; download externally or regenerate locally |
 | `data/processed/samples/trip_level_sample.csv` | 100-row balanced CSV for manual inspection | Yes |
 | `data/processed/samples/trip_level_sample_20k_representative.csv` | 20,000-row representative CSV for preliminary EDA | Yes |
 | `data/processed/samples/trip_level_sample_5k_diagnostic.csv` | Diagnostic CSV for cleaning-rule review | Yes |
@@ -156,36 +167,44 @@ See [`docs/data_structure_and_schema.md`](docs/data_structure_and_schema.md) for
 the standardized schema and cleaning rules. Samples are for preliminary EDA and
 diagnostics; final zone-level claims should use full-data aggregates.
 
-### Analysis Outputs
+### Notebooks And Results
 
-Tracked disruption-score outputs live under `data/processed/disruption_score/`.
-HVFHV outputs include DS_z, behavioral-shift joins, denominator-floor
-sensitivity, rank stability, top-zone overlap, borough correlations, and
-Manhattan robustness. HVFHV Model 1 and Model 2 are summarized in
-`notebooks/hvfhv_model1_model2.ipynb`; Model 2 is estimated under assumptions
-and has a no-June 2023-vs-2024 placebo warning. Yellow outputs include DS_z,
-behavioral-shift joins, floor sensitivity, rank stability, geographic-charge
-validation, and a monthly panel used in first-pass Model 1/2 work.
+Analysis is organized goal-by-goal, symmetric across the two services:
+
+| Stage | Notebooks | Results |
+|---|---|---|
+| EDA | `{service}_full_EDA`, `{service}_sample_EDA` | `results/eda/` |
+| Features | `{service}_feature_selection_and_engineering` | `results/features/` |
+| Goal 1 — burden ranking | `{service}_burden_ranking_and_heterogeneity` | `results/burden_analysis/` |
+| Goal 2 — volume models | `{service}_model1_model2` | `results/modeling/` |
+| Cross-vehicle Model 3 | `model3_cross_vehicle` | `results/modeling/` (`cross_vehicle_model3_*`) |
+
+Each main notebook self-exports its tables and figures to the matching `results/` folder. Pipeline
+intermediates (DS_z, panels, exposure validation) live under `data/processed/disruption_score/`. The
+executive summary is [`presentation/summary.md`](presentation/summary.md); the reader-facing design
+and results write-ups are in [`docs/burden_analysis_and_modeling_plan.md`](docs/burden_analysis_and_modeling_plan.md),
+[`docs/burden_analysis_and_modeling_results.md`](docs/burden_analysis_and_modeling_results.md), and
+[`docs/causal_interpretation_limitations.md`](docs/causal_interpretation_limitations.md).
 
 ## Project Status
 
-**Current phase:** checkpoint documentation, first-pass modeling, and
-final-deliverable preparation.
+**Current phase:** final-deliverable preparation — annotated repo, executive
+summary, and presentation.
 
 | Area | Status |
 |---|---|
-| Raw data download, Feb-Jun 2024 and 2025 Yellow + HVFHV | Complete locally |
+| Raw TLC source data | Publicly available from TLC; not redistributed in the repo |
 | Standardization, sampling, diagnostic, and validation scripts | Implemented |
-| Standardized parquet outputs | Produced locally; not committed |
+| Standardized parquet outputs | Produced and available through the external package; not committed |
 | QC and sample outputs | Produced and tracked where small enough |
 | Yellow Taxi audit and feature documentation | Complete enough for final-draft use |
 | HVFHV audit and feature documentation | Complete enough for final-draft use |
-| HVFHV DS_z outputs | Produced, including floor sensitivity, rank stability, top-zone overlap, borough correlations, and Manhattan robustness |
-| HVFHV Model 1/2 notebook | Produced; Model 1 shows a strong descriptive burden-volume association, while Model 2 is a negative exposure-gradient estimate with a placebo warning |
-| Yellow Taxi DS_z and Model 1/2 first pass | Outputs and notebook exist; report as first-pass/inferential, not causal proof |
-| Model 3 combined Yellow/HVFHV analysis | Completed as exploratory cross-service DiD-style evidence; the primary CRZ gap is negative, but attenuated triple-difference estimates, a large no-fee placebo, and opposite provider splits prevent a clean causal interpretation |
+| Burden analysis (both services) | Complete — top-`DS_z` rankings, floor robustness, and borough/trip-length/airport heterogeneity, exported to `results/burden_analysis/` |
+| Model 1/2 (both services) | Complete — Model 1 is a descriptive burden-volume association; Model 2 is a negative exposure-gradient estimate with a no-June placebo warning. Exports in `results/modeling/` |
+| Model 3 combined Yellow/HVFHV analysis | Complete as exploratory cross-service DiD-style evidence; the primary CRZ gap is negative, but attenuated triple-difference estimates, a large no-fee placebo, and opposite provider splits prevent a clean causal interpretation |
 | Green Taxi integration | Deferred |
-| Final slides/video/report | Pending |
+| Executive summary | Done (`presentation/summary.md`) |
+| Slides / video | Deck drafted; video and repo-side reproducibility entry point pending |
 
 Green Taxi integration and January 2025 transition analysis are later
 extensions, not blockers for the current deliverables. Model 3 is included as

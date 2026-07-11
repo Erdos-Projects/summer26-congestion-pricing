@@ -32,13 +32,21 @@ For aggregate estimates from the 20K sample (means, totals, shares by stratum):
 sample_weight = stratum_population_n / stratum_sample_n
 ```
 
-Weight rows when extrapolating to the full standardized population. Final **zone-level**
-and **origin–destination** analysis should eventually use **full-data aggregates**, not
-only this extract.
+Weight rows when extrapolating to the full standardized population. The final **zone-level**
+and **origin–destination** analyses use **full-data aggregates**, not only this extract.
+
+The representative sample covers the primary 2024-2025 comparison. Separate 2023 standardized
+files support the no-fee placebo analyses; see [`../data/README.md`](../data/README.md) for the full
+data layout.
 
 ## Yellow payment type
 
-Yellow Taxi `payment_type` is preserved in the 20K sample with these derived fields:
+The **canonical** standardized payment flags — `yellow_card_or_cash_flag`, `flex_fare_flag`,
+`irregular_payment_flag` — are defined in
+[`data_structure_and_schema.md`](data_structure_and_schema.md) (they live in the standardized
+parquet). The 20K sample additionally carries these finer `payment_type` fields for QA, where
+`irregular_payment_flag` (codes 3–6) is split into `yellow_no_charge_dispute_void_flag` (3, 4, 6) and
+`yellow_payment_unknown_flag` (5):
 
 | Column | Definition |
 |--------|------------|
@@ -82,7 +90,9 @@ These rows are **flagged, not removed**.
 
 ## QC flags in standardized and sample data
 
-The standardization pipeline (`scripts/standardize_trips.py`) **drops** rows with:
+The standardization pipeline (`scripts/standardize_trips.py`) **drops** rows with (the canonical rule
+list is in [`data_structure_and_schema.md`](data_structure_and_schema.md) § Conservative cleaning
+rules):
 
 - Invalid timestamps or dropoff not after pickup
 - Pickup year/month mismatch with source file
