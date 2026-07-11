@@ -84,7 +84,5 @@ Potential analyses include:
   trips;
 - studying airport corridors separately, since airport trips are longer, higher-cost, and lower-burden
   than core Manhattan trips;
-- treating driver pay as an outcome, not a post-policy control, to study whether driver-side patterns
-  differ in high-burden or high-exposure areas;
 - exploring trip-purpose proxies where defensible, while being clear that TLC records do not directly
   observe trip purpose.
