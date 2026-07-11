@@ -31,13 +31,14 @@ stronger interpretation.
 
 ### Research Questions
 
-- How did trip volumes and fare patterns change across TLC zones after the
-  congestion fee took effect?
-- Which zones show the largest fee burden relative to trip cost?
-- Are higher-burden or higher-exposure zones associated with different
-  post-policy trip-volume changes?
-- Do Yellow Taxi and HVFHV patterns differ enough to motivate later combined
-  analysis?
+Private cars are the policy's main target, so the reported Manhattan traffic
+improvement is largely a private-car story. We study the much smaller per-trip
+charge on taxi and Uber/Lyft, and ask two linked questions:
+
+1. **Who bears it?** Even though the fee is small and mostly flat, is it felt
+   evenly across riders — or is it regressive?
+2. **Did it reduce trips?** Did taxi/Uber-Lyft volume fall after the fee, and
+   fall more where a zone was more exposed to the charging zone?
 
 ## Dataset
 
@@ -180,7 +181,7 @@ Analysis is organized goal-by-goal, symmetric across the two services:
 
 Each main notebook self-exports its tables and figures to the matching `results/` folder. Pipeline
 intermediates (DS_z, panels, exposure validation) live under `data/processed/disruption_score/`. The
-executive summary is [`presentation/summary.md`](presentation/summary.md); the reader-facing design
+executive summary is [`presentation/executive_summary.md`](presentation/executive_summary.md); the reader-facing design
 and results write-ups are in [`docs/burden_analysis_and_modeling_plan.md`](docs/burden_analysis_and_modeling_plan.md),
 [`docs/burden_analysis_and_modeling_results.md`](docs/burden_analysis_and_modeling_results.md), and
 [`docs/causal_interpretation_limitations.md`](docs/causal_interpretation_limitations.md).
@@ -202,7 +203,7 @@ summary, and presentation.
 | Model 1/2 (both services) | Complete — Model 1 is a descriptive burden-volume association; Model 2 is a negative exposure-gradient estimate with a no-June placebo warning. Exports in `results/modeling/` |
 | Model 3 combined Yellow/HVFHV analysis | Complete as exploratory cross-service DiD-style evidence; the primary CRZ gap is negative, but attenuated triple-difference estimates, a large no-fee placebo, and opposite provider splits prevent a clean causal interpretation |
 | Green Taxi integration | Deferred |
-| Executive summary | Done (`presentation/summary.md`) |
+| Executive summary | Done (`presentation/executive_summary.md`) |
 | Slides / video | Deck drafted; video and repo-side reproducibility entry point pending |
 
 Green Taxi integration and January 2025 transition analysis are later
