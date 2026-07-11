@@ -3,8 +3,7 @@
 This document summarizes future work that would extend the analysis beyond the current project
 scope. The detailed causal and data limitations are documented separately in
 [`causal_interpretation_limitations.md`](causal_interpretation_limitations.md). The emphasis here is on
-additional designs, data sources, and reproducibility improvements that would strengthen a later
-policy evaluation.
+additional designs and data sources that would strengthen a later policy evaluation.
 
 ## 1. Stronger Causal Designs
 
@@ -48,7 +47,10 @@ Relevant external sources include:
 
 These sources would help answer whether observed taxi/HVFHV changes reflect mode substitution or a
 larger transportation-system change. Each source would require separate cleaning, seasonality checks,
-and geographic alignment before it could be combined with TLC trip records.
+and geographic alignment before it could be combined with TLC trip records. They would provide
+important policy context, but they would not automatically identify the congestion fee's causal
+effect on Yellow Taxi or HVFHV volume. Each additional mode has its own geography, seasonality, user
+population, and response to the policy, so incorporating it would require a broader research design.
 
 ## 3. Better HVFHV Price And Platform Data
 
@@ -65,7 +67,9 @@ Useful additions include:
 - driver incentives and provider-side pricing changes.
 
 These data would help distinguish congestion-fee response from Uber/Lyft platform competition and
-app-specific market changes.
+app-specific market changes. Most are not included in public TLC trip records and would require
+platform cooperation, a separate data agreement, or another external source. They should therefore
+be read as an ideal data extension rather than an unfinished step using currently available data.
 
 ## 4. Additional Burden And Equity Questions
 
@@ -84,17 +88,3 @@ Potential analyses include:
   differ in high-burden or high-exposure areas;
 - exploring trip-purpose proxies where defensible, while being clear that TLC records do not directly
   observe trip purpose.
-
-## 5. Reproducibility And Communication Improvements
-
-Additional reproducibility work would make the analysis easier to audit and extend.
-
-- A final-results notebook would reproduce the exact tables and figures used in the presentation.
-- Final figures can be organized under `results/` by analysis stage: EDA, feature work, burden
-  analysis, and modeling.
-- A single command or script would improve reproducibility by regenerating the key final tables and
-  plots from the processed data.
-- Final wording can remain aligned with the main interpretation: stable burden ranking,
-  suggestive volume associations, no clean causal volume claim.
-- Presentation claims can link to the notebooks, result files, and documentation that reproduce
-  them.
