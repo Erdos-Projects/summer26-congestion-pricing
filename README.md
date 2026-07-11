@@ -7,7 +7,6 @@ Erdos Institute Data Science Project - Summer 2026
 ## Team
 
 - Yunpeng Niu
-- Dionel Jaime
 - Yue Qiu
 - Yiding Tian
 - Adithya Sathyanarayana
