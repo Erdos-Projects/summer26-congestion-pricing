@@ -60,7 +60,7 @@ operates in the real transportation system.
 The congestion-pricing policy primarily targets vehicle entry into the Manhattan core. Under the
 initial 2025 toll schedule, a private passenger vehicle entering the CRZ pays a vehicle-entry toll for
 the day (USD 9 in the daytime E-ZPass schedule, with a lower overnight rate), while Yellow Taxi and
-HVFHV passengers pay smaller per-trip surcharges (USD 0.75 for Yellow Taxi and USD 1.50 for HVFHV).
+HVFHV passengers pay smaller per-trip surcharges ($0.75 for Yellow Taxi and $1.50 for HVFHV).
 
 This means the project's volume outcome is only one part of the policy setting. Yellow and HVFHV trip
 counts are useful service-level outcomes, but they are not the full congestion outcome.

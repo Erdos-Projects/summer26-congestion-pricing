@@ -27,7 +27,7 @@ Formula: `log_n_trips ~ month_index * charged_share_2024_geo`
 
 The pretrend output is a diagnostic visualization table, not proof of parallel trends.
 
-## 2023-vs-2024 Placebo
+## 2023→2024 Placebo
 
 Main exposure: `charged_share_2023_geo`, computed only from 2023 geography.
 

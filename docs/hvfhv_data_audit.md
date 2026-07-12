@@ -277,7 +277,7 @@ Key outputs:
 | `hvfhv_monthly_panel.csv` | Model 2 monthly zone-direction panel with 2024 geography-based exposure |
 | `hvfhv_model2_exposure_validation.csv` | diagnostic comparison of geography-based exposure against the 2025 observed fee flag |
 | `hvfhv_pretrend_2024_diagnostic.csv` | no-June 2024 pretrend diagnostic |
-| `hvfhv_placebo_2023_2024_results.csv` | no-June 2023-vs-2024 placebo results |
+| `hvfhv_placebo_2023_2024_results.csv` | no-June 2023→2024 placebo results |
 
 Top primary DS_z rows in `hvfhv_zone_disruption_score.csv` are Manhattan
 dropoff zones such as Alphabet City, Stuy Town/Peter Cooper Village, East
@@ -306,14 +306,6 @@ Pearson correlation of **-0.610** with **n = 519**. Because that figure is a
 notebook summary using its own filter, cite the durable CSV correlations when a
 committed source is preferred.
 
-Model 1 shows a strong descriptive association between higher HVFHV burden and
-larger volume declines. Model 2 shows a negative exposure-gradient estimate,
-estimated under assumptions using 2024 geography-based exposure. The no-June
-2023-vs-2024 placebo is also negative and similar in magnitude, which weakens a
-clean causal interpretation and may indicate pre-existing spatial demand trends
-in high-exposure HVFHV zones. Present Model 2 as suggestive association, not
-causal proof.
-
 **Reproducibility:** regenerate durable DS_z CSVs with DuckDB
 `SET threads TO 1` so floating-point averages are deterministic across runs.
 This is already set in the full EDA notebook and `01_pipeline.py`; see also
@@ -326,8 +318,8 @@ Section 12 of the companion features doc.
 | Broad monthly HVFHV market summary | all standardized HVFHV rows after upstream cleaning |
 | Charged-trip composition | 2025 rows split by `charged_cbd_flag` |
 | Burden distribution | 2025 charged trips; report fee/current-cost and fee/base-cost definitions separately |
-| DS_z | 2025 charged trips with rounded base cost >= $1; zone x direction |
-| Volume change | all standardized trips by zone x direction, 2024 vs 2025; no fee filter |
+| DS_z | 2025 charged trips with rounded base cost >= $1; zone × direction |
+| Volume change | all standardized trips by zone × direction, 2024 vs 2025; no fee filter |
 | Provider/shared-ride description | provider label and shared flags, reported as regimes/context |
 | Driver-pay description | descriptive outcome/context only; not a post-policy control |
 | Model controls | pre-policy 2024 features only |
@@ -344,10 +336,7 @@ Section 12 of the companion features doc.
    fee/current pre-tip cost, while DS_z uses fee/base cost excluding the CBD fee.
 5. Correlations between DS_z and volume change are empirical associations, not
    causal estimates.
-6. The negative Model 2 exposure-gradient estimate is not clean causal evidence
-   because the no-June 2023-vs-2024 placebo is also negative and similar in
-   magnitude.
-7. Notebook-only tables and figures should be cited as EDA evidence unless they
+6. Notebook-only tables and figures should be cited as EDA evidence unless they
    are regenerated into durable CSVs.
 
 ## 10. Decisions carried into feature engineering

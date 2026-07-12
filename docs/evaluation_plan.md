@@ -67,7 +67,7 @@ For each model, we state the comparison and the assumption that makes the compar
   places would have moved similarly. We check this with the 2024 pre-period view, the 2023→2024
   placebo, the within-Manhattan comparison, and the binary-vs-continuous exposure comparison.
 
-- **Model 3: cross-vehicle DiD-style comparison.** This completed model is included as exploratory,
+- **Model 3: cross-vehicle DiD-style comparison.** This model is evaluated as exploratory,
   diagnostic, and triangulation evidence. It compares Yellow card/cash and HVFHV within the same
   exposed zones, holding geography more fixed but relying on strong service-comparability assumptions.
   The key assumption is that, without the fee-size difference and other service-specific changes, the
@@ -114,16 +114,11 @@ Placebo checks run the same logic in settings where the fee should not be drivin
 - **Provider split for Model 3.** Uber and Lyft both pay the same HVFHV fee. If the pooled HVFHV
   result mainly reflects the fee, the Uber and Lyft comparisons should point in the same direction.
   Opposite signs would suggest Uber/Lyft-specific changes are large enough to complicate the pooled
-  yellow-vs-HVFHV comparison.
+  Yellow-vs-HVFHV comparison.
 
-- **Low-exposure check for Model 3.** In zones with very little CRZ exposure, the yellow-vs-HVFHV gap
+- **Low-exposure check for Model 3.** In zones with very little CRZ exposure, the Yellow-vs-HVFHV gap
   should be close to zero. Because this sample can be small, this check is supportive rather than
   decisive.
-
-The completed Model 3 diagnostics do not clear the causal bar: the primary CRZ gap is negative, but
-the triple differences attenuate, the continuous-exposure interval includes zero, the 2023-2024
-placebo is large and nonzero, and the Uber/Lyft splits have opposite signs. Model 3 should therefore
-be reported as a 2025 cross-service volume gap, not as causal proof of the fee difference.
 
 ---
 
@@ -161,8 +156,7 @@ The three models have different weaknesses, so we compare them rather than relyi
 - Model 1 is the first descriptive check of whether that ranking lines up with volume change.
 - Model 2 adds a time dimension and a lower-exposure comparison group.
 - Model 3 holds geography more fixed by comparing Yellow and HVFHV within the same exposed zones, but
-  remains exploratory because it relies on strong service-comparability assumptions and its placebo
-  and provider diagnostics do not support a clean causal interpretation.
+  remains exploratory because it relies on strong service-comparability assumptions.
 
 Agreement across the models would strengthen the interpretation. Disagreement helps identify which
 assumption needs more caution.

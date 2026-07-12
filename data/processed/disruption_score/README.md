@@ -2,14 +2,14 @@
 
 This directory holds three groups of CSVs: **HVFHV** DS_z (documented first, below), the **yellow**
 DS_z outputs, and the **Model-2 / Model-3 DiD panels**. Each file's generating script is named in its
-section. See also [`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md) and
-[`docs/evaluation_plan.md`](../../docs/evaluation_plan.md).
+section. See also [`docs/burden_analysis_and_modeling_plan.md`](../../../docs/burden_analysis_and_modeling_plan.md) and
+[`docs/evaluation_plan.md`](../../../docs/evaluation_plan.md).
 
-## HVFHV DS_z (`scripts/EDA_adithya/01_pipeline.py`)
+## HVFHV DS_z (`scripts/01_pipeline.py`)
 
 Authoritative run guide for `scripts/01_pipeline.py` and related exports. See also
-[`docs/hvfhv_data_audit.md`](../../docs/hvfhv_data_audit.md) and
-[`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md).
+[`docs/hvfhv_data_audit.md`](../../../docs/hvfhv_data_audit.md) and
+[`docs/burden_analysis_and_modeling_plan.md`](../../../docs/burden_analysis_and_modeling_plan.md).
 
 Run from the repository root:
 
@@ -38,8 +38,8 @@ python scripts/hvfhv_pretrend_placebo.py
 - `hvfhv_monthly_panel.csv`: HVFHV Model 2 monthly zone-direction panel with 2024 geography-based exposure.
 - `hvfhv_model2_exposure_validation.csv`: diagnostic comparison of geography-based exposure against the 2025 observed fee flag.
 - `hvfhv_pretrend_2024_diagnostic.csv`: no-June 2024 exposure-quartile pretrend diagnostic.
-- `hvfhv_placebo_2023_2024_panel.csv`: no-June 2023-vs-2024 placebo panel.
-- `hvfhv_placebo_2023_2024_results.csv`: no-June 2023-vs-2024 placebo regression results.
+- `hvfhv_placebo_2023_2024_panel.csv`: no-June 2023→2024 placebo panel.
+- `hvfhv_placebo_2023_2024_results.csv`: no-June 2023→2024 placebo regression results.
 - `hvfhv_model2_panel_notes.md` and `hvfhv_pretrend_placebo_notes.md`: compact regeneration and interpretation notes.
 
 ## Definition
@@ -63,10 +63,10 @@ Run `python scripts/03_manhattan_robustness.py` after the DS_z pipeline outputs 
 Run `python scripts/hvfhv_model2_monthly_panel.py` to regenerate the HVFHV
 Model 2 monthly panel and geography-exposure validation outputs. Run
 `python scripts/hvfhv_pretrend_placebo.py` to regenerate the no-June 2024
-pretrend diagnostic and 2023-vs-2024 placebo results.
+pretrend diagnostic and 2023→2024 placebo results.
 
 The Model 2 exposure-gradient estimate is negative under the stated
-assumptions. However, the no-June 2023-vs-2024 placebo estimate is also
+assumptions. However, the no-June 2023→2024 placebo estimate is also
 negative and similar in magnitude, so Model 2 should be presented as suggestive
 association rather than clean causal evidence.
 
@@ -112,6 +112,6 @@ Shared columns: `n_trips`, `crz_zone`, `charged_share` (pre-year direction-speci
   non-Flex, **2023 vs 2024**, carrying both `charged_share_2023` (no-leakage) and `charged_share_2024` —
   the **Model-2 placebo** input.
 
-The per-model estimates and verdicts live in the notebooks
-([`../../notebooks/yellow_model1_model2.ipynb`](../../notebooks/yellow_model1_model2.ipynb),
-[`../../notebooks/model3_cross_vehicle.ipynb`](../../notebooks/model3_cross_vehicle.ipynb)), not here.
+The per-model estimates and interpretation live in the notebooks
+([`yellow_model1_model2.ipynb`](../../../notebooks/yellow_model1_model2.ipynb),
+[`model3_cross_vehicle.ipynb`](../../../notebooks/model3_cross_vehicle.ipynb)), not here.

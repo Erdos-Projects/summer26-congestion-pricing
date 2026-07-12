@@ -1,6 +1,6 @@
 # NYC HVFHV CBD Congestion Fee Analysis - Code Package
 
-**Authoritative run documentation:** [`data/processed/disruption_score/README.md`](../../data/processed/disruption_score/README.md) (inputs, outputs, definitions, interpretation warnings).
+**Authoritative run documentation:** [`data/processed/disruption_score/README.md`](../data/processed/disruption_score/README.md) (inputs, outputs, definitions, interpretation warnings).
 
 Run from the repository root, in order:
 
@@ -18,6 +18,6 @@ Run from the repository root, in order:
 
 7. `python scripts/hvfhv_pretrend_placebo.py` - Builds the no-June HVFHV pretrend and placebo diagnostics.
 
-See [`docs/hvfhv_data_audit.md`](../../docs/hvfhv_data_audit.md) and
-[`docs/burden_analysis_and_modeling_plan.md`](../../docs/burden_analysis_and_modeling_plan.md)
+See [`docs/hvfhv_data_audit.md`](../docs/hvfhv_data_audit.md) and
+[`docs/burden_analysis_and_modeling_plan.md`](../docs/burden_analysis_and_modeling_plan.md)
 for the reasoning behind data-quality and formula decisions.

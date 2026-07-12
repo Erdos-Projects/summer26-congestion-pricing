@@ -171,18 +171,18 @@ This regular structure has to be accounted for before comparing volume changes a
 seasonality is inspected rather than treated as noise. The hourly exposure curve is also a useful
 descriptive KPI for the burden story.
 
-### `DS_z` Is A Burden Metric — Regressive In Trip Length And Collinear With Geography
+### `DS_z` Is Larger For Short, Low-Cost Trips And Tied To Geography
 
 `DS_z` measures how large the CBD fee is relative to the trip's pre-fee cost — the right quantity for
 the burden-ranking goal.
 
 Because the fee is mostly flat within each service, the relative burden is higher when the underlying
 fare is small: shorter, cheaper trips carry a larger fee share than longer ones, in **both Yellow and
-HVFHV**. Burden is therefore clearly regressive in trip length. On full data the tail is thinner than
+HVFHV**. The fee is therefore a clearly larger share of short, low-cost trips. On full data the tail is thinner than
 the sample suggested — the Yellow p99 relative burden is about 7.6%, not the ~25% the sample implied —
 which is why the burden work uses medians and a base-cost floor rather than raw tail values.
 
-The same mechanism makes `DS_z` collinear with geography: higher `DS_z` means lower base cost and
+The same mechanism ties `DS_z` closely to geography: higher `DS_z` means lower base cost and
 shorter trips, and dense-core zones tend to have shorter trips. The EDA measures this directly — for
 Yellow, `Pearson(DS_z, 2024 trip distance) ≈ −0.82`. So at the zone level, high burden, short trips,
 and dense-core geography are nearly the same signal, and any cross-zone association between burden and

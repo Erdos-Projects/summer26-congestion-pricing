@@ -123,7 +123,7 @@ to distrust it by construction. Full-data picture (37.2M trips):
   fare — consistent with cost being an upfront quote, not distance-metered.
 - **Decision:** distance-based analysis uses card/cash (Flex is separated for cost anyway,
   §4.1); Flex distance's weak anchoring is supporting justification. Extreme distances are
-  handled by a regime-agnostic cap, applied where warranted (deferred pending HVFHV review).
+  handled by a regime-agnostic cap where warranted.
   (Source: full EDA — Flex-distance reliability, validated on full data.)
 
 ### 4.4 Flex Fare total cost — a reliable *number*, but not comparable to card/cash

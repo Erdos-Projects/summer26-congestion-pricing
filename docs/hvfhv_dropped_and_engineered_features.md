@@ -200,7 +200,7 @@ Outcome variables must not be reused as explanatory features in the same model.
 
 Recommended:
 
-- unit: zone x direction;
+- unit: zone × direction;
 - burden metric: `DS_z` mean, with `DS_z_median` reported as robustness;
 - outcome: `pct_volume_change`;
 - controls/sensitivities: 2024 baseline distance or 2024 baseline cost/fare
@@ -214,19 +214,11 @@ Do not:
 - include both DS_z and `relative_cbd_burden` as if they were independent;
 - describe the cross-zone association as causal proof.
 
-Current evidence:
-
-- Durable HVFHV DS_z, rank-stability, top-overlap, borough-correlation, and
-  Manhattan-correlation CSVs already exist.
-- The full EDA notebook reports a low-N-filtered DS_z/volume Pearson
-  correlation of -0.610; durable robustness CSVs report all-zone Spearman about
-  -0.633 and Manhattan-only Pearson about -0.540.
-
 ### Model 2: geographic exposure-gradient DiD
 
 Implemented design:
 
-- unit: zone x direction x month x year;
+- unit: zone × direction x month x year;
 - treatment exposure: pre-policy geography-based `charged_share_2024_geo`,
   not the 2025 observed `charged_cbd_flag`;
 - outcome: monthly trip count or `log_n_trips`;
@@ -236,17 +228,12 @@ Implemented design:
 - report equal-weighted and baseline-volume-weighted estimates separately
   because the weighting changes the estimand.
 
-Completed diagnostics:
+Evaluation requirements:
 
-- HVFHV monthly panel and 2024 geography-based exposure are available.
-- Geography-based exposure is validated against the 2025 observed fee flag as a
-  diagnostic, not proof of clean assignment.
-- The no-June 2024 pretrend diagnostic shows weak/no clear pretrend signal.
-- The no-June 2023-vs-2024 placebo is negative and similar in magnitude to the
-  2024-vs-2025 Model 2 estimate.
-- Therefore Model 2 should be presented as suggestive association, not clean
-  causal evidence; the placebo warning may indicate pre-existing spatial demand
-  trends in high-exposure HVFHV zones.
+- validate geography-based exposure against the 2025 observed fee flag as an assignment diagnostic;
+- inspect pre-policy movement by exposure;
+- run the same design on the no-fee 2023-to-2024 window;
+- compare equal-weighted, baseline-volume-weighted, and low-volume-trimmed estimates.
 
 Do not:
 
@@ -259,7 +246,7 @@ Do not:
 
 Implemented design:
 
-- unit: zone x direction x vehicle x month x year;
+- unit: zone × direction x vehicle x month x year;
 - HVFHV population: all standardized HVFHV trips, with provider and shared-ride
   fields retained for diagnostics;
 - Yellow comparison population: matched Yellow population defined in the Yellow
@@ -270,27 +257,23 @@ Implemented design:
 - coefficient of interest: `post:hvfhv` in the within-CRZ comparison, with a
   triple-diff specification using CRZ exposure as the stricter diagnostic.
 
-Completed diagnostics:
+Evaluation requirements:
 
-- The primary within-CRZ estimate is negative, with HVFHV losing more volume
-  than Yellow from 2024 to 2025.
-- The no-fee 2023-vs-2024 placebo produces a large opposite-signed
-  CRZ-specific contrast, which limits causal interpretation.
-- The provider split is inconsistent: Yellow-versus-Uber and Yellow-versus-Lyft
-  move in opposite directions even though Uber and Lyft face the same HVFHV fee.
-- Low-exposure checks are supportive but underpowered.
+- compare the primary within-CRZ estimate with binary and continuous triple-difference specifications;
+- run the same design on the no-fee 2023-to-2024 window;
+- compare Yellow with Uber and Lyft separately because both providers face the same HVFHV fee;
+- inspect low-exposure zones as a diagnostic, while reporting their sample size and uncertainty.
 
 Feature implications:
 
 - `provider_label` and `hvfhs_license_num` remain EDA/context fields in the
-  main HVFHV feature set, but they are important Model 3 diagnostics because the
-  Uber/Lyft split reveals provider-specific movement.
+  main HVFHV feature set and support the Model 3 provider comparison.
 - `shared_request_flag` and `shared_match_flag` remain descriptive/sensitivity
   fields. Matched shared rides are a small share of HVFHV rows, but they can
   affect vehicle-volume interpretation because one vehicle movement can create
   multiple passenger records.
-- Model 3 should be reported as a suggestive cross-vehicle association, not a
-  clean causal fee estimate or a per-dollar fee elasticity.
+- Model 3 estimates a cross-vehicle comparison under service-comparability assumptions; it is not a
+  per-dollar fee elasticity.
 
 ## 11. Leakage rules to carry forward
 

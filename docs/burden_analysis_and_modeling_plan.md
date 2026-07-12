@@ -234,7 +234,7 @@ would have changed similarly in the absence of the fee difference.
 comparison must be made where both vehicles are exposed.
 - *Primary:* restrict to **high-CRZ-exposure zone-sides** and compare yellow vs HVFHV there.
 - *Advanced (triple-diff):* keep all zones and estimate `post × vehicle × charged_share` — does the
-  yellow-vs-HVFHV gap widen with exposure? This is designed to net out a common cross-vehicle trend
+  Yellow-vs-HVFHV gap widen with exposure? This is designed to net out a common cross-vehicle trend
   using lower-exposure zones as a comparison; run it alongside the primary contrast as a robustness /
   advanced variant.
 
@@ -274,13 +274,6 @@ questions (per zone-side vs per trip).
   HVFHV→yellow (HVFHV down, yellow up), *widening* the gap → `post:hvfhv` reflects the change in the
   *relative mix* (substitution included), not pure demand reduction. Read it as such.
 
-**Implemented result and status:** Model 3 is complete and included as exploratory diagnostic and
-triangulation evidence. HVFHV changed about 5.9% more negatively than Yellow in the primary CRZ
-sample. The binary and continuous triple-difference estimates attenuate; the continuous interval
-includes zero. The 2023-2024 no-fee placebo produces large nonzero contrasts, and the Uber/Lyft
-provider splits have opposite signs. Model 3 therefore shows a 2025 cross-service volume gap but
-does not identify a clean causal effect of the fee difference.
-
 ---
 
 ## How the pieces fit together
@@ -290,8 +283,8 @@ does not identify a clean causal effect of the fee difference.
   comparison group.
 - **Model 3** = *did the higher-fee service change more in the same exposed geography* - an
   exploratory cross-service comparison under strong service-comparability assumptions.
-- Agreement in sign can motivate triangulation, but the failed placebo and provider diagnostics
-  prevent Model 3 from supplying causal proof.
+- Agreement across the models can strengthen the interpretation, while disagreement helps identify
+  which assumptions need more caution.
 
 ## Shared choices (all three models)
 - **Which trips we count (yellow).**

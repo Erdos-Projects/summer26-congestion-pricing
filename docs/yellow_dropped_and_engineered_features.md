@@ -56,7 +56,7 @@ Status legend: ✅ 2024-safe · ❌ 2025-forbidden as control · ⚠️ redundan
 |---|---|---|---|
 | `pickup_datetime` / `dropoff_datetime` | **engineer (index + EDA)** | ✅ | source for the year/month pre-vs-post **index** (used) and for `pickup_hour`/`day_of_week` (**EDA-only**); raw datetime is not itself a model feature |
 | `pickup_hour`, `day_of_week` | **EDA-only (not a model feature)** | ○ | used in the descriptive temporal EDA (hourly CBD exposure, day-of-week seasonality); **not used by any of the 3 models** — they are zone×direction, which collapses trip-level time. (Available for an optional time-stratified robustness run.) |
-| `PULocationID` / `DOLocationID` | **engineer** | ✅ | basis for `charged_geo` and the zone×direction unit (unit justified in `modeling_plan`); categorical, never numeric |
+| `PULocationID` / `DOLocationID` | **engineer** | ✅ | basis for `charged_geo` and the zone × direction unit (unit justified in `burden_analysis_and_modeling_plan.md`); categorical, never numeric |
 | `trip_distance_miles` | **keep (card/cash)** | ✅/🧹 | baseline trip-economics control; for Flex it is **less reliable / weakly-anchored** (§4.3), not unusable — only rare extreme values (>100 mi, in **both** regimes) are capped; distance analysis uses card/cash anyway (burden population) |
 | `trip_duration_seconds` | **drop** | ⚠️/○ | rank-collinear with distance/DS_z (Spearman ~0.94; its low VIF is a Pearson artifact); endogenous to traffic; off-scope (speed) |
 | `passenger_cost_pretip` | **keep** | ✅ | `total_amount − tip_amount`; cost outcome + burden denominator basis |
@@ -70,7 +70,7 @@ Status legend: ✅ 2024-safe · ❌ 2025-forbidden as control · ⚠️ redundan
 | `payment_type` | **engineer → regime flags** | ✅ | defines card/cash vs Flex vs irregular; drives the population split |
 | `congestion_surcharge` (legacy) | **keep in denominator** | 🧹 | pre-existing surcharge; part of base cost, not a study feature; NA on Flex (upfront-priced) |
 | `tolls` | **context only** | 🧹 | part of base cost; not a standalone feature |
-| `airport_fee` | **engineer → `airport_trip_flag` (EDA-only)** | ✅/○ | `airport_fee>0` & PU/DO ∈ {132,138}; airport trips characterized in EDA (low charged share); **not a model feature** in the current design (a dedicated airport analysis was planned but deferred); NA on Flex |
+| `airport_fee` | **engineer → `airport_trip_flag` (EDA-only)** | ✅/○ | `airport_fee>0` & PU/DO ∈ {132,138}; airport trips are characterized in EDA and are not model features in the current design; NA on Flex |
 | `extra`, `mta_tax`, `improvement_surcharge` | **drop** | 🧹 | bundling → double-count (audit §4.5); not in standardized schema |
 | `passenger_count` | **drop** | ⚠️/🧹 | low analytic value; NA on Flex (upfront-priced) |
 | `RatecodeID` | **drop (optional)** | ⚠️/🧹 | NA on Flex (upfront-priced); marginal use only |
@@ -103,5 +103,5 @@ and the zone×direction aggregates `DS_z` (mean+median),
 `passenger_cost_pretip`, `cbd_congestion_fee`, `borough`, `n_2024`.
 
 **Used in EDA only (not model features)** — `pickup_hour`, `day_of_week` (descriptive temporal
-patterns), and `airport_trip_flag` (airport-trip characterization; a dedicated airport analysis
-was planned but deferred). The 3 models are zone-level and do not use these.
+patterns), and `airport_trip_flag` (airport-trip characterization). The three models are zone-level
+and do not use these.

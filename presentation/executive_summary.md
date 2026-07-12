@@ -47,8 +47,8 @@ its raw volume. Model 3 then compares aligned Yellow and Uber/Lyft panels within
 
 ## Finding 1 — Burden: strong, stable, and uneven
 
-A fixed fee is a big slice of a cheap short trip and a tiny slice of a long airport trip, so relative
-burden is highest for shorter, lower-cost trips. The highest-burden zone-sides are the dense
+A fixed fee is a big slice of a cheap short trip and a tiny slice of a long airport trip, so the fee is a much larger
+share of a short, low-cost trip than of a long one. The highest-burden zone-sides are the dense
 Manhattan core for both services (top `DS_z` ≈ 4.6–4.8% for Yellow, ≈ 6% for Uber/Lyft);
 airport trips carry far less (≈ 1–2% vs ≈ 4–5% for non-airport trips).
 
@@ -112,7 +112,7 @@ Three extensions, each targeting a limitation above:
 - **Look beyond TLC trips** — transit, bike, vehicle-entry, and traffic-speed data, to distinguish
   mode substitution from trips that were not taken.
 - **Separate fee effects from platform dynamics** — provider-specific (Uber vs Lyft) baselines and
-  rider-neighborhood context, so the fee response is not confounded with Uber/Lyft market shifts.
+  rider-neighborhood context, to better distinguish fee-related changes from Uber/Lyft market shifts.
 
 Each would improve interpretation, but each needs its own design.
 

@@ -20,7 +20,7 @@ python scripts/hvfhv_model2_monthly_panel.py
 
 ## Panel Construction
 
-- Unit: zone x direction x year x month.
+- Unit: zone × direction × year × month.
 - Directions are constructed separately from pickup and dropoff zones.
 - Main exposure is `charged_share_2024_geo`: the 2024 share of trips in the zone-direction cell whose pickup or dropoff touched the CRZ by geography.
 - `charged_share_2024_geo` is attached to both 2024 and 2025 rows.
