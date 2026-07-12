@@ -630,7 +630,7 @@ def output_column_order(df: pd.DataFrame) -> list[str]:
         if col in df.columns and col not in ordered:
             ordered.append(col)
     # airport_trip_flag is emitted by standardize_trips.py but intentionally held out of
-    # the sample schema for now (no airport-specific analysis committed yet).
+    # the sample schema (the sample is not used for airport-specific analysis).
     held_out = {"dropoff_date", "airport_trip_flag"}
     for col in df.columns:
         if col not in ordered and col not in held_out:

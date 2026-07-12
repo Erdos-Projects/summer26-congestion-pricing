@@ -4,13 +4,14 @@ This document describes how raw TLC trip data are organized locally, what the fi
 cleaning pipeline produces, and how each standardized column is derived from Yellow Taxi
 and HVFHV (high-volume for-hire vehicle) source fields.
 
-## Scope (current first step)
+## Study scope
 
 - **Included:** Yellow Taxi and HVFHV monthly trip records for **February–June 2024** and
   **February–June 2025**.
 - **Placebo window:** February-June **2023** standardized files are used only for the
   2023-to-2024 no-fee placebo comparisons.
-- **Excluded for now:** Green Taxi (deferred to later robustness checks).
+- **Excluded:** Green Taxi and non-HVFHV for-hire vehicle records; these services are outside the
+  scope of the current analysis.
 - **Policy context:** NYC congestion pricing in the Central Business District (CBD) took
   effect on **January 5, 2025**. We treat **January 2025 as a transition month** and do
   not include it in the primary Feb–Jun comparison windows.

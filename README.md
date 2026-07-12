@@ -76,7 +76,7 @@ support a stronger interpretation.
   - **Model 2:** difference-in-differences on pre-policy CRZ exposure.
   - **Model 3:** cross-vehicle difference-in-differences (Yellow vs. Uber/Lyft in the same zones).
 
-KPIs are defined in [`kpis.md`](kpis.md); the full design and evaluation plan are in
+The full design and evaluation plan are in
 [`docs/burden_analysis_and_modeling_plan.md`](docs/burden_analysis_and_modeling_plan.md) and
 [`docs/evaluation_plan.md`](docs/evaluation_plan.md).
 
@@ -109,7 +109,6 @@ the exported tables/figures under [`results/`](results/).
 ├── data/                  Raw (not committed) + processed/ (standardized trips, DS_z, panels)
 ├── results/               Exported outputs by stage: eda / features / burden_analysis / modeling
 ├── docs/                  Data audits, feature decisions, modeling plan, results, limitations
-├── kpis.md                KPI definitions
 └── environment.yml        Conda environment
 ```
 
