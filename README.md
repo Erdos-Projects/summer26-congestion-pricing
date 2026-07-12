@@ -105,7 +105,6 @@ the exported tables/figures under [`results/`](results/).
 │     {service}_model1_model2                             Goal 2 — volume models 1 & 2
 │     model3_cross_vehicle                                cross-vehicle Model 3
 ├── scripts/               Standardization, DS_z pipelines, panel builders, QC/sampling
-├── src/                   Reserved package structure for reusable project code
 ├── data/                  Raw (not committed) + processed/ (standardized trips, DS_z, panels)
 ├── results/               Exported outputs by stage: eda / features / burden_analysis / modeling
 ├── docs/                  Data audits, feature decisions, modeling plan, results, limitations
