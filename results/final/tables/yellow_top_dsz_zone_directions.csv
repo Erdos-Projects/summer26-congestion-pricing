@@ -1,0 +1,16 @@
+zone,direction,zone_name,Borough,DS_z,DS_z_median,N_z,DS_z_rank
+137,dropoff,Kips Bay,Manhattan,0.0476,0.0466,174406,1
+90,pickup,Flatiron,Manhattan,0.0475,0.0466,235158,1
+90,dropoff,Flatiron,Manhattan,0.0473,0.0475,219240,2
+234,dropoff,Union Sq,Manhattan,0.0471,0.0466,372281,3
+249,dropoff,West Village,Manhattan,0.0467,0.0466,263614,4
+107,dropoff,Gramercy,Manhattan,0.0464,0.0466,284967,5
+50,pickup,Clinton West,Manhattan,0.0463,0.0455,75181,2
+137,pickup,Kips Bay,Manhattan,0.0462,0.0455,142690,4
+107,pickup,Gramercy,Manhattan,0.0462,0.0457,285732,3
+229,pickup,Sutton Place/Turtle Bay North,Manhattan,0.0462,0.0455,254119,5
+229,dropoff,Sutton Place/Turtle Bay North,Manhattan,0.0462,0.0457,310457,6
+113,pickup,Greenwich Village North,Manhattan,0.0461,0.0457,213588,6
+48,pickup,Clinton East,Manhattan,0.0458,0.0457,369419,7
+170,dropoff,Murray Hill,Manhattan,0.0457,0.0455,431771,7
+234,pickup,Union Sq,Manhattan,0.0455,0.0446,421971,8

@@ -38,6 +38,11 @@ def main() -> None:
         merged["zone_name"] = merged["Zone"].fillna("Zone " + merged["zone"].astype(str))
         merged["Borough"] = merged["Borough"].fillna("Other")
 
+    # Match the formal HVFHV Model 1 sample used by the notebook and result tables.
+    if "low_n_flag" in merged.columns:
+        merged = merged.loc[~merged["low_n_flag"].astype(bool)].copy()
+    merged = merged.loc[merged["pct_volume_change"].notna()].copy()
+
     print(merged[["DS_z", "pct_volume_change"]].describe())
     print(merged["Borough"].value_counts(dropna=False))
 

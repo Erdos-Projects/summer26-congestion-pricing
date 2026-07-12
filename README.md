@@ -11,7 +11,7 @@ Fare burden and trip-pattern shifts in NYC taxi and Uber/Lyft trips under the 20
 - Yiding Tian
 - Adithya Sathyanarayana
 
-## TL;DR
+## Project Summary
 
 On **January 5, 2025**, New York became the first US city to charge vehicles for entering a defined
 zone — the Manhattan Central Business District south of 60th Street. Using **~37M Yellow taxi and
@@ -20,29 +20,32 @@ bears this fee** and **whether it reduced trips**.
 
 - **The burden is uneven, and the finding is stable.** A flat per-trip fee is a much larger share of
   short, low-cost trips (concentrated in the dense Manhattan core) than of long airport trips. The
-  zone ranking holds across every robustness check — a reusable, reproducible burden metric (`DS_z`).
-- **A causal volume effect is not cleanly identifiable.** Three regression-with-controls designs each
-  find a negative signal, but each fails a no-fee placebo test — so we report an **association, not a
-  causal effect**.
+  zone ranking is stable across the tested denominator floors — a reusable, reproducible burden
+  metric (`DS_z`).
+- **The volume models show suggestive negative patterns.** Three regression-with-controls designs
+  compare burden, exposure, and vehicle groups. The 2023→2024 no-fee placebo and sensitivity checks
+  limit a direct fee-caused interpretation.
 
-**Start here → [`presentation/executive_summary.md`](presentation/executive_summary.md)** (one-page
-summary). Detailed write-ups are in [`docs/`](docs/).
+**Start here → [`presentation/executive_summary.md`](presentation/executive_summary.md).** The slide
+deck is [`presentation/slides.pdf`](presentation/slides.pdf)
+([Google Slides](https://docs.google.com/presentation/d/1lG_YztwYN_HG0y7uDoF2v1hXEYsLfRCf/edit?usp=sharing)).
+Detailed write-ups are in [`docs/`](docs/).
 
 ## Background & Research Questions
 
 The congestion fee depends on the vehicle: **private cars pay \$9/day**, every **taxi** ride pays
 **\$0.75**, and every **Uber/Lyft** ride pays **\$1.50**. Manhattan traffic was reported to be lighter
-afterward — but given the fee structure, private cars are the main target, so that improvement is
-largely a *private-car* story. We instead study the much smaller per-trip charge on **taxi and
-Uber/Lyft**, and ask two linked questions:
+afterward. Given the fee structure, private cars are the policy's main target. We instead study the
+much smaller per-trip charge on **taxi and Uber/Lyft**, and ask two linked questions:
 
 1. **Who bears it?** Even though the fee is small and mostly flat, is it felt evenly across riders, or
    does it weigh more heavily on some trips than others?
 2. **Did it reduce trips?** Did taxi/Uber-Lyft volume fall after the fee, and fall more where a zone
    was more exposed to the charging zone?
 
-This is an **inference-focused, descriptive analysis**, not a demand-prediction task. Reported
-relationships are associations unless a specific design and robustness check support a stronger claim.
+The project combines a **descriptive burden analysis** with **inference-oriented volume
+comparisons**. Reported volume relationships are associations unless a specific design and diagnostic
+support a stronger interpretation.
 
 ## Data & Scope
 
@@ -50,7 +53,7 @@ relationships are associations unless a specific design and robustness check sup
 - **Scope:** **Yellow Taxi and HVFHV (Uber/Lyft) only.** Green Taxi and other FHV are outside the
   scope of this project.
 - **Window:** February–June **2024** (pre-policy) vs. February–June **2025** (post-policy); the same
-  months are compared so seasonality cancels, and **January 2025 is excluded** as a transition month.
+  months are compared to reduce seasonal mismatch, and **January 2025 is excluded** as a transition month.
   (February–June **2023** is used only as a no-fee placebo comparison.)
 - **Unit of analysis:** **zone × direction** — each TLC zone is scored separately on its pickup and
   dropoff side, because a zone can behave differently depending on whether trips start or end there.
@@ -67,8 +70,8 @@ relationships are associations unless a specific design and robustness check sup
 - **Burden metric — the Zone Disruption Score, `DS_z`:** for each charged trip, the CBD fee as a
   share of what the trip would otherwise cost, averaged by zone × direction. It ranks where the fee is
   a large share of the fare. Robustness is checked across denominator-floor and mean/median choices.
-- **Volume — an evidence ladder of three regressions with controls**, each fixing the previous one's
-  weakness and each stress-tested against a no-fee (2023→2024) placebo year:
+- **Volume — an evidence ladder of three regressions with controls**, each using a different
+  comparison to address part of the identification problem:
   - **Model 1:** cross-zone burden ↔ volume-change association.
   - **Model 2:** difference-in-differences on pre-policy CRZ exposure.
   - **Model 3:** cross-vehicle difference-in-differences (Yellow vs. Uber/Lyft in the same zones).
@@ -81,13 +84,11 @@ KPIs are defined in [`kpis.md`](kpis.md); the full design and evaluation plan ar
 
 - **Burden (clear).** The fee is a much larger share of short, low-cost trips; highest-burden
   zone-sides are the dense Manhattan core for both services, and airport trips carry far less. The
-  ranking is stable across all robustness checks.
-- **Volume (cautious).** Every model produces a negative signal, and every model fails a test it
-  should pass (coefficients flip with controls; a no-fee year still shows a large negative estimate;
-  Uber and Lyft move in opposite directions under the identical fee). We therefore report the volume
-  evidence as an association, not a causal effect — an informative result, since the small per-trip
-  fee makes a hard-to-detect response plausible, and the bottleneck is identification, not model
-  complexity.
+  ranking is stable across the tested denominator-floor choices.
+- **Volume (cautious).** The main estimates are negative, but the relevant diagnostics limit a direct
+  fee-caused interpretation: Model 1 changes under controls, Model 2 shows similar patterns in the
+  2023→2024 no-fee window, and Model 3 is sensitive to the no-fee and provider comparisons. We report
+  these results as suggestive volume associations.
 
 Numbers and figures: [`presentation/executive_summary.md`](presentation/executive_summary.md),
 [`docs/burden_analysis_and_modeling_results.md`](docs/burden_analysis_and_modeling_results.md), and
@@ -96,7 +97,7 @@ the exported tables/figures under [`results/`](results/).
 ## Repository Structure
 
 ```text
-├── presentation/          Executive summary (start here) + presentation figures
+├── presentation/          Executive summary (start here), slide deck (slides.pdf), and figures
 ├── notebooks/             Analysis notebooks, goal-based and symmetric per service:
 │     {service}_full_EDA / _sample_EDA                    exploratory data analysis
 │     {service}_feature_selection_and_engineering         feature decisions
@@ -104,7 +105,7 @@ the exported tables/figures under [`results/`](results/).
 │     {service}_model1_model2                             Goal 2 — volume models 1 & 2
 │     model3_cross_vehicle                                cross-vehicle Model 3
 ├── scripts/               Standardization, DS_z pipelines, panel builders, QC/sampling
-├── src/                   Reusable helpers and feature notes
+├── src/                   Reserved package structure for reusable project code
 ├── data/                  Raw (not committed) + processed/ (standardized trips, DS_z, panels)
 ├── results/               Exported outputs by stage: eda / features / burden_analysis / modeling
 ├── docs/                  Data audits, feature decisions, modeling plan, results, limitations
@@ -132,7 +133,7 @@ verify its checksums, and copy its `00_standardized_trips/` directory into `data
 [`data/README.md`](data/README.md) for the exact layout and safe extraction steps.
 
 **Regenerate all results.** With the environment active and the standardized parquet in place, one
-command reruns the DS_z pipelines and every notebook, rewriting all tables and figures under
+command reruns the DS_z pipelines and all final-analysis notebooks, rewriting the corresponding tables and figures under
 `results/` (including the figures used in the presentation):
 
 ```bash
@@ -173,4 +174,4 @@ mode-switching, cancellations, or trips that never happened), high-burden zones 
 are the dense Manhattan core), and the difference-in-differences designs are weakened by no-fee
 placebo checks. The full discussion is in
 [`docs/causal_interpretation_limitations.md`](docs/causal_interpretation_limitations.md), and
-directions for a stronger evaluation are in [`docs/future directions.md`](docs/future%20directions.md).
+directions for a stronger evaluation are in [`docs/future directions.md`](<docs/future directions.md>).

@@ -14,3 +14,5 @@ dependencies:
   - nbformat
   - ipykernel
   - statsmodels
+  - scipy
+  - pyshp

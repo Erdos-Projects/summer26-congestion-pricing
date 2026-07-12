@@ -76,8 +76,4 @@ data/processed/00_standardized_trips/**
 # Sampling scripts (regenerate locally): scripts/make_trip_level_sample.py,
 #   scripts/make_representative_sample_20k.py, scripts/create_diagnostic_sample.py
 #
-# Other generated artifacts
-artifacts/**
-!artifacts/**/
-!artifacts/**/.gitkeep
 docs/current_project_status.md

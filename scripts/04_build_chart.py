@@ -13,6 +13,7 @@ Output: results/modeling/figures/hvfhv_model1_dsz_vs_volume.html
 """
 
 import json
+import math
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +27,7 @@ data = [
     d for d in data
     if d.get("DS_z") is not None and d.get("pct_volume_change") is not None
 ]
+max_volume = max(d["N_z"] for d in data)
 
 pickup = [d for d in data if d["direction"] == "pickup"]
 dropoff = [d for d in data if d["direction"] == "dropoff"]
@@ -36,7 +38,9 @@ def to_points(rows):
         {
             "x": round(r["DS_z"] * 100, 3),
             "y": round(r["pct_volume_change"] * 100, 2),
-            "r": r["N_z"],
+            # Chart.js interprets r as a pixel radius. Square-root scaling keeps
+            # bubble area proportional to trip volume without covering the chart.
+            "r": round(2 + 43 * math.sqrt(r["N_z"] / max_volume), 2),
             "zone": r["zone"],
             "name": r.get("zone_name") or r.get("Zone") or f"Zone {r['zone']}",
             "n2024": r["n_2024"],

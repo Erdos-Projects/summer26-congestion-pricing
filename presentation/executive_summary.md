@@ -47,8 +47,8 @@ its raw volume. Model 3 then compares aligned Yellow and Uber/Lyft panels within
 
 ## Finding 1 — Burden: strong, stable, and uneven
 
-A fixed fee is a big slice of a cheap short trip and a tiny slice of a long airport trip, so the fee is a much larger
-share of a short, low-cost trip than of a long one. The highest-burden zone-sides are the dense
+Because the fee is mostly fixed within each service, it accounts for a larger share of the fare on
+short, low-cost trips than on longer trips. The highest-burden zone-sides are concentrated in the dense
 Manhattan core for both services (top `DS_z` ≈ 4.6–4.8% for Yellow, ≈ 6% for Uber/Lyft);
 airport trips carry far less (≈ 1–2% vs ≈ 4–5% for non-airport trips).
 
